@@ -1,0 +1,3901 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weft — クロスリサーチ note 記事生成エンジン</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --indigo-deep: #1a2238;
+  --indigo-medium: #2d3a5a;
+  --indigo-soft: #4a5878;
+  --cream: #f5f1ea;
+  --cream-light: #fafaf7;
+  --cream-dark: #ebe5d6;
+  --madder: #c9785b;
+  --madder-deep: #a85d44;
+  --tea: #d8d2c5;
+  --susutake: #7a7569;
+  --line: #c4bdab;
+  --thread: #e8dfc8;
+  --shadow: 0 1px 3px rgba(26, 34, 56, 0.06), 0 1px 2px rgba(26, 34, 56, 0.04);
+  --shadow-md: 0 4px 12px rgba(26, 34, 56, 0.08);
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'DM Sans', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+  --radius: 4px;
+  --radius-lg: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--indigo-deep);
+  line-height: 1.65;
+  min-height: 100vh;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(196, 189, 171, 0.08) 39px, rgba(196, 189, 171, 0.08) 40px),
+    repeating-linear-gradient(0deg, transparent 0, transparent 39px, rgba(196, 189, 171, 0.06) 39px, rgba(196, 189, 171, 0.06) 40px);
+}
+
+::selection { background: var(--madder); color: var(--cream-light); }
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  padding: 28px 40px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  background: var(--cream-light);
+}
+
+.logo-area { display: flex; align-items: baseline; gap: 14px; }
+
+.logo-mark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--indigo-deep);
+  position: relative;
+  font-style: italic;
+}
+
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: 8px;
+  height: 1px;
+  background: var(--madder);
+  opacity: 0.7;
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--susutake);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.version-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  letter-spacing: 0.05em;
+}
+
+.main-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 48px 32px 120px;
+}
+
+.section {
+  margin-bottom: 56px;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.section.is-disabled { opacity: 0.4; pointer-events: none; }
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--madder);
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  color: var(--indigo-deep);
+}
+
+.section-desc {
+  color: var(--susutake);
+  font-size: 14px;
+  margin-bottom: 24px;
+  max-width: 580px;
+}
+
+.field { margin-bottom: 18px; }
+
+.field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--indigo-deep);
+  background: var(--cream-light);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-input:focus,
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--madder);
+  box-shadow: 0 0 0 3px rgba(201, 120, 91, 0.12);
+}
+
+.field-textarea { min-height: 90px; resize: vertical; font-family: var(--font-body); }
+
+.field-help {
+  font-size: 12px;
+  color: var(--susutake);
+  margin-top: 4px;
+}
+
+.field-help a {
+  color: var(--madder-deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.field-help code {
+  font-family: var(--font-mono);
+  background: var(--cream-dark);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 11px 22px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary { background: var(--indigo-deep); color: var(--cream-light); }
+.btn-primary:hover:not(:disabled) { background: var(--indigo-medium); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-primary:disabled { background: var(--susutake); cursor: not-allowed; opacity: 0.6; }
+
+.btn-accent { background: var(--madder); color: var(--cream-light); }
+.btn-accent:hover:not(:disabled) { background: var(--madder-deep); }
+
+.btn-ghost { background: transparent; color: var(--indigo-deep); border: 1px solid var(--line); }
+.btn-ghost:hover { border-color: var(--indigo-deep); }
+
+.btn-arrow::after { content: '→'; }
+
+.settings-panel {
+  background: var(--cream-light);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 56px;
+}
+
+.settings-panel summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--indigo-deep);
+}
+
+.settings-panel summary::-webkit-details-marker { display: none; }
+.settings-panel summary::after {
+  content: '＋';
+  font-family: var(--font-mono);
+  color: var(--madder);
+  font-size: 18px;
+}
+.settings-panel[open] summary::after { content: '−'; }
+
+.settings-body {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--tea);
+}
+
+.settings-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  display: inline-block;
+  letter-spacing: 0.05em;
+}
+
+.status-ok { background: rgba(106, 142, 95, 0.12); color: #4a6f3e; }
+.status-missing { background: rgba(201, 120, 91, 0.12); color: var(--madder-deep); }
+
+.callout {
+  background: var(--cream-dark);
+  border-left: 3px solid var(--madder);
+  padding: 14px 18px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 13px;
+  color: var(--indigo-medium);
+  margin: 16px 0;
+  line-height: 1.7;
+}
+
+.callout strong { color: var(--indigo-deep); }
+
+.source-list { display: flex; flex-direction: column; gap: 10px; }
+
+.source-card {
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-left: 3px solid var(--madder);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 13px;
+}
+
+.source-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--madder);
+  margin-right: 8px;
+}
+
+.source-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+}
+
+.source-title a { color: inherit; text-decoration: none; }
+.source-title a:hover { color: var(--madder-deep); text-decoration: underline; }
+
+/* ===== Phase 2.1:YouTube 動画リスト ===== */
+.video-list { display: flex; flex-direction: column; gap: 10px; }
+.video-card {
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-left: 3px solid #ff0000;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.video-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #ff0000;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.video-body { flex: 1; min-width: 0; }
+.video-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  text-decoration: none;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.video-title:hover { color: var(--madder-deep); text-decoration: underline; }
+.video-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+}
+.video-channel { color: var(--indigo-deep); font-weight: 500; }
+.video-stat { color: var(--susutake); }
+.video-date { color: var(--susutake); margin-left: auto; }
+.video-error {
+  padding: 12px 14px;
+  background: rgba(201, 120, 91, 0.08);
+  border: 1px solid var(--madder);
+  border-radius: var(--radius);
+  color: var(--madder-deep);
+  font-size: 13px;
+}
+
+/* ===== Phase 2.2:動画要約 ===== */
+.video-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.video-box-header h3 { margin: 0; }
+.btn-summary-all {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+.video-bulk-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.video-bulk-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--susutake);
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--cream-dark, var(--cream-light));
+  border-radius: var(--radius);
+}
+.video-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.video-action-hint {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--susutake);
+  font-style: italic;
+}
+.btn-summary {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  padding: 5px 11px;
+  background: transparent;
+  border: 1px solid var(--madder);
+  color: var(--madder-deep);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-summary:hover:not(:disabled) {
+  background: var(--madder);
+  color: var(--cream-light);
+}
+.btn-summary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-summary-light {
+  border-color: var(--susutake);
+  color: var(--susutake);
+}
+.btn-summary-light:hover:not(:disabled) {
+  background: var(--susutake);
+  color: var(--cream-light);
+}
+.video-summary {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(26, 34, 56, 0.04);
+  border-left: 2px solid var(--indigo-deep);
+  border-radius: 3px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--indigo-deep);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.video-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--susutake);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.video-summary-redo {
+  background: none;
+  border: none;
+  font-size: 10.5px;
+  color: var(--madder);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.video-summary-error {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(201, 120, 91, 0.08);
+  border-left: 2px solid var(--madder);
+  color: var(--madder-deep);
+  font-size: 12px;
+  border-radius: 3px;
+}
+
+/* ===== Phase 2.3: 構成案パネル ===== */
+.structure-panel {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.structure-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.structure-panel-header h3 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--indigo-deep);
+}
+.structure-panel-hint {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--susutake);
+  line-height: 1.5;
+}
+.structure-textarea {
+  min-height: 160px;
+  max-height: 360px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+/* ===== v0.4.0:プロンプトエクスポートパネル ===== */
+.export-panel {
+  margin-bottom: 20px;
+}
+.export-panel details {
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.export-panel details[open] { border-color: var(--madder); }
+.export-panel summary {
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  font-family: var(--font-display);
+  list-style: none;
+}
+.export-panel summary::-webkit-details-marker { display: none; }
+.export-panel summary::marker { display: none; }
+.export-summary-icon { font-size: 16px; }
+.export-summary-hint {
+  margin-left: auto;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--susutake);
+  font-weight: normal;
+}
+.export-panel-body {
+  padding: 0 18px 18px;
+}
+.export-panel-desc {
+  font-size: 12.5px;
+  color: var(--susutake);
+  margin: 6px 0 14px;
+  line-height: 1.6;
+}
+.export-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 600px) {
+  .export-buttons { grid-template-columns: 1fr; }
+}
+.btn-export {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  gap: 4px;
+}
+.btn-export:hover {
+  border-color: var(--madder);
+  background: rgba(201, 120, 91, 0.04);
+  transform: translateY(-1px);
+}
+.export-btn-label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+}
+.export-btn-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  line-height: 1.4;
+}
+
+.source-url {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  margin-top: 4px;
+  word-break: break-all;
+}
+
+.analysis-box {
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 18px;
+}
+
+.analysis-box h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--indigo-deep);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--thread);
+}
+
+.analysis-content { white-space: pre-wrap; font-size: 14.5px; line-height: 1.75; }
+
+.article-output {
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-radius: var(--radius-lg);
+  padding: 40px 48px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.85;
+  white-space: pre-wrap;
+  color: var(--indigo-deep);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.article-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--susutake);
+  margin: 20px 0;
+  letter-spacing: 0.04em;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--madder);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* === Wait panel === */
+.wait-panel {
+  margin-top: 24px;
+  background: var(--cream-light);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wait-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--thread);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--indigo-medium);
+}
+
+.wait-success {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--thread);
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: #4a6f3e;
+}
+
+.success-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4a6f3e;
+  color: var(--cream-light);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wait-callout {
+  background: var(--cream-dark);
+  border-left: 3px solid var(--madder);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 13px;
+  color: var(--indigo-medium);
+  margin-bottom: 22px;
+  line-height: 1.7;
+}
+
+.wait-callout strong { color: var(--indigo-deep); }
+
+.wait-perspective { margin-bottom: 20px; }
+
+.wait-textarea { min-height: 70px; font-size: 14px; }
+
+.wait-manual {
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
+  text-align: center;
+}
+
+/* === Title selector === */
+.title-selector {
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+
+.title-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--thread);
+}
+
+.title-selector-header h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--indigo-deep);
+}
+
+.btn-regen {
+  background: transparent;
+  color: var(--madder-deep);
+  border: 1px solid var(--madder);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-regen:hover:not(:disabled) {
+  background: var(--madder);
+  color: var(--cream-light);
+}
+
+.btn-regen:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.title-options { display: flex; flex-direction: column; gap: 12px; }
+
+.title-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--cream);
+  border: 1px solid var(--tea);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.title-option:hover {
+  border-color: var(--madder);
+  background: var(--cream-light);
+}
+
+.title-option.is-selected {
+  border-color: var(--madder);
+  border-left-width: 3px;
+  background: rgba(201, 120, 91, 0.06);
+}
+
+.title-option input[type="radio"] {
+  margin-top: 4px;
+  accent-color: var(--madder);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.title-option-body { flex: 1; }
+
+.title-option-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.title-option-reason {
+  font-size: 12.5px;
+  color: var(--susutake);
+  line-height: 1.6;
+}
+
+.title-regen-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--susutake);
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--cream-dark);
+  border-radius: var(--radius);
+}
+
+.title-empty {
+  text-align: center;
+  color: var(--susutake);
+  font-size: 13px;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ===== length selector (記事の長さ 3択) ===== */
+.length-selector {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.length-selector-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.length-selector-header h3 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--indigo-deep);
+}
+.length-hint {
+  font-size: 12px;
+  color: var(--susutake);
+}
+.length-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.length-option {
+  position: relative;
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.15s ease;
+}
+.length-option:hover {
+  border-color: var(--madder);
+}
+.length-option.is-selected {
+  border-color: var(--madder);
+  border-width: 2px;
+  padding: 11px 13px;
+  background: rgba(201, 120, 91, 0.06);
+}
+.length-option input[type="radio"] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  accent-color: var(--madder);
+  cursor: pointer;
+}
+.length-option-body { padding-right: 20px; }
+.length-option-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  margin-bottom: 2px;
+}
+.length-option-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--madder);
+  margin-bottom: 6px;
+}
+.length-option-reason {
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .length-options { grid-template-columns: 1fr; }
+}
+
+/* ===== type selector (記事タイプ 2択) ===== */
+.type-selector {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.type-selector-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.type-selector-header h3 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--indigo-deep);
+}
+.type-hint {
+  font-size: 12px;
+  color: var(--susutake);
+}
+.type-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.type-option {
+  position: relative;
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.15s ease;
+}
+.type-option:hover {
+  border-color: var(--madder);
+}
+.type-option.is-selected {
+  border-color: var(--madder);
+  border-width: 2px;
+  padding: 11px 13px;
+  background: rgba(201, 120, 91, 0.06);
+}
+.type-option input[type="radio"] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  accent-color: var(--madder);
+  cursor: pointer;
+}
+.type-option-body { padding-right: 22px; }
+.type-option-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  margin-bottom: 2px;
+}
+.type-option-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--madder);
+  margin-bottom: 6px;
+}
+.type-option-reason {
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .type-options { grid-template-columns: 1fr; }
+}
+
+/* ===== style profile (文体プロファイル) ===== */
+.style-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.style-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--indigo-deep);
+  font-weight: 500;
+}
+.style-toggle input[type="checkbox"] {
+  accent-color: var(--madder);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.style-save-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  font-style: italic;
+}
+.style-save-hint.is-saved {
+  color: var(--madder);
+}
+.style-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.style-slot {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  background: #fff;
+}
+.style-slot-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.style-slot-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+}
+.style-slot-count.is-good { color: var(--madder); }
+.style-textarea {
+  min-height: 90px;
+  max-height: 220px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.style-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== v0.3.0:テーマ入力タブ + カテゴリ選択 ===== */
+.theme-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.theme-tab {
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--susutake);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: var(--font-display);
+}
+.theme-tab.is-active {
+  color: var(--indigo-deep);
+  border-bottom-color: var(--madder);
+}
+.theme-tab:hover { color: var(--indigo-deep); }
+.theme-tab-content { display: block; }
+.theme-tab-content.hidden { display: none !important; }
+
+.category-selectors-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 700px) {
+  .category-selectors-row { grid-template-columns: 1fr; }
+}
+.category-select {
+  padding: 10px 12px;
+  background: #fff;
+}
+.category-select:disabled {
+  background: var(--cream-light);
+  color: var(--susutake);
+  cursor: not-allowed;
+}
+.cat-query-preview {
+  margin: 8px 0 16px;
+  padding: 10px 14px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  color: var(--indigo-deep);
+  font-family: var(--font-mono);
+}
+.cat-query-preview code {
+  color: var(--madder-deep);
+  font-weight: 500;
+}
+
+.theme-propose {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px dashed var(--line);
+}
+.theme-propose-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--susutake);
+  margin-top: 10px;
+}
+.theme-propose-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.theme-propose-item {
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--indigo-deep);
+  transition: all 0.15s ease;
+}
+.theme-propose-item:hover {
+  border-color: var(--madder);
+  background: rgba(201, 120, 91, 0.04);
+  transform: translateX(2px);
+}
+
+/* ===== Phase 2.0 :YouTube オプション ===== */
+.field-label-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  font-weight: normal;
+  margin-left: 6px;
+}
+.research-options {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--cream-light);
+  border-radius: var(--radius);
+  border: 1px dashed var(--line);
+}
+.research-option-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--indigo-deep);
+  font-weight: 500;
+}
+.research-option-toggle input[type="checkbox"] {
+  accent-color: var(--madder);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.research-option-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  font-weight: normal;
+}
+.research-option-hint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--susutake);
+  line-height: 1.6;
+}
+
+.history-panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--line);
+}
+
+.history-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--cream-light);
+  border: 1px solid var(--tea);
+  border-radius: var(--radius);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.history-item:hover { border-color: var(--madder); }
+.history-theme { font-weight: 500; color: var(--indigo-deep); }
+.history-date { font-family: var(--font-mono); font-size: 11px; color: var(--susutake); }
+
+.hidden { display: none !important; }
+
+.error-msg {
+  padding: 14px 18px;
+  background: rgba(201, 120, 91, 0.08);
+  border: 1px solid var(--madder);
+  border-radius: var(--radius);
+  color: var(--madder-deep);
+  font-size: 14px;
+  margin: 14px 0;
+}
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: var(--indigo-deep);
+  color: var(--cream-light);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+footer {
+  text-align: center;
+  padding: 32px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--susutake);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+
+footer .accent { color: var(--madder); }
+
+@media (max-width: 640px) {
+  .site-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .main-wrap { padding: 32px 20px 80px; }
+  .section-title { font-size: 24px; }
+  .article-output { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-area">
+    <span class="logo-mark">Weft</span>
+    <span class="tagline">横糸を、あなたの言葉に</span>
+  </div>
+  <span class="version-tag">v0.4.0 / 有料note特化プロンプト + 各AIエクスポート</span>
+</header>
+
+<main class="main-wrap">
+
+  <!-- ===== API SETTINGS ===== -->
+  <details class="settings-panel" id="settingsPanel" open>
+    <summary>
+      <span>① API 設定</span>
+    </summary>
+    <div class="settings-body">
+      <div class="callout">
+        <strong>v0.1 は Gemini API キー 1つだけで動きます。</strong><br>
+        Gemini の Google Search Grounding 機能で、note.com の記事を実データで検索しながら分析・執筆します。
+        1日1,500リクエストまで無料。ブラウザに直接保存され、外部送信されません。
+      </div>
+
+      <div class="field">
+        <label class="field-label">Gemini API Key</label>
+        <input type="password" class="field-input" id="geminiApiKey" placeholder="AIza...">
+        <p class="field-help">
+          <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> で API キーを取得(Googleアカウントでログイン → "Get API key" → "Create API key")
+        </p>
+      </div>
+
+      <div class="field">
+        <label class="field-label">YouTube Data API Key <span class="field-label-meta">(任意 / Phase 2.1 以降で使用)</span></label>
+        <input type="password" class="field-input" id="youtubeApiKey" placeholder="AIza...">
+        <p class="field-help">
+          <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank">Google Cloud Console</a> で YouTube Data API v3 を有効化 → 認証情報 → API キー作成。1日10,000ユニット無料。<strong>今は保存だけ</strong>で、実際の動画検索は Phase 2.1 から動きます。
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px; align-items: center;">
+        <button class="btn btn-primary" onclick="saveKeys()">保存</button>
+        <button class="btn btn-ghost" onclick="clearKeys()">クリア</button>
+        <span id="keysStatus" class="settings-status status-missing">未設定</span>
+      </div>
+    </div>
+  </details>
+
+  <!-- ===== STYLE PROFILE ===== -->
+  <details class="settings-panel" id="stylePanel">
+    <summary>
+      <span>② 文体プロファイル(任意)</span>
+      <span id="styleStatusBadge" class="settings-status status-missing">未設定</span>
+    </summary>
+    <div class="settings-body">
+      <div class="callout">
+        <strong>あなたの過去 note 記事を最大3本まで貼り付けられます。</strong><br>
+        本文生成時に「文章のリズム・語彙・トーン」を AI が引き継ぎます。各 500字以上で効果が出やすく、合計が長すぎるとトークン消費が増えるので注意。タイトルや見出しは外して本文のみ貼ってください。
+      </div>
+
+      <div class="style-toggle-row">
+        <label class="style-toggle">
+          <input type="checkbox" id="styleEnabled" onchange="handleStyleToggle()">
+          <span>本文生成で文体参照を使う</span>
+        </label>
+        <span id="styleSaveHint" class="style-save-hint">変更すると自動保存</span>
+      </div>
+
+      <div class="style-slots">
+        <div class="style-slot">
+          <label class="field-label style-slot-label">
+            <span>過去記事 1</span>
+            <span class="style-slot-count" id="styleCount0">0 字</span>
+          </label>
+          <textarea class="field-textarea style-textarea" id="styleArticle0" placeholder="過去記事1の本文(タイトルや見出しは含めず、本文だけ)" oninput="handleStyleArticleInput(0)"></textarea>
+        </div>
+        <div class="style-slot">
+          <label class="field-label style-slot-label">
+            <span>過去記事 2(空欄可)</span>
+            <span class="style-slot-count" id="styleCount1">0 字</span>
+          </label>
+          <textarea class="field-textarea style-textarea" id="styleArticle1" placeholder="過去記事2の本文(空欄でもOK)" oninput="handleStyleArticleInput(1)"></textarea>
+        </div>
+        <div class="style-slot">
+          <label class="field-label style-slot-label">
+            <span>過去記事 3(空欄可)</span>
+            <span class="style-slot-count" id="styleCount2">0 字</span>
+          </label>
+          <textarea class="field-textarea style-textarea" id="styleArticle2" placeholder="過去記事3の本文(空欄でもOK)" oninput="handleStyleArticleInput(2)"></textarea>
+        </div>
+      </div>
+
+      <div class="style-actions">
+        <button class="btn btn-ghost" onclick="clearStyleProfile()">すべてクリア</button>
+      </div>
+    </div>
+  </details>
+
+  <!-- ===== THEME INPUT ===== -->
+  <section class="section" id="themeSection">
+    <div class="section-num">02 / THEME</div>
+    <h2 class="section-title">テーマを入力する</h2>
+    <p class="section-desc">
+      これから書く note 記事のテーマを入力してください。Weft が note.com を実データで検索し、競合分析から記事の骨格を組み立てます。
+    </p>
+
+    <div class="theme-tabs">
+      <button type="button" class="theme-tab is-active" data-tab="free" onclick="switchThemeTab('free')">📝 自由入力</button>
+      <button type="button" class="theme-tab" data-tab="category" onclick="switchThemeTab('category')">📂 カテゴリから</button>
+    </div>
+
+    <div class="theme-tab-content" id="themeFreeTab">
+      <div class="field">
+        <label class="field-label">テーマ / キーワード</label>
+        <input type="text" class="field-input" id="themeInput" placeholder="例:復縁 / 副業 月10万 / AI 活用 仕事術">
+      </div>
+    </div>
+
+    <div class="theme-tab-content hidden" id="themeCategoryTab">
+      <div class="category-selectors-row">
+        <div class="field">
+          <label class="field-label">大部門</label>
+          <select class="field-input category-select" id="catMajor" onchange="handleCatMajorChange()">
+            <option value="">選択してください</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">中部門</label>
+          <select class="field-input category-select" id="catMid" onchange="handleCatMidChange()" disabled>
+            <option value="">大部門を選んでください</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">小部門</label>
+          <select class="field-input category-select" id="catMinor" onchange="handleCatMinorChange()" disabled>
+            <option value="">中部門を選んでください</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field hidden" id="catOtherWrap">
+        <label class="field-label">✏️ その他カテゴリ(自由記述)</label>
+        <input type="text" class="field-input" id="catOther" placeholder="例:落語 / バックパッカー / 海外移住 など" oninput="handleCatOtherInput()">
+      </div>
+
+      <div class="field">
+        <label class="field-label">詳細キーワード(任意)</label>
+        <input type="text" class="field-input" id="catKeyword" placeholder="例:初心者向け / 月10万 / 体験談" oninput="handleCatKeywordInput()">
+      </div>
+
+      <div id="catQueryPreview" class="cat-query-preview hidden">
+        → 検索クエリ:<code id="catQueryText"></code>
+      </div>
+
+      <div class="theme-propose">
+        <button type="button" class="btn btn-ghost" id="proposeThemeBtn" onclick="proposeThemesFromCategory()" disabled>
+          💡 この分野の人気テーマを AI に提案させる
+        </button>
+        <div id="themeProposeProgress" class="theme-propose-progress hidden">
+          <span class="progress-dot"></span>
+          <span>note の人気記事から AI がテーマを抽出中…(10〜20秒)</span>
+        </div>
+        <div id="themeProposeError" class="error-msg hidden"></div>
+        <div id="themeProposeList" class="theme-propose-list hidden"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">想定読者(任意)</label>
+      <textarea class="field-textarea" id="readerInput" placeholder="例:20代後半、別れて3か月以内、元彼に未練がある人"></textarea>
+    </div>
+
+    <div class="research-options">
+      <label class="research-option-toggle">
+        <input type="checkbox" id="youtubeEnabled" onchange="handleYoutubeToggle()">
+        <span>📺 YouTube 動画も参考にする <span class="research-option-meta">(Phase 2.1〜)</span></span>
+      </label>
+      <p id="youtubeHint" class="research-option-hint hidden">
+        Phase 2.1 以降で、YouTube Data API による動画検索 → 字幕取得 → AI 要約 → 知見抽出を実装します。<strong>今は設定の保存だけ</strong>で、リサーチ&分析には反映されません。
+      </p>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <button class="btn btn-primary btn-arrow" id="researchBtn" onclick="runResearchAndAnalysis()">
+        リサーチ&分析
+      </button>
+    </div>
+
+    <div id="waitPanel" class="wait-panel hidden">
+      <div class="wait-progress" id="waitProgress">
+        <span class="progress-dot"></span>
+        <span id="researchProgressText">検索クエリを組み立ててます...</span>
+      </div>
+
+      <div class="wait-success hidden" id="waitSuccess">
+        <span class="success-mark">✓</span>
+        <span>リサーチ&分析が完了しました。下の結果をご確認ください。</span>
+      </div>
+
+      <div class="wait-callout">
+        <strong>💡 待機中のアクション</strong><br>
+        この時間で「あなただけの視点」を仕込んでおくと、本文生成時に AI が記事の核に据えます。書ける範囲で構いません(空欄でもOK)。
+      </div>
+
+      <div class="wait-perspective">
+        <div class="field">
+          <label class="field-label">このテーマでのあなたの体験(失敗・成功・気づき)</label>
+          <textarea class="field-textarea wait-textarea" id="perspectiveExperience" placeholder="例:3ヶ月前に試して失敗した方法、半年で成果が出たやり方、現場で気づいたこと"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label">読者に一番伝えたい主張</label>
+          <textarea class="field-textarea wait-textarea" id="perspectiveMessage" placeholder="例:多くの人が誤解しているが、本当に大事なのは○○、という主張"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label">他の人と違う、あなただけの視点</label>
+          <textarea class="field-textarea wait-textarea" id="perspectiveAngle" placeholder="例:現場でしか分からない実態、業界の常識を疑う視点、独自の経験"></textarea>
+        </div>
+      </div>
+
+      <div class="wait-manual">
+        <a href="https://note.com/search?context=note" id="manualNoteSearchLink" target="_blank" rel="noopener" class="btn btn-ghost">
+          🔍 note で同テーマを手動チェック(新しいタブ)
+        </a>
+      </div>
+    </div>
+
+    <div id="researchError" class="error-msg hidden"></div>
+
+    <div class="history-panel" id="historyPanel">
+      <div class="history-title">— 過去のプロジェクト</div>
+      <div class="history-list" id="historyList">
+        <div style="color: var(--susutake); font-size: 13px; padding: 8px 0;">まだプロジェクトがありません</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESEARCH & ANALYSIS RESULTS ===== -->
+  <section class="section is-disabled" id="analysisSection">
+    <div class="section-num">03 / RESEARCH &amp; ANALYSIS</div>
+    <h2 class="section-title">リサーチ結果と分析</h2>
+    <p class="section-desc">
+      Gemini が Google検索で実際に参照した note 記事と、その分析結果です。
+    </p>
+
+    <div id="analysisOutput" class="hidden">
+      <div class="analysis-box">
+        <h3>参照した情報源</h3>
+        <div class="source-list" id="sourcesContent"></div>
+      </div>
+      <div class="analysis-box hidden" id="youtubeVideosBox">
+        <div class="video-box-header">
+          <h3>📺 参照した YouTube 動画</h3>
+          <div class="video-bulk-actions">
+            <button class="btn btn-ghost btn-summary-all" id="summarizeAllBtn" onclick="summarizeAllVideos('auto')">✨ 全動画を要約</button>
+            <button class="btn btn-ghost btn-summary-all btn-summary-light" id="summarizeAllSavingBtn" onclick="summarizeAllVideos('description')">💰 全て概要文で(節約)</button>
+          </div>
+        </div>
+        <div id="videoBulkProgress" class="video-bulk-progress hidden">
+          <span class="progress-dot"></span>
+          <span>動画を要約中... <span id="videoBulkProgressText">0/0</span></span>
+        </div>
+        <div class="video-list" id="videosContent"></div>
+      </div>
+      <div class="analysis-box">
+        <h3>参照記事と選定理由</h3>
+        <div class="analysis-content" id="reasoningContent"></div>
+      </div>
+      <div class="analysis-box">
+        <h3>パターン抽出</h3>
+        <div class="analysis-content" id="patternsContent"></div>
+      </div>
+      <div class="analysis-box">
+        <h3>狙うべき空きスポット</h3>
+        <div class="analysis-content" id="gapContent"></div>
+      </div>
+      <div class="analysis-box">
+        <h3>タイトル案(3パターン)</h3>
+        <div class="analysis-content" id="titlesContent"></div>
+      </div>
+      <div class="analysis-box">
+        <h3>記事の構成案</h3>
+        <div class="analysis-content" id="structureContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ARTICLE GENERATION ===== -->
+  <section class="section is-disabled" id="articleSection">
+    <div class="section-num">04 / DRAFT</div>
+    <h2 class="section-title">記事ドラフトの生成</h2>
+    <p class="section-desc">
+      上記の分析結果を元に、note 記事の本文ドラフトを生成します。最終チェックは SHIN さんが入れる前提です。
+    </p>
+
+    <div class="title-selector" id="titleSelector">
+      <div class="title-selector-header">
+        <h3>タイトルを選択</h3>
+        <button class="btn-regen" id="regenBtn" onclick="regenerateTitles()">
+          🔄 再生成
+        </button>
+      </div>
+      <div class="title-options" id="titleOptions">
+        <div class="title-empty">リサーチ&分析を完了すると、ここに3つのタイトル案が表示されます。</div>
+      </div>
+      <div id="titleRegenProgress" class="title-regen-progress hidden">
+        <span class="progress-dot"></span>
+        <span>タイトル案を再生成中...(5〜10秒)</span>
+      </div>
+      <div id="titleRegenError" class="error-msg hidden"></div>
+    </div>
+
+    <div class="type-selector" id="typeSelector">
+      <div class="type-selector-header">
+        <h3>記事タイプ</h3>
+        <span class="type-hint">どちらの読まれ方を狙うかで文体・構成が変わります</span>
+      </div>
+      <div class="type-options" id="typeOptions">
+        <label class="type-option is-selected" data-type="practical">
+          <input type="radio" name="articleType" value="practical" checked onchange="handleTypeSelect('practical')">
+          <div class="type-option-body">
+            <div class="type-option-title">🔧 実用ノウハウ系</div>
+            <div class="type-option-meta">avg 1,842円</div>
+            <div class="type-option-reason">「これで○○できる」型。結論ファースト・手順構造・箇条書き多用。</div>
+          </div>
+        </label>
+        <label class="type-option" data-type="narrative">
+          <input type="radio" name="articleType" value="narrative" onchange="handleTypeSelect('narrative')">
+          <div class="type-option-body">
+            <div class="type-option-title">✍️ 読み物系</div>
+            <div class="type-option-meta">avg 983円</div>
+            <div class="type-option-reason">体験談・気づき型。語りかけ・場面描写・物語の濃度。</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="length-selector" id="lengthSelector">
+      <div class="length-selector-header">
+        <h3>記事の長さ</h3>
+        <span class="length-hint">出力したい字数の目安を選んでください(あとから変更できます)</span>
+      </div>
+      <div class="length-options" id="lengthOptions">
+        <label class="length-option" data-len="short">
+          <input type="radio" name="bodyLength" value="short" onchange="handleLengthSelect('short')">
+          <div class="length-option-body">
+            <div class="length-option-title">短め</div>
+            <div class="length-option-meta">〜 2,500字</div>
+            <div class="length-option-reason">実用ノウハウ系の有料部分向け。凝縮型で即効性を出す。</div>
+          </div>
+        </label>
+        <label class="length-option is-selected" data-len="standard">
+          <input type="radio" name="bodyLength" value="standard" checked onchange="handleLengthSelect('standard')">
+          <div class="length-option-body">
+            <div class="length-option-title">標準</div>
+            <div class="length-option-meta">〜 4,500字</div>
+            <div class="length-option-reason">note 有料記事の中央値ゾーン。迷ったらこれ。</div>
+          </div>
+        </label>
+        <label class="length-option" data-len="long">
+          <input type="radio" name="bodyLength" value="long" onchange="handleLengthSelect('long')">
+          <div class="length-option-body">
+            <div class="length-option-title">長め</div>
+            <div class="length-option-meta">〜 7,000字</div>
+            <div class="length-option-reason">読み物系・体験談・長尺コンテンツ向け。</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="structure-panel" id="structurePanel">
+      <div class="structure-panel-header">
+        <h3>記事の構成</h3>
+        <button class="btn-regen" id="regenStructureBtn" onclick="regenerateStructure()">🔄 タイトル + 動画要約で再構築</button>
+      </div>
+      <p class="structure-panel-hint">これが本文生成の骨格になります。直接編集も可能。タイトルや動画要約を踏まえて作り直したい場合は右上のボタン。</p>
+      <textarea class="field-textarea structure-textarea" id="structureEditor" placeholder="リサーチ&分析を完了すると、ここに構成案が入ります。" oninput="handleStructureEdit()"></textarea>
+      <div id="structureRegenProgress" class="title-regen-progress hidden">
+        <span class="progress-dot"></span>
+        <span>構成案を再構築中...(10〜15秒)</span>
+      </div>
+      <div id="structureRegenError" class="error-msg hidden"></div>
+    </div>
+
+    <div class="export-panel">
+      <details>
+        <summary>
+          <span class="export-summary-icon">📁</span>
+          <span class="export-summary-label">各 AI 用プロンプトをコピー</span>
+          <span class="export-summary-hint">Claude / ChatGPT / Gemini Pro / 汎用</span>
+        </summary>
+        <div class="export-panel-body">
+          <p class="export-panel-desc">
+            Weft 内生成(下のボタン)の代わりに、外部 AI に投げたい時はここからコピーしてください。各 AI に最適化されたプロンプトをクリップボードに転送します。
+          </p>
+          <div class="export-buttons">
+            <button type="button" class="btn-export" onclick="exportPromptForAI('claude')">
+              <span class="export-btn-label">📋 Claude</span>
+              <span class="export-btn-caption">読み物系・文体保持・指示忠実性最高</span>
+            </button>
+            <button type="button" class="btn-export" onclick="exportPromptForAI('chatgpt')">
+              <span class="export-btn-label">📋 ChatGPT</span>
+              <span class="export-btn-caption">実用ノウハウ系・テンプレ重視・構造化最強</span>
+            </button>
+            <button type="button" class="btn-export" onclick="exportPromptForAI('geminipro')">
+              <span class="export-btn-label">📋 Gemini Pro</span>
+              <span class="export-btn-caption">巨大コンテキスト・大量素材活用</span>
+            </button>
+            <button type="button" class="btn-export" onclick="exportPromptForAI('generic')">
+              <span class="export-btn-label">📋 汎用</span>
+              <span class="export-btn-caption">癖なし、何にでも使える</span>
+            </button>
+          </div>
+          <div id="exportError" class="error-msg hidden"></div>
+        </div>
+      </details>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <button class="btn btn-accent btn-arrow" id="generateBtn" onclick="runGeneration()" disabled>本文を生成(Weft 内 Gemini)</button>
+    </div>
+
+    <div id="generateProgress" class="progress hidden">
+      <span class="progress-dot"></span>
+      <span>記事を執筆中...</span>
+    </div>
+
+    <div id="generateError" class="error-msg hidden"></div>
+
+    <div id="articleWrap" class="hidden">
+      <div class="article-output" id="articleOutput"></div>
+      <div class="article-actions">
+        <button class="btn btn-primary" onclick="copyArticle()">📋 全文をコピー</button>
+        <button class="btn btn-ghost" onclick="saveProject()">💾 プロジェクトに保存</button>
+        <button class="btn btn-ghost" onclick="resetAll()">🔄 新規プロジェクト</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Weft v0.1 — Step 1 prototype <span class="accent">/</span> powered by Gemini Search Grounding <span class="accent">/</span> 横糸を、あなたの言葉に
+</footer>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+let state = {
+  geminiKey: '',
+  youtubeKey: '',
+  youtubeEnabled: false,
+  themeMode: 'free',
+  categorySelection: { major: '', mid: '', minor: '', other: '' },
+  categoryKeyword: '',
+  _proposedThemes: [],
+  theme: '',
+  reader: '',
+  perspective: { experience: '', message: '', angle: '' },
+  sources: [],
+  youtubeVideos: [],
+  analysis: null,
+  finalStructure: '',
+  titleCandidates: [],
+  selectedTitleIndex: -1,
+  bodyLength: 'standard',
+  articleType: 'practical',
+  styleProfile: { enabled: false, articles: ['', '', ''] },
+  article: '',
+  history: []
+};
+
+const STYLE_RECOMMENDED_MIN = 500; // 各記事の推奨最低字数(これ以上で文体参照が機能する)
+
+// 記事の長さ → maxOutputTokens のマップ
+// 出典:docs/09-market-research.md(R-001)
+const BODY_LENGTH_TOKENS = { short: 4096, standard: 8192, long: 12288 };
+const BODY_LENGTH_INSTRUCTION = {
+  short:    '- 全体で2,000〜2,800字でコンパクトに、要点を凝縮して書く',
+  standard: '- 全体で4,000〜5,500字を目安に書く',
+  long:     '- 全体で6,000〜8,000字でじっくり書く(体験談や具体例を厚めに)'
+};
+
+// v0.3.0:カテゴリツリー(17大部門 + その他)
+const CATEGORIES = {
+  'ビジネス・お金': {
+    '副業・在宅ワーク': ['アフィリエイト', 'Webライター', 'せどり・物販', '講師業', '動画編集副業'],
+    'マーケティング・集客': ['SNS運用', 'コンテンツマーケ', '広告運用', 'ブランディング', 'SEO'],
+    '起業・経営': ['個人事業', 'フリーランス', '法人化', 'スタートアップ', '経営戦略'],
+    '投資・資産運用': ['株式投資', '投資信託・NISA', '暗号資産', '不動産投資', 'FX'],
+    'お金・節約': ['家計管理', '節約術', '保険', 'クレジットカード', 'ポイ活']
+  },
+  '自己啓発・心理': {
+    '時間術・習慣': ['朝活', '集中力', 'ルーティン', '効率化', 'ライフハック'],
+    'メンタル・心理学': ['不安解消', '自己肯定感', 'アンガー', 'ストレス', '心理学'],
+    '学習法・思考法': ['読書術', '記憶術', 'ロジカル思考', 'クリティカル思考', 'ノート術'],
+    '目標達成・成功法則': ['目標設定', 'モチベ管理', '振り返り', '夢の実現', '引き寄せ']
+  },
+  '仕事・キャリア': {
+    '転職・就活': ['転職体験', '履歴書・職務経歴書', '面接対策', '新卒就活', 'キャリアチェンジ'],
+    'スキルアップ': ['ビジネススキル', 'プレゼン', '営業', '交渉', '文書作成'],
+    '働き方': ['リモートワーク', '退職・独立', 'ワークライフバランス', 'パラレルキャリア'],
+    'コーチング・人材育成': ['コーチング', 'メンタリング', '1on1', 'リーダーシップ', 'マネジメント'],
+    '職業別': ['エンジニア', 'デザイナー', '営業', 'マーケター', '教師']
+  },
+  '健康・医療': {
+    '健康全般・予防': ['食事改善', '睡眠', '運動習慣', '体調管理', '健康診断'],
+    'ダイエット・フィットネス': ['食事制限', '筋トレ', 'ヨガ', 'ランニング', 'ボディメイク'],
+    'メンタルヘルス': ['うつ', '適応障害', '双極性', 'パニック障害', 'セルフケア'],
+    '病気・闘病': ['がん闘病', '慢性疾患', '持病管理', '治療体験', '医療相談'],
+    '介護・終末期': ['親の介護', '認知症', '終活', '看取り', '訪問介護']
+  },
+  '暮らし・ライフスタイル': {
+    '家事・整理整頓': ['掃除', '整理収納', '断捨離', 'ミニマリスト', '時短家事'],
+    '料理・グルメ': ['簡単レシピ', '節約レシピ', 'お弁当', 'レストラン', 'お取り寄せ'],
+    '住まい・インテリア': ['一人暮らし', '引越し', 'DIY', 'インテリア', '賃貸vs持ち家'],
+    '旅行・お出かけ': ['国内旅行', '海外旅行', '一人旅', '家族旅行', 'ご当地グルメ'],
+    'ファッション・美容': ['コーデ', '骨格・色診断', 'スキンケア', 'メイク', 'ヘアケア']
+  },
+  '子育て・教育': {
+    '妊娠・出産': ['妊娠中', '出産レポ', '産後ケア', '不妊治療', '育休'],
+    '育児(0-6歳)': ['0-1歳', '1-3歳', '3-6歳', '発達障害', 'イヤイヤ期'],
+    '学童期(小中高)': ['小学生', '中学生', '高校生', '思春期', '不登校'],
+    '教育・受験': ['幼児教育', '中学受験', '高校受験', '大学受験', '学習指導'],
+    '家族関係': ['夫婦', '親子', '兄弟', '義実家', '離婚・再婚家庭']
+  },
+  'テクノロジー・AI': {
+    'AI・生成AI': ['ChatGPT', 'Claude', 'Gemini', '画像生成', 'プロンプト', 'AIエージェント'],
+    'プログラミング': ['Web開発', 'モバイルアプリ', 'Python', 'JavaScript', 'ゲーム開発'],
+    'ガジェット・デバイス': ['スマホ', 'PC', 'タブレット', 'カメラ', 'スマートホーム'],
+    'ノーコード・自動化': ['Notion', 'Zapier', 'GAS', 'Make', 'RPA'],
+    'データ・分析': ['SQL', 'BIツール', 'Excel', 'データサイエンス', '統計']
+  },
+  '学び・教養': {
+    '語学': ['英語', '中国語', '韓国語', 'スペイン語', 'その他言語'],
+    '歴史・地理': ['日本史', '世界史', '地理', '文化人類学', '古典・神話'],
+    '科学・サイエンス': ['物理', '生物', '化学', '心理学', '脳科学'],
+    '思想・哲学': ['西洋哲学', '東洋思想', '宗教', '倫理', '古典思想'],
+    '資格・試験': ['国家資格', '民間資格', 'TOEIC・英検', 'FP', '簿記']
+  },
+  '人間関係・恋愛': {
+    '恋愛・出会い': ['マッチングアプリ', '片想い', '失恋', '復縁', '恋愛心理'],
+    '結婚・婚活': ['婚活', 'プロポーズ', '結婚式準備', '新婚生活', '国際結婚'],
+    '友人・コミュニケーション': ['友達作り', '距離感', 'コミュ力', '会話術', '人見知り'],
+    '夫婦関係': ['夫婦喧嘩', '円満の秘訣', '産後クライシス', '離婚', '浮気'],
+    'LGBTQ+・ジェンダー': ['ジェンダー', 'セクシュアリティ', '当事者の声', '家族の理解']
+  },
+  'エッセイ・コラム': {
+    '日常エッセイ': ['毎日note', '朝の気づき', '暮らしの中で', '心の動き'],
+    '体験談・自分史': ['半生記', '転機', '失敗談', '成長記録', '出会い'],
+    'コラム・時評': ['社会観察', 'トレンド分析', '業界裏話', '評論'],
+    '雑記・つぶやき': ['短文', '詩・ポエム', '日記', '独り言']
+  },
+  '小説・文芸': {
+    '現代小説': ['純文学', '恋愛', 'ヒューマンドラマ', 'ホラー', '私小説'],
+    'ジャンル小説': ['SF', 'ファンタジー', 'ミステリー', '異世界', '青春'],
+    'ショートショート・掌編': ['1分小説', '400字小説', '連作', '怖い話', '不思議な話'],
+    '詩・俳句・短歌': ['現代詩', '俳句', '短歌', '川柳', '自由詩']
+  },
+  '写真・カメラ': {
+    '撮影テクニック': ['ポートレート', '風景', 'スナップ', 'ライティング', 'RAW現像'],
+    '機材・カメラ': ['ミラーレス', '一眼レフ', 'フィルムカメラ', 'スマホ写真', 'レンズ'],
+    '被写体・ジャンル': ['人物', '風景', '街角', '食べ物', '動物'],
+    '写真論・作品': ['作品集', 'フォトエッセイ', '写真展', 'インスピレーション']
+  },
+  'デザイン・イラスト・動画・音楽': {
+    'グラフィックデザイン': ['ロゴ', 'ポスター', 'バナー', 'UI/UX', 'タイポグラフィ'],
+    'イラスト・絵': ['デジタルイラスト', '水彩', '油絵', 'ペン画', 'デフォルメ'],
+    '動画・映像制作': ['YouTube', 'ショート動画', 'MV', 'アニメーション', '編集テク'],
+    '音楽・楽器': ['作曲', 'DTM', '演奏', '歌唱', '楽器レッスン'],
+    '3D・CG・モーション': ['Blender', 'モーショングラフィック', 'VFX', '3Dモデリング']
+  },
+  'エンタメ・趣味': {
+    '本・読書': ['書評', '読書日記', '本棚紹介', 'ビジネス書', '漫画レビュー'],
+    '映画・ドラマ・アニメ': ['邦画', '洋画', 'アニメ', 'Netflix・配信', '評論'],
+    'ゲーム': ['RPG', 'アクション', 'インディー', 'レトロゲーム', '攻略'],
+    'スポーツ・観戦': ['野球', 'サッカー', 'バスケ', '格闘技', 'eSports'],
+    '趣味全般': ['ペット', 'アウトドア', '釣り', 'ボードゲーム', '観賞']
+  },
+  'スピリチュアル・占い': {
+    '占い': ['タロット', '西洋占星術', '四柱推命', '数秘術', '易学'],
+    '性格分析・診断': ['ISD個性心理学', 'MBTI', 'エニアグラム', '動物占い', 'ストレングス'],
+    'スピリチュアル': ['引き寄せ', '瞑想', 'エネルギーワーク', 'チャネリング', 'ヒーリング'],
+    '開運・風水': ['風水', 'パワースポット', '神社仏閣', 'お守り', '開運グッズ']
+  },
+  '専門・士業': {
+    '法律・契約': ['個人向け法律相談', '契約書', 'トラブル対応', '著作権', '労働問題'],
+    '税務・会計': ['確定申告', '節税', '個人事業の経理', 'インボイス', '法人税'],
+    '医療・福祉': ['医療知識', '看護師の話', '介護福祉士の話', '障害福祉', '社会保障'],
+    '相続・終活': ['相続対策', '遺言', '終活', '不動産相続', '介護と相続'],
+    'その他専門知識': ['不動産仲介', '保険', '教育専門', 'IT専門相談']
+  },
+  '時事・社会': {
+    '政治・政策': ['選挙', '国政', '地方政治', '政策分析', '政治史'],
+    '社会問題': ['環境・SDGs', '貧困', '福祉', '多様性', '災害'],
+    '地域・地方': ['地方創生', '移住', '田舎暮らし', '地域文化', '都道府県別'],
+    '国際・海外': ['海外移住', '留学', '駐在', '国際情勢', '異文化'],
+    'メディア・報道': ['ジャーナリズム', 'メディア批評', 'インタビュー記事', '取材記録']
+  }
+};
+
+// v0.4.0:有料note向け構造ルール(記事タイプ別)── R-001 のデータに基づく
+const STRUCTURE_RULES = {
+  practical: `【実用ノウハウ系の構造(R-001 平均価格 1,842円帯)】
+- 無料エリアを **長めに**(全体の40〜50%、note 公式調査で読み物比 1.5 倍)
+- 有料エリアは **短く凝縮**(全体の50〜60%、即効性のあるテンプレ・手順を密度高く)
+- 無料部分の役割:
+  1. 読者の具体的な悩み・課題の言語化(共感)
+  2. 「このまま放置すると○○」のコスト提示
+  3. 解決の全体像(概要レベル、具体手順は温存)
+  4. 著者がなぜこれを書けるかの根拠(実績・体験を1〜2行)
+- 有料境界の CTA:
+  - 「ここから先で渡すもの」を具体的に箇条書き予告
+  - 例:「再現可能な5ステップの手順 / コピペで使えるテンプレ / 私が3ヶ月で月10万に到達した実数値の推移 / つまずいた箇所と回避法」
+- 有料部分の必須要素:
+  - 番号付きの具体手順(コピペで再現できるレベル)
+  - 少なくとも1つの「コピペ可能なテンプレ・スクリプト」
+  - 実際の数字・固有名詞・スクショレベルの具体度
+  - 失敗回避のチェックリスト
+  - 購入後の不安を消す FAQ(3問以上)`,
+  narrative: `【読み物系の構造(R-001 平均価格 983円帯)】
+- 無料エリアは **短めに**(全体の25〜35%、入口として機能)
+- 有料エリアに **読み応えのある分量**(全体の65〜75%、5,000〜8,000字)
+- 無料部分の役割:
+  1. 衝撃のシーン・出来事から始める(時系列より印象優先)
+  2. 「これから何が語られるか」を予感させる
+  3. 読者と地続きの「あなたもそうじゃない?」の共鳴
+  4. 物語の入口、しかし核心は明かさない
+- 有料境界の CTA:
+  - 「ここから先の3年間で何が起きたか」型の予告
+  - 例:「あの選択をしてからの2年、起きたことの全てを話します。失ったもの、得たもの、今だから言える本音を含めて」
+  - 売り込み口調は禁止、物語の続きとして自然に
+- 有料部分の必須要素:
+  - 場面描写の濃度(五感に訴える具体性)
+  - 感情の動きの粒度(「悔しかった」ではなく「○○の時に喉が詰まった」)
+  - 著者固有の体験・気づき・転機の言語化
+  - 物語から普遍化された読者への示唆`
+};
+
+// CTA 3パターン(AI が記事の性質で選ぶ)
+const CTA_EXAMPLES = `【有料境界の CTA、以下3パターンから記事の性質に合うものを選ぶ】
+
+▼ パターン A:具体物提示型(実用ノウハウ系向け)
+「ここから先では、実際に私が○○を達成した時の具体的な手順を、
+テンプレと数字を含めて全部公開します。
+『何をやればいいか分からない』で止まっていた人が、
+今日から手を動かせる形にまで落とし込みました。」
+
+▼ パターン B:物語続編型(読み物系向け)
+「ここから先は、あの時から○○までの全てを書きます。
+当時の私が知っていれば変わっていた選択、失敗の真因、
+そして今だから言える本音を含めて、
+誰にも話してこなかった部分を残らず。」
+
+▼ パターン C:価値の輪郭型(汎用)
+「ここから先で渡せるのは、○○です。これを読み終わる頃には、
+あなたは△△の判断ができるようになります。
+それは□□には書かれていない、現場で実際に試して
+削ぎ落とした結論だけです。」
+
+→ 記事の温度感・読者層・タイプに合わせて、AI が適切なパターンを選んで自然な日本語に整える。`;
+
+// AI 別の追加指示(各 AI の本当の強みベース)
+const AI_PROMPT_PROFILES = {
+  internal: {
+    name: 'Weft内部(Gemini Flash)',
+    addendum: `【Gemini Flash(内部)向け追加指示】
+- 出力上限はユーザー指定の maxOutputTokens に合わせる
+- 構成案の見出しを守って章立て
+- 速度優先のため、長すぎる装飾的表現は避け密度を保つ
+- Weft 内で完結する利便性を活かし、即時ドラフト品質を目指す`
+  },
+  claude: {
+    name: 'Claude',
+    addendum: `【Claude 向け追加指示】
+- あなたの最大の強み:**指示忠実性 + 日本語の自然さ + 文体模倣力**
+- 文体プロファイル(過去記事)がある場合は、語尾・句読点・段落の長さ・リズムを **音響的に** 一致させる(読み上げた時のテンポを揃える)
+- 各章は「結論先出し → 理由・背景 → 具体例 → 注意点 → 章のまとめ」の流れで厚みを出す
+- 読み物系では特に「場面の濃度」を重視。「悔しかった」のような抽象動詞ではなく「○○の時に喉が詰まった」のような身体感覚で書く
+- AIっぽい前置き(「承知しました」「以下に書きます」)は絶対禁止 → タイトルから直接開始
+- Markdown は最小限(タイトル # と章見出し ## のみ、強調記号 ** は使わない)
+- 出力長:Claude の上限を活用、必要なら目標字数を超えても OK
+- 一度書き終えたら、自分の出力を読み返して AI 定型表現がないかセルフチェックして書き直す`
+  },
+  chatgpt: {
+    name: 'ChatGPT',
+    addendum: `【ChatGPT 向け追加指示】
+- あなたの最大の強み:**フォーマット遵守 + 構造化 + 箇条書きの整然さ**
+- 実用ノウハウ系では「## 第N章:○○」形式の見出しで構造を明示
+- 各章の冒頭で結論を1〜2行で述べる(時間がない読者でも要点が分かる)
+- 手順は番号付きリストで、テンプレや FAQ は明示的にセクション化
+- 具体的な数字・固有名詞・事例を必ず含める(抽象論禁止)
+- 「いかがでしたか?」「~してみてはいかがでしょうか」は禁止
+- note 直貼り用に Markdown は「# タイトル」「## 見出し」「- 箇条書き」のみ(**強調** は使わない)
+- 出力長:GPT-4o は16K トークンが限界。目標字数に収めること`
+  },
+  geminipro: {
+    name: 'Gemini Pro',
+    addendum: `【Gemini Pro 向け追加指示】
+- あなたの最大の強み:**巨大コンテキスト(2M トークン) + 最新情報アクセス**
+- 上記の Weft 由来素材(リサーチ・YouTube 要約・過去記事)を **全部消化** して書く
+- 動画要約に含まれる具体例・数字・専門家見解は記事の複数章に分散して取り込む
+- 競合パターンを意識しつつ、空きスポットの角度で書く
+- 推論能力を活かし、素材の表面情報だけでなく「読者が本当に知りたい背後の問い」まで掘り下げる
+- 出力長:Gemini Pro は65K トークン可能、目標字数を超えても自然なら OK
+- Markdown 整形は ChatGPT と同じ(# / ## / - のみ)`
+  },
+  generic: {
+    name: '汎用',
+    addendum: `【汎用追加指示】
+- 上記の構造ルールに従って自然な日本語で執筆してください
+- 文体は誠実、共感的、過度に煽らない
+- 必要に応じて Markdown を活用`
+  }
+};
+
+// 記事タイプ別の執筆指針(v0.1.8 〜 v0.3.x 後方互換用、handleTypeSelect の validation で使用)
+const ARTICLE_TYPE_INSTRUCTION = {
+  practical: `【記事タイプ:実用ノウハウ系】
+この記事は「実用ノウハウ系」として書きます。読者は「これで○○できる」という即効性のある情報を求めています。
+- 文体:結論ファースト。各章の冒頭でその章の要点を述べてから根拠や手順を示す
+- 構成:課題提示 → 原因/背景 → 具体的な手順(箇条書きを積極活用) → 再現性の担保(例やデータ) → 次のアクション
+- 強調:具体性・即効性・再現性。読者が読み終えた後に「すぐ実行できる」と感じる粒度で書く
+- 避けること:長すぎる物語的描写、抽象的な比喩で終わる結論、感情的エピソードへの偏り
+- 章の見出しは「〜する方法」「〜のコツ」「〜の手順」のような実用的な表現を選ぶ`,
+  narrative: `【記事タイプ:読み物系】
+この記事は「読み物系」として書きます。読者は著者の固有の体験と気づきを読みたがっています。
+- 文体:読者に語りかける、肩を並べて歩くトーン。場面・心情・気づきの順で描く
+- 構成:具体的なシーン(導入) → 葛藤・気づき → 体験から得た学び → 普遍化(読者にとっての意味)
+- 強調:固有の体験・感情の動き・場面描写。著者自身の声と視点が前面に出ること
+- 避けること:箇条書きの羅列、教科書的な説明、抽象論で終わる結論
+- 章の見出しは情景や感情を表す表現(「あの夜、決めたこと」「気づいた瞬間」など)を意識する`
+};
+
+let progressInterval = null;
+const progressStages = [
+  '検索クエリを組み立ててます...',
+  'site:note.com で検索中(クエリ1)...',
+  'site:note.com で検索中(クエリ2)...',
+  'site:note.com で検索中(クエリ3)...',
+  '集めた記事を統合分析中...',
+  '分析結果を整形中...'
+];
+
+// ============================================================
+// Init
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // bodyLength の復元(なければデフォルト 'standard')
+  const savedLen = localStorage.getItem('weft_bodyLength');
+  if (savedLen && BODY_LENGTH_TOKENS[savedLen]) handleLengthSelect(savedLen);
+  // articleType の復元(なければデフォルト 'practical')
+  const savedType = localStorage.getItem('weft_articleType');
+  if (savedType && ARTICLE_TYPE_INSTRUCTION[savedType]) handleTypeSelect(savedType);
+  // 文体プロファイルの復元
+  loadStyleProfile();
+  // v0.3.0:カテゴリ選択 UI 初期化 + 保存値復元
+  loadCategorySelection();
+  loadKeys();
+  loadHistory();
+  updateKeysStatus();
+  // 視点入力フィールドの変更を state に反映
+  ['perspectiveExperience', 'perspectiveMessage', 'perspectiveAngle'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', capturePerspective);
+  });
+});
+
+// ============================================================
+// API Key Management
+// ============================================================
+function loadKeys() {
+  state.geminiKey = localStorage.getItem('weft_gemini') || '';
+  state.youtubeKey = localStorage.getItem('weft_youtube') || '';
+  state.youtubeEnabled = localStorage.getItem('weft_youtubeEnabled') === 'true';
+  document.getElementById('geminiApiKey').value = state.geminiKey;
+  document.getElementById('youtubeApiKey').value = state.youtubeKey;
+  document.getElementById('youtubeEnabled').checked = state.youtubeEnabled;
+  applyYoutubeHintVisibility();
+}
+
+function saveKeys() {
+  state.geminiKey = document.getElementById('geminiApiKey').value.trim();
+  state.youtubeKey = document.getElementById('youtubeApiKey').value.trim();
+  localStorage.setItem('weft_gemini', state.geminiKey);
+  localStorage.setItem('weft_youtube', state.youtubeKey);
+  updateKeysStatus();
+  toast('保存しました');
+}
+
+function clearKeys() {
+  if (!confirm('保存されている API キー(Gemini / YouTube)を削除しますか?')) return;
+  localStorage.removeItem('weft_gemini');
+  localStorage.removeItem('weft_youtube');
+  state.geminiKey = '';
+  state.youtubeKey = '';
+  document.getElementById('geminiApiKey').value = '';
+  document.getElementById('youtubeApiKey').value = '';
+  updateKeysStatus();
+  toast('クリアしました');
+}
+
+function updateKeysStatus() {
+  const el = document.getElementById('keysStatus');
+  if (state.geminiKey && state.youtubeKey) {
+    el.textContent = '✓ Gemini & YouTube 設定済み';
+    el.className = 'settings-status status-ok';
+  } else if (state.geminiKey) {
+    el.textContent = '✓ Gemini 設定済み';
+    el.className = 'settings-status status-ok';
+  } else {
+    el.textContent = '未設定';
+    el.className = 'settings-status status-missing';
+  }
+}
+
+function keyReady() {
+  return !!state.geminiKey;
+}
+
+function handleYoutubeToggle() {
+  const cb = document.getElementById('youtubeEnabled');
+  state.youtubeEnabled = cb.checked;
+  localStorage.setItem('weft_youtubeEnabled', state.youtubeEnabled ? 'true' : 'false');
+  applyYoutubeHintVisibility();
+}
+
+function applyYoutubeHintVisibility() {
+  const hint = document.getElementById('youtubeHint');
+  if (!hint) return;
+  hint.classList.toggle('hidden', !state.youtubeEnabled);
+}
+
+// ============================================================
+// v0.3.0:カテゴリ選択ハイブリッド UI
+// ============================================================
+function switchThemeTab(mode) {
+  state.themeMode = mode;
+  document.querySelectorAll('.theme-tab').forEach(t => {
+    t.classList.toggle('is-active', t.dataset.tab === mode);
+  });
+  document.getElementById('themeFreeTab').classList.toggle('hidden', mode !== 'free');
+  document.getElementById('themeCategoryTab').classList.toggle('hidden', mode !== 'category');
+  localStorage.setItem('weft_themeMode', mode);
+}
+
+function populateMajorOptions() {
+  const sel = document.getElementById('catMajor');
+  if (!sel) return;
+  const opts = Object.keys(CATEGORIES).map((name, i) =>
+    `<option value="${escapeHtml(name)}">${String(i + 1).padStart(2, '0')}. ${escapeHtml(name)}</option>`
+  ).join('');
+  sel.innerHTML = `<option value="">選択してください</option>${opts}<option value="__other__">✏️ その他(自由入力)</option>`;
+}
+
+function handleCatMajorChange() {
+  const sel = document.getElementById('catMajor');
+  const major = sel.value;
+  state.categorySelection.major = major;
+  const midSel = document.getElementById('catMid');
+  const minorSel = document.getElementById('catMinor');
+  const otherWrap = document.getElementById('catOtherWrap');
+
+  if (major === '__other__') {
+    otherWrap.classList.remove('hidden');
+    midSel.innerHTML = '<option value="">該当なし</option>';
+    midSel.disabled = true;
+    minorSel.innerHTML = '<option value="">該当なし</option>';
+    minorSel.disabled = true;
+    state.categorySelection.mid = '';
+    state.categorySelection.minor = '';
+  } else if (major && CATEGORIES[major]) {
+    otherWrap.classList.add('hidden');
+    state.categorySelection.other = '';
+    const otherEl = document.getElementById('catOther');
+    if (otherEl) otherEl.value = '';
+    const mids = Object.keys(CATEGORIES[major]);
+    midSel.innerHTML = '<option value="">選択してください</option>' + mids.map(m =>
+      `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+    ).join('');
+    midSel.disabled = false;
+    minorSel.innerHTML = '<option value="">中部門を選んでください</option>';
+    minorSel.disabled = true;
+    state.categorySelection.mid = '';
+    state.categorySelection.minor = '';
+  } else {
+    otherWrap.classList.add('hidden');
+    midSel.innerHTML = '<option value="">大部門を選んでください</option>';
+    midSel.disabled = true;
+    minorSel.innerHTML = '<option value="">中部門を選んでください</option>';
+    minorSel.disabled = true;
+    state.categorySelection.mid = '';
+    state.categorySelection.minor = '';
+  }
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+}
+
+function handleCatMidChange() {
+  const sel = document.getElementById('catMid');
+  const mid = sel.value;
+  state.categorySelection.mid = mid;
+  const major = state.categorySelection.major;
+  const minorSel = document.getElementById('catMinor');
+  if (mid && major && CATEGORIES[major] && CATEGORIES[major][mid]) {
+    const minors = CATEGORIES[major][mid];
+    minorSel.innerHTML = '<option value="">選択してください</option>' + minors.map(m =>
+      `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+    ).join('');
+    minorSel.disabled = false;
+  } else {
+    minorSel.innerHTML = '<option value="">中部門を選んでください</option>';
+    minorSel.disabled = true;
+  }
+  state.categorySelection.minor = '';
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+}
+
+function handleCatMinorChange() {
+  state.categorySelection.minor = document.getElementById('catMinor').value;
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+}
+
+function handleCatOtherInput() {
+  state.categorySelection.other = document.getElementById('catOther').value;
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+}
+
+function handleCatKeywordInput() {
+  state.categoryKeyword = document.getElementById('catKeyword').value;
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+}
+
+function composeCategoryQuery() {
+  const sel = state.categorySelection;
+  const parts = [];
+  if (sel.major === '__other__') {
+    if (sel.other) parts.push(sel.other.trim());
+  } else {
+    if (sel.major) parts.push(sel.major);
+    if (sel.mid) parts.push(sel.mid);
+    if (sel.minor) parts.push(sel.minor);
+  }
+  if (state.categoryKeyword) parts.push(state.categoryKeyword.trim());
+  return parts.filter(Boolean).join(' ');
+}
+
+function updateCategoryQueryPreview() {
+  const query = composeCategoryQuery();
+  const previewWrap = document.getElementById('catQueryPreview');
+  const previewText = document.getElementById('catQueryText');
+  if (query && previewWrap && previewText) {
+    previewText.textContent = query;
+    previewWrap.classList.remove('hidden');
+  } else if (previewWrap) {
+    previewWrap.classList.add('hidden');
+  }
+  // 提案ボタンの活性化:大部門(または「その他」入力)があれば OK
+  const sel = state.categorySelection;
+  const hasCategory = (sel.major === '__other__' && sel.other && sel.other.trim()) ||
+                      (sel.major && sel.major !== '__other__');
+  const btn = document.getElementById('proposeThemeBtn');
+  if (btn) btn.disabled = !hasCategory;
+}
+
+function persistCategorySelection() {
+  localStorage.setItem('weft_categorySelection', JSON.stringify({
+    selection: state.categorySelection,
+    keyword: state.categoryKeyword
+  }));
+}
+
+function loadCategorySelection() {
+  populateMajorOptions();
+  try {
+    const savedMode = localStorage.getItem('weft_themeMode');
+    if (savedMode === 'category') switchThemeTab('category');
+
+    const saved = localStorage.getItem('weft_categorySelection');
+    if (!saved) return;
+    const parsed = JSON.parse(saved);
+    state.categorySelection = parsed.selection || { major: '', mid: '', minor: '', other: '' };
+    state.categoryKeyword = parsed.keyword || '';
+
+    const majorSel = document.getElementById('catMajor');
+    if (majorSel && state.categorySelection.major) {
+      majorSel.value = state.categorySelection.major;
+      handleCatMajorChange();
+      if (state.categorySelection.mid) {
+        const midSel = document.getElementById('catMid');
+        if (midSel) {
+          midSel.value = state.categorySelection.mid;
+          handleCatMidChange();
+          if (state.categorySelection.minor) {
+            const minorSel = document.getElementById('catMinor');
+            if (minorSel) {
+              minorSel.value = state.categorySelection.minor;
+              handleCatMinorChange();
+            }
+          }
+        }
+      }
+      if (state.categorySelection.other) {
+        const otherEl = document.getElementById('catOther');
+        if (otherEl) otherEl.value = state.categorySelection.other;
+      }
+    }
+    if (state.categoryKeyword) {
+      const kwEl = document.getElementById('catKeyword');
+      if (kwEl) kwEl.value = state.categoryKeyword;
+    }
+    updateCategoryQueryPreview();
+  } catch (e) {
+    console.warn('Failed to load category selection:', e);
+  }
+}
+
+// AI テーマ提案(Gemini grounded で note.com の人気テーマを抽出)
+async function proposeThemesFromCategory() {
+  if (!state.geminiKey) {
+    showError('themeProposeError', '① API 設定で Gemini API キーを入力してください');
+    return;
+  }
+  const sel = state.categorySelection;
+  const hasCategory = (sel.major === '__other__' && sel.other && sel.other.trim()) ||
+                      (sel.major && sel.major !== '__other__');
+  if (!hasCategory) {
+    showError('themeProposeError', '大部門を選んでください');
+    return;
+  }
+  hideError('themeProposeError');
+  document.getElementById('themeProposeProgress').classList.remove('hidden');
+  document.getElementById('themeProposeList').classList.add('hidden');
+  document.getElementById('proposeThemeBtn').disabled = true;
+
+  const categoryParts = sel.major === '__other__'
+    ? [sel.other]
+    : [sel.major, sel.mid, sel.minor].filter(Boolean);
+  const categoryStr = categoryParts.join(' > ');
+
+  const prompt = `あなたは note 記事のリサーチ補助 AI です。以下のカテゴリで note.com の **人気記事を Google 検索しながら**、note 書き手が今書くと売れそうな具体的なテーマ案を **5つ** 提案してください。
+
+【カテゴリ】
+${categoryStr}
+
+【出力形式】
+1. テーマ案1
+2. テーマ案2
+3. テーマ案3
+4. テーマ案4
+5. テーマ案5
+
+【条件】
+- 各テーマは 25〜45文字程度、具体的かつ記事タイトルとしても機能するレベルで
+- 「note で実際に売れている記事の傾向」を参考に
+- 新しい切り口・空きスポット(競合があまり書いていない角度)を意識
+- 上記の説明や前置きは不要、5つのテーマだけを番号付きで出力すること`;
+
+  try {
+    const result = await callGeminiGrounded(prompt);
+    const themes = parseProposedThemes(result.text);
+    if (themes.length === 0) {
+      throw new Error('テーマ案が抽出できませんでした。もう一度お試しください');
+    }
+    renderProposedThemes(themes);
+  } catch (err) {
+    showError('themeProposeError', `エラー: ${err.message}`);
+    console.error(err);
+  } finally {
+    document.getElementById('themeProposeProgress').classList.add('hidden');
+    document.getElementById('proposeThemeBtn').disabled = false;
+  }
+}
+
+function parseProposedThemes(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  const themes = [];
+  lines.forEach(line => {
+    const m = line.match(/^\d+[\.\、]\s*\**(.+?)\**$/);
+    if (m) {
+      let t = m[1].replace(/\*+/g, '').trim();
+      // 末尾の説明や記号を軽くクリーンナップ
+      t = t.replace(/^[\s\-:：]+|[\s\-:：]+$/g, '');
+      if (t.length > 3 && t.length < 100) themes.push(t);
+    }
+  });
+  return themes.slice(0, 5);
+}
+
+function renderProposedThemes(themes) {
+  const list = document.getElementById('themeProposeList');
+  state._proposedThemes = themes;
+  list.innerHTML = themes.map((t, i) =>
+    `<div class="theme-propose-item" onclick="selectProposedTheme(${i})">${escapeHtml(t)}</div>`
+  ).join('');
+  list.classList.remove('hidden');
+}
+
+function selectProposedTheme(idx) {
+  const themes = state._proposedThemes || [];
+  if (!themes[idx]) return;
+  const kwEl = document.getElementById('catKeyword');
+  if (kwEl) {
+    kwEl.value = themes[idx];
+    state.categoryKeyword = themes[idx];
+  }
+  updateCategoryQueryPreview();
+  persistCategorySelection();
+  toast('テーマ案をキーワードに反映しました');
+}
+
+// ============================================================
+// Stage 1: Research & Analysis (Gemini with Google Search Grounding)
+// ============================================================
+async function runResearchAndAnalysis() {
+  let theme;
+  if (state.themeMode === 'category') {
+    theme = composeCategoryQuery();
+    if (!theme) {
+      showError('researchError', 'カテゴリを選択するか、自由入力タブに切り替えてテーマを入力してください');
+      return;
+    }
+  } else {
+    theme = document.getElementById('themeInput').value.trim();
+    if (!theme) { showError('researchError', 'テーマを入力してください'); return; }
+  }
+  const reader = document.getElementById('readerInput').value.trim();
+  if (!keyReady()) { showError('researchError', '① API 設定 で Gemini API キーを入力してください'); return; }
+
+  state.theme = theme;
+  state.reader = reader;
+  hideError('researchError');
+  
+  // 待機パネル表示 + 段階進捗開始 + 手動検索リンク設定
+  showWaitPanel();
+  startProgress();
+  setManualSearchLink(theme);
+  document.getElementById('researchBtn').disabled = true;
+
+  const prompt = buildResearchPrompt();
+
+  // Phase 2.1: YouTube 検索を並列で開始(失敗しても本筋を止めない)
+  let ytPromise = null;
+  if (state.youtubeEnabled && state.youtubeKey) {
+    ytPromise = runYoutubeSearch(state.theme).catch(err => {
+      console.warn('YouTube search failed:', err);
+      return { error: err.message, videos: [] };
+    });
+  } else {
+    state.youtubeVideos = [];
+  }
+
+  try {
+    const result = await withRateLimitRetry(() => callGeminiGrounded(prompt), 'research');
+    state.sources = result.sources;
+    state.analysis = parseAnalysis(result.text);
+    state.titleCandidates = parseTitles(state.analysis.titles);
+    state.selectedTitleIndex = -1;
+    // Phase 2.3:構成案を Section 04 に「初期案」として転送
+    state.finalStructure = state.analysis.structure || '';
+    const structureEditor = document.getElementById('structureEditor');
+    if (structureEditor) structureEditor.value = state.finalStructure;
+    const truncated = result.finishReason === 'MAX_TOKENS';
+    renderSources(result.sources);
+    renderAnalysis(state.analysis, truncated);
+    renderTitleCandidates(state.titleCandidates);
+
+    // YouTube の結果が揃うのを待つ(既に終わってる場合もある)
+    if (ytPromise) {
+      const yt = await ytPromise;
+      if (yt && yt.error) {
+        state.youtubeVideos = [];
+        renderYoutubeVideos([], yt.error);
+      } else {
+        state.youtubeVideos = (yt && yt.videos) || [];
+        renderYoutubeVideos(state.youtubeVideos);
+      }
+    } else {
+      renderYoutubeVideos([]);
+    }
+
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('analysisOutput').classList.remove('hidden');
+    activateSection('analysisSection');
+    activateSection('articleSection');
+    finishProgress();
+    smoothScrollTo('analysisSection');
+  } catch (err) {
+    showError('researchError', `エラー: ${err.message}`);
+    hideWaitPanel();
+    console.error(err);
+  } finally {
+    document.getElementById('researchBtn').disabled = false;
+  }
+}
+
+function showWaitPanel() {
+  document.getElementById('waitPanel').classList.remove('hidden');
+  document.getElementById('waitProgress').classList.remove('hidden');
+  document.getElementById('waitSuccess').classList.add('hidden');
+}
+
+function hideWaitPanel() {
+  document.getElementById('waitPanel').classList.add('hidden');
+  stopProgress();
+}
+
+function startProgress() {
+  let i = 0;
+  document.getElementById('researchProgressText').textContent = progressStages[0];
+  stopProgress();
+  progressInterval = setInterval(() => {
+    i = Math.min(i + 1, progressStages.length - 1);
+    document.getElementById('researchProgressText').textContent = progressStages[i];
+  }, 12000);
+}
+
+function stopProgress() {
+  if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+}
+
+function finishProgress() {
+  stopProgress();
+  document.getElementById('waitProgress').classList.add('hidden');
+  document.getElementById('waitSuccess').classList.remove('hidden');
+}
+
+function setManualSearchLink(theme) {
+  const url = `https://note.com/search?context=note&q=${encodeURIComponent(theme)}`;
+  document.getElementById('manualNoteSearchLink').href = url;
+}
+
+function capturePerspective() {
+  state.perspective = {
+    experience: document.getElementById('perspectiveExperience').value.trim(),
+    message: document.getElementById('perspectiveMessage').value.trim(),
+    angle: document.getElementById('perspectiveAngle').value.trim()
+  };
+}
+
+function buildResearchPrompt() {
+  return `あなたは note 記事の戦略コンサルタントです。
+
+【記事テーマ】
+${state.theme}
+
+【想定読者】
+${state.reader || '(指定なし)'}
+
+このテーマで note.com に投稿されている記事を、**Google で複数の検索クエリを使って多角的に**調査してください。単一のクエリではなく、**最低3パターン以上の検索** を実行し、合計で **10〜15本** の記事を集めてください。
+
+【推奨される検索クエリの切り口(テーマに応じて選んでください)】
+- 基本クエリ:site:note.com [テーマそのまま]
+- 体験談・実体験:site:note.com [テーマ] 体験談 / 実体験
+- 方法・ノウハウ:site:note.com [テーマ] 方法 / コツ / ガイド
+- 失敗談・注意点:site:note.com [テーマ] 失敗 / 注意 / 後悔
+- ランキング・比較:site:note.com [テーマ] おすすめ / 比較
+- 有料記事系:site:note.com [テーマ] 有料 / 売れる
+
+【記事の選定基準】
+集めた記事から、以下の優先順位で 10〜15本を選んでください:
+1. 鮮度:過去1年以内に投稿された記事を優先(古すぎる記事は避ける)
+2. 有料記事優先:有料設定がある記事を中心に分析対象とする(無料記事はトレンド把握の補助として扱う)
+3. Google 検索上位:各クエリの検索結果で上位に表示される記事
+
+必ず以下のフォーマットで、各セクションは ## で始めて、日本語で出力してください。
+
+## 参照記事と選定理由
+分析対象とした note 記事を箇条書きで10〜15本列挙してください。各記事ごとに以下を1〜2行で明示:
+- 記事タイトル
+- 選定理由(なぜ参考に値するか:検索順位 / 公開時期 / 有料記事である / スキ数 / 価格帯 / どの切り口で見つけたか など、判断材料を簡潔に)
+
+## パターン抽出
+競合 note 記事に共通する以下のパターンを箇条書きで5〜7個:
+- タイトル傾向
+- 構成パターン
+- 文量・分量
+- 価格帯
+- 想定読者の捉え方
+
+## 狙うべき空きスポット
+競合記事に欠けている視点、扱われていない切り口、読者の悩みで満たされていない部分を3〜4個、具体的に。
+
+## タイトル案
+このテーマで note を書くなら、競合と被らず読者に刺さるタイトル案を3つ。各80字以内、なぜ効くか1行コメント付き。
+
+## 記事の構成案
+おすすめの構成案を1つ。章立て(見出し)を5〜7個、各章で書くべきポイントを箇条書きで2〜3個ずつ。
+
+【重要】
+- 必ず Google 検索を **複数のクエリで** 使って実際の note.com 記事を参照すること(単一クエリ禁止)
+- 一般論や推測ではなく、現在 note 上に存在する具体的な記事の傾向に基づくこと
+- 「過去1年以内 + 有料記事優先 + 複数クエリで多角的に」の基準を守ること(条件を満たす記事が少ない場合は基準を緩めて補完してよいが、その旨を選定理由欄で明示)
+- AI 生成感のある表現を避けること`;
+}
+
+function parseAnalysis(text) {
+  const sections = { reasoning: '', patterns: '', gap: '', titles: '', structure: '' };
+  const parts = text.split(/^##\s+/m);
+  parts.forEach(part => {
+    const trimmed = part.trim();
+    if (!trimmed) return;
+    const firstLineEnd = trimmed.indexOf('\n');
+    const heading = (firstLineEnd > -1 ? trimmed.slice(0, firstLineEnd) : trimmed).trim();
+    const body = firstLineEnd > -1 ? trimmed.slice(firstLineEnd + 1).trim() : '';
+    if (heading.includes('参照記事') || heading.includes('選定理由')) sections.reasoning = body;
+    else if (heading.includes('パターン')) sections.patterns = body;
+    else if (heading.includes('空きスポット') || heading.includes('狙うべき')) sections.gap = body;
+    else if (heading.includes('タイトル')) sections.titles = body;
+    else if (heading.includes('構成')) sections.structure = body;
+  });
+  return { ...sections, raw: text };
+}
+
+// タイトル案テキストから {title, reason} の配列を抽出
+function parseTitles(text) {
+  if (!text) return [];
+  const candidates = [];
+  // 「1. **タイトル**」「2. **タイトル**」「3. **タイトル**」を抽出
+  // 続く「* なぜ効くか: ...」または「  - なぜ効くか: ...」も拾う
+  const blocks = text.split(/^\s*\d+[\.\、]\s+/m).filter(b => b.trim());
+  blocks.forEach(block => {
+    const trimmed = block.trim();
+    if (!trimmed) return;
+    // タイトル抽出:**で囲まれた部分、または最初の改行までを優先
+    let title = '';
+    let reason = '';
+    const boldMatch = trimmed.match(/\*\*(.+?)\*\*/);
+    if (boldMatch) {
+      title = boldMatch[1].trim();
+      // 「なぜ効くか」以降を理由として抽出
+      const reasonMatch = trimmed.match(/なぜ効くか[\s:：]*([^\n]*(?:\n(?!\s*\*\*).*)*)/);
+      if (reasonMatch) reason = reasonMatch[1].trim().replace(/^\*\s*/, '').trim();
+    } else {
+      // ** で囲まれてない場合:最初の行をタイトル、残りを理由に
+      const lines = trimmed.split('\n').map(l => l.trim()).filter(l => l);
+      if (lines.length > 0) {
+        title = lines[0].replace(/^\*+|\*+$/g, '').trim();
+        const reasonLine = lines.find(l => l.includes('なぜ効くか'));
+        if (reasonLine) {
+          reason = reasonLine.replace(/^[\*\-\s]*なぜ効くか[\s:：]*/, '').trim();
+        }
+      }
+    }
+    if (title) candidates.push({ title, reason });
+  });
+  return candidates.slice(0, 3);
+}
+
+function renderTitleCandidates(candidates) {
+  const wrap = document.getElementById('titleOptions');
+  if (!candidates || candidates.length === 0) {
+    wrap.innerHTML = '<div class="title-empty">タイトル候補が抽出できませんでした。「🔄 再生成」を押してみてください。</div>';
+    return;
+  }
+  wrap.innerHTML = candidates.map((c, i) => `
+    <label class="title-option${state.selectedTitleIndex === i ? ' is-selected' : ''}" data-idx="${i}">
+      <input type="radio" name="titleChoice" value="${i}" ${state.selectedTitleIndex === i ? 'checked' : ''} onchange="handleTitleSelect(${i})">
+      <div class="title-option-body">
+        <div class="title-option-title">${escapeHtml(c.title)}</div>
+        ${c.reason ? `<div class="title-option-reason">なぜ効くか:${escapeHtml(c.reason)}</div>` : ''}
+      </div>
+    </label>
+  `).join('');
+}
+
+function handleTitleSelect(idx) {
+  state.selectedTitleIndex = idx;
+  // 選択状態を視覚的に反映
+  document.querySelectorAll('.title-option').forEach((el, i) => {
+    el.classList.toggle('is-selected', i === idx);
+  });
+  // 本文生成ボタンを有効化
+  document.getElementById('generateBtn').disabled = false;
+}
+
+// Phase 2.3:構成案エディタの編集を state に反映
+function handleStructureEdit() {
+  const el = document.getElementById('structureEditor');
+  if (!el) return;
+  state.finalStructure = el.value;
+}
+
+// Phase 2.3:構成案の再構築(タイトル + 動画要約 + 視点を踏まえる)
+async function regenerateStructure() {
+  if (!state.analysis) {
+    showError('structureRegenError', 'まずリサーチ&分析を実行してください');
+    return;
+  }
+  hideError('structureRegenError');
+  document.getElementById('structureRegenProgress').classList.remove('hidden');
+  document.getElementById('regenStructureBtn').disabled = true;
+
+  capturePerspective();
+  const prompt = buildStructurePrompt();
+
+  try {
+    const text = await withRateLimitRetry(async () => {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+      const body = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.6, maxOutputTokens: 2048 }
+      };
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || 'Gemini API エラー');
+      if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+      return data.candidates[0].content.parts.map(p => p.text || '').join('').trim();
+    }, 'structureRegen');
+
+    state.finalStructure = text;
+    document.getElementById('structureEditor').value = text;
+    toast('構成案を再構築しました');
+  } catch (err) {
+    showError('structureRegenError', `エラー: ${err.message}`);
+    console.error(err);
+  } finally {
+    document.getElementById('structureRegenProgress').classList.add('hidden');
+    document.getElementById('regenStructureBtn').disabled = false;
+  }
+}
+
+function buildStructurePrompt() {
+  const selectedTitle = (state.selectedTitleIndex >= 0 && state.titleCandidates[state.selectedTitleIndex])
+    ? state.titleCandidates[state.selectedTitleIndex].title
+    : '';
+
+  // 動画要約済みのもののみ
+  const videoSummaries = (state.youtubeVideos || [])
+    .filter(v => v.summary)
+    .map((v, i) => `▼ 動画${i+1}: ${v.title}\n${v.summary}`)
+    .join('\n\n');
+
+  // 視点
+  const p = state.perspective || {};
+  const perspectiveBlock = (p.experience || p.message || p.angle)
+    ? `\n\n【著者の視点 ※構成に必ず組み込む】\n${p.experience ? '■ 体験:' + p.experience + '\n' : ''}${p.message ? '■ 主張:' + p.message + '\n' : ''}${p.angle ? '■ 独自視点:' + p.angle + '\n' : ''}`
+    : '';
+
+  const titleBlock = selectedTitle
+    ? `\n\n【決定タイトル ※これを起点に構成を組む】\n${selectedTitle}`
+    : '\n\n【タイトル】未選択(汎用的に構成を組む)';
+
+  const videoBlock = videoSummaries
+    ? `\n\n【YouTube 動画要約 ※構成に組み込めるなら活用】\n${videoSummaries}`
+    : '';
+
+  const typeLabel = state.articleType === 'narrative' ? '読み物系(体験談・物語・気づき)' : '実用ノウハウ系(結論ファースト・手順・即効性)';
+  const lengthLabel = {
+    short: '2,000〜2,800字',
+    standard: '4,000〜5,500字',
+    long: '6,000〜8,000字'
+  }[state.bodyLength] || '4,000〜5,500字';
+
+  return `あなたは note 記事の編集者です。以下の素材から、note 記事の構成案を1つ提示してください。
+
+【記事テーマ】
+${state.theme || '(指定なし)'}
+
+【想定読者】
+${state.reader || '(指定なし)'}${titleBlock}
+
+【記事タイプ】${typeLabel}
+【目標字数】${lengthLabel}${perspectiveBlock}
+
+【リサーチで判明したパターン】
+${state.analysis.patterns}
+
+【狙うべき空きスポット】
+${state.analysis.gap}${videoBlock}
+
+【出力形式】
+章立て(見出し)を5〜7個、各章で書くべきポイントを箇条書きで2〜3個ずつ。マークダウン形式で出力:
+
+## 章タイトル
+- ポイント1
+- ポイント2
+
+【執筆ルール】
+- 決定タイトルがあるなら、それを冒頭で読者に「読みたい」と思わせる構成にする
+- 記事タイプに合った章立てを選ぶ(実用なら手順構造、読み物なら状況→気づき)
+- 著者の視点が指定されているなら、それが活きる章を必ず含める
+- YouTube 動画要約に書かれた知見を、複数の章に分散して組み込む
+- 章タイトルは具体的に(「はじめに」「まとめ」など曖昧なものは避ける)
+- 上記の説明文や前置きは不要、構成案だけ出力すること`;
+}
+
+function handleLengthSelect(value) {
+  if (!BODY_LENGTH_TOKENS[value]) return;
+  state.bodyLength = value;
+  document.querySelectorAll('.length-option').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.len === value);
+  });
+  const radio = document.querySelector(`.length-option[data-len="${value}"] input[type="radio"]`);
+  if (radio) radio.checked = true;
+  localStorage.setItem('weft_bodyLength', value);
+}
+
+function handleTypeSelect(value) {
+  if (!ARTICLE_TYPE_INSTRUCTION[value]) return;
+  state.articleType = value;
+  document.querySelectorAll('.type-option').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.type === value);
+  });
+  const radio = document.querySelector(`.type-option[data-type="${value}"] input[type="radio"]`);
+  if (radio) radio.checked = true;
+  localStorage.setItem('weft_articleType', value);
+}
+
+// ============================================================
+// Style Profile(文体プロファイル)
+// ============================================================
+function handleStyleArticleInput(idx) {
+  const el = document.getElementById('styleArticle' + idx);
+  if (!el) return;
+  const text = el.value;
+  state.styleProfile.articles[idx] = text;
+  updateStyleCount(idx);
+  persistStyleProfile();
+}
+
+function updateStyleCount(idx) {
+  const text = state.styleProfile.articles[idx] || '';
+  const len = text.length;
+  const countEl = document.getElementById('styleCount' + idx);
+  if (!countEl) return;
+  countEl.textContent = `${len.toLocaleString()} 字`;
+  countEl.classList.toggle('is-good', len >= STYLE_RECOMMENDED_MIN);
+}
+
+function handleStyleToggle() {
+  const checkbox = document.getElementById('styleEnabled');
+  state.styleProfile.enabled = checkbox.checked;
+  persistStyleProfile();
+}
+
+function clearStyleProfile() {
+  if (!confirm('文体プロファイルをすべて消去しますか?(取り消せません)')) return;
+  state.styleProfile = { enabled: false, articles: ['', '', ''] };
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById('styleArticle' + i);
+    if (el) el.value = '';
+    updateStyleCount(i);
+  }
+  document.getElementById('styleEnabled').checked = false;
+  persistStyleProfile();
+}
+
+function persistStyleProfile() {
+  localStorage.setItem('weft_styleProfile', JSON.stringify(state.styleProfile));
+  updateStyleStatusBadge();
+  flashSaveHint();
+}
+
+function loadStyleProfile() {
+  try {
+    const raw = localStorage.getItem('weft_styleProfile');
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.articles)) return;
+    state.styleProfile.enabled = !!parsed.enabled;
+    for (let i = 0; i < 3; i++) {
+      state.styleProfile.articles[i] = parsed.articles[i] || '';
+      const el = document.getElementById('styleArticle' + i);
+      if (el) el.value = state.styleProfile.articles[i];
+      updateStyleCount(i);
+    }
+    document.getElementById('styleEnabled').checked = state.styleProfile.enabled;
+    updateStyleStatusBadge();
+  } catch (e) { console.warn('styleProfile load failed', e); }
+}
+
+function updateStyleStatusBadge() {
+  const badge = document.getElementById('styleStatusBadge');
+  if (!badge) return;
+  const filled = state.styleProfile.articles.filter(a => a && a.trim().length >= 100).length;
+  if (filled === 0) {
+    badge.textContent = '未設定';
+    badge.className = 'settings-status status-missing';
+  } else if (state.styleProfile.enabled) {
+    badge.textContent = `ON / ${filled}本参照`;
+    badge.className = 'settings-status status-ok';
+  } else {
+    badge.textContent = `OFF / ${filled}本保存`;
+    badge.className = 'settings-status status-missing';
+  }
+}
+
+let _styleSaveHintTimer = null;
+function flashSaveHint() {
+  const el = document.getElementById('styleSaveHint');
+  if (!el) return;
+  el.textContent = '✓ 保存しました';
+  el.classList.add('is-saved');
+  clearTimeout(_styleSaveHintTimer);
+  _styleSaveHintTimer = setTimeout(() => {
+    el.textContent = '変更すると自動保存';
+    el.classList.remove('is-saved');
+  }, 1500);
+}
+
+function buildStyleBlock() {
+  if (!state.styleProfile.enabled) return '';
+  const articles = state.styleProfile.articles
+    .map(a => (a || '').trim())
+    .filter(a => a.length >= 100);
+  if (articles.length === 0) return '';
+  const body = articles.map((text, i) =>
+    `▼ 過去記事${i+1}\n${text}`
+  ).join('\n\n');
+  return `\n\n【あなたの過去記事 ※文体・語彙・トーンの参照源】\n${body}\n\n上記はあなた自身が書いた過去記事です。新記事を書く際は、これらの「文章のリズム、語彙、句読点の打ち方、章のテンポ、語尾」を引き継いでください。一方で、過去記事の固有名詞や具体的な事例は新記事に持ち込まないでください(別テーマなので)。引き継ぐのは「書き手の声」だけです。`;
+}
+
+async function regenerateTitles() {
+  if (!state.analysis) {
+    showError('titleRegenError', 'まずリサーチ&分析を実行してください');
+    return;
+  }
+  hideError('titleRegenError');
+  document.getElementById('titleRegenProgress').classList.remove('hidden');
+  document.getElementById('regenBtn').disabled = true;
+
+  const previousTitles = state.titleCandidates.map(c => c.title).join(' / ');
+  const prompt = `あなたは note 記事の戦略コンサルタントです。以下の戦略分析を元に、note 記事のタイトル案を3つ提案してください。
+
+【記事テーマ】
+${state.theme}
+
+【想定読者】
+${state.reader || '(指定なし)'}
+
+【戦略分析】
+■ パターン:
+${state.analysis.patterns}
+
+■ 狙うべき空きスポット:
+${state.analysis.gap}
+
+【過去に提案したタイトル(これらとは違う切り口で)】
+${previousTitles || '(なし)'}
+
+【指示】
+- 競合と被らず読者に刺さるタイトル案を3つ提案
+- 各80字以内
+- 過去に提案したタイトルとは違う切り口・トーンで(言い回し、訴求軸、感情、構造を変えること)
+- 各タイトルに「なぜ効くか」を1行で添える
+
+以下の形式で出力してください(他の説明は不要):
+
+1. **タイトル本体**
+   * なぜ効くか:理由
+
+2. **タイトル本体**
+   * なぜ効くか:理由
+
+3. **タイトル本体**
+   * なぜ効くか:理由`;
+
+  try {
+    // 多様化のため temperature を 0.9 に
+    const text = await withRateLimitRetry(async () => {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+      const body = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 2048 }
+      };
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || 'Gemini API エラー');
+      if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+      return data.candidates[0].content.parts.map(p => p.text || '').join('');
+    }, 'titleRegen');
+    const newCandidates = parseTitles(text);
+    if (newCandidates.length === 0) {
+      throw new Error('タイトルの抽出に失敗しました。もう一度お試しください');
+    }
+    state.titleCandidates = newCandidates;
+    state.selectedTitleIndex = -1;
+    renderTitleCandidates(newCandidates);
+    document.getElementById('generateBtn').disabled = true;
+    toast('タイトル案を再生成しました');
+  } catch (err) {
+    showError('titleRegenError', `エラー: ${err.message}`);
+    console.error(err);
+  } finally {
+    document.getElementById('titleRegenProgress').classList.add('hidden');
+    document.getElementById('regenBtn').disabled = false;
+  }
+}
+
+function renderSources(sources) {
+  const wrap = document.getElementById('sourcesContent');
+  if (!sources || sources.length === 0) {
+    wrap.innerHTML = '<div style="color: var(--susutake); font-size: 13px;">情報源のメタデータが取得できませんでした(分析結果は下記)</div>';
+    return;
+  }
+  wrap.innerHTML = sources.map((s, i) => `
+    <div class="source-card">
+      <span class="source-num">${String(i+1).padStart(2, '0')}</span>
+      <span class="source-title"><a href="${escapeHtml(s.uri)}" target="_blank">${escapeHtml(s.title || '(タイトル不明)')}</a></span>
+      <div class="source-url">${escapeHtml(s.uri)}</div>
+    </div>
+  `).join('');
+}
+
+function renderAnalysis(a, truncated = false) {
+  const truncMsg = '(⚠ 出力が途中で打ち切られました。「リサーチ&分析」をもう一度実行してください)';
+  document.getElementById('reasoningContent').textContent = a.reasoning || (truncated ? truncMsg : '(選定理由がパースできませんでした)');
+  document.getElementById('patternsContent').textContent = a.patterns || (truncated ? truncMsg : '(分析結果がパースできませんでした)');
+  document.getElementById('gapContent').textContent = a.gap || (truncated ? truncMsg : '');
+  document.getElementById('titlesContent').textContent = a.titles || (truncated ? truncMsg : '');
+  document.getElementById('structureContent').textContent = a.structure || (truncated ? truncMsg : '');
+  if (!a.patterns && !a.gap && !a.titles && !a.structure) {
+    document.getElementById('patternsContent').textContent = a.raw;
+  }
+}
+
+// ============================================================
+// Stage 2: Article Generation
+// ============================================================
+async function runGeneration() {
+  if (!state.analysis) { showError('generateError', 'まずリサーチ&分析を実行してください'); return; }
+  hideError('generateError');
+  document.getElementById('generateProgress').classList.remove('hidden');
+  document.getElementById('generateBtn').disabled = true;
+
+  const prompt = buildGenerationPrompt();
+
+  try {
+    const maxTokens = BODY_LENGTH_TOKENS[state.bodyLength] || 8192;
+    const result = await withRateLimitRetry(() => callGeminiPlain(prompt, maxTokens), 'generate');
+    let articleText = result.text;
+    if (result.finishReason === 'MAX_TOKENS') {
+      articleText += '\n\n――――――――――――――――\n[⚠ 出力がトークン上限で打ち切られました。プロンプトで指定する文字数を減らす、または「続きを書く」機能を実装するなどの対応が必要です。今はこの末尾までで保存してください]';
+    }
+    state.article = articleText;
+    document.getElementById('articleOutput').textContent = articleText;
+    document.getElementById('articleWrap').classList.remove('hidden');
+    smoothScrollTo('articleSection');
+  } catch (err) {
+    showError('generateError', `エラー: ${err.message}`);
+    console.error(err);
+  } finally {
+    document.getElementById('generateProgress').classList.add('hidden');
+    document.getElementById('generateBtn').disabled = false;
+  }
+}
+
+// v0.4.0:有料note向け統合プロンプトビルダー(全 AI で同じ品質基準)
+function buildBasePrompt(forAI) {
+  forAI = forAI || 'internal';
+  capturePerspective();
+
+  // --- 動的セクション処理(空欄は出力しない)---
+  const p = state.perspective || {};
+  const hasPerspective = !!(p.experience || p.message || p.angle);
+  const perspectiveSection = hasPerspective ? `
+【著者の視点 ※記事の核として組み込む】
+${p.experience ? '■ 体験・気づき:' + p.experience : ''}${p.experience && (p.message || p.angle) ? '\n' : ''}${p.message ? '■ 主張:' + p.message : ''}${p.message && p.angle ? '\n' : ''}${p.angle ? '■ 独自視点:' + p.angle : ''}
+
+これらは著者本人だけが持つ固有の情報です。汎用 AI 表現に置き換えず、記事の中心軸として組み込んでください。
+` : '';
+
+  // 動画要約済みのもののみ
+  const summarizedVideos = (state.youtubeVideos || []).filter(v => v.summary);
+  const videoSection = summarizedVideos.length > 0 ? `
+【YouTube 動画要約 ※具体例・数字・専門家見解として活用】
+${summarizedVideos.map((v, i) => '▼ 動画' + (i+1) + ': ' + v.title + '\n' + v.summary).join('\n\n')}
+` : '';
+
+  // 文体プロファイル
+  const styleBlock = buildStyleBlock();
+
+  // タイトル
+  const selectedTitle = (state.selectedTitleIndex >= 0 && state.titleCandidates[state.selectedTitleIndex])
+    ? state.titleCandidates[state.selectedTitleIndex].title
+    : '';
+  const titleSection = selectedTitle
+    ? '【決定タイトル ※冒頭で必ずこのタイトルを使う(新たに提案しない)】\n' + selectedTitle
+    : '【タイトル】未指定 → 上記の構成案と内容から最適なタイトルを1つだけ選んで使う(複数提案しない)';
+
+  // 記事タイプ・字数
+  const typeLabel = state.articleType === 'narrative'
+    ? '読み物系(体験談・物語・気づき)'
+    : '実用ノウハウ系(結論ファースト・手順・即効性)';
+  const lengthLabel = ({
+    short: '2,000〜2,800字',
+    standard: '4,000〜5,500字',
+    long: '6,000〜8,000字'
+  })[state.bodyLength] || '4,000〜5,500字';
+
+  // 構造ルール(記事タイプ別)
+  const structureRule = STRUCTURE_RULES[state.articleType] || STRUCTURE_RULES.practical;
+
+  // Weft 由来素材の明示リスト(動的)
+  const weftMaterialsList = [
+    '- ✅ note.com の実データから抽出した競合分析と空きスポット',
+    summarizedVideos.length > 0 ? '- ✅ YouTube 動画の AI 視聴による知見要約' : '',
+    styleBlock ? '- ✅ 著者の過去記事から学んだ文体プロファイル' : '',
+    '- ✅ タイトルに最適化された構成案'
+  ].filter(Boolean).join('\n');
+
+  // AI 別追加指示
+  const aiProfile = AI_PROMPT_PROFILES[forAI] || AI_PROMPT_PROFILES.generic;
+
+  return `あなたは note の **有料記事** を書くプロライターです。Weft というツールがリサーチ・動画分析・構成設計を済ませた素材を渡します。読者が「お金を払ってよかった」と心から思える記事を執筆してください。
+
+────────────────────────────────────
+🪡 Weft 由来の素材(他ツールにない武器)
+────────────────────────────────────
+このプロンプトには通常の記事執筆 AI が持たない素材が含まれています:
+${weftMaterialsList}
+
+これらを **必ず本文に反映** してください。これが Weft で作る記事の独自性です。
+
+────────────────────────────────────
+📋 記事の素材
+────────────────────────────────────
+
+【テーマ】${state.theme}
+
+${titleSection}
+
+【想定読者】${state.reader || '(指定なし)'}
+【記事タイプ】${typeLabel}
+【目標字数】${lengthLabel}
+${perspectiveSection}
+【リサーチ&分析(競合パターン)】
+${state.analysis.patterns}
+
+【狙うべき空きスポット】
+${state.analysis.gap}
+${videoSection}${styleBlock ? '\n' + styleBlock + '\n' : ''}
+【構成案 ※この骨格で書く(読みやすさのため微調整は可)】
+${state.finalStructure || state.analysis.structure}
+
+────────────────────────────────────
+💰 有料 note の構造ルール
+────────────────────────────────────
+
+【最重要原則(R-001 note 公式30万件分析データより)】
+- 文字数と売上の相関係数は実質ゼロ(実用 -0.023 / 読み物 +0.011)
+- 重要なのは「読者が読了時に『この値段の価値があった』と確信する密度」
+- 字数稼ぎは不要。1文字1文字に意味を持たせる
+
+${structureRule}
+
+【共通の末尾構造】
+- まとめ(キーポイント3〜5個、有料部分の核心を凝縮)
+- 著者への次のアクション(プロフィール・関連記事・LINE等、押し付けない)
+
+【タイトル整合性 ※絶対】
+タイトルで読者と交わした約束を本文で必ず果たす。タイトルに「月10万」と書いたなら本文で月10万の具体的道筋を示す。タイトル詐欺は note の信頼を毀損する最大の地雷。
+
+────────────────────────────────────
+🚫 避ける表現 ※絶対
+────────────────────────────────────
+- AI 定型:「いかがでしたか?」「~してみてはいかがでしょうか」「~なのです」
+- 誇大:「驚くべきことに」「画期的な」「世界初」
+- 規約違反気味:「絶対」「100%」「必ず稼げる」
+- 怪しい煽り:「これを知らないと損する」「衝撃の事実」
+
+${CTA_EXAMPLES}
+
+────────────────────────────────────
+
+${aiProfile.addendum}
+
+それでは記事を執筆してください。`;
+}
+
+// 既存呼び出しの後方互換ラッパー
+function buildGenerationPrompt() {
+  return buildBasePrompt('internal');
+}
+
+// v0.4.0:各 AI 向けプロンプトをクリップボードにコピー
+async function exportPromptForAI(ai) {
+  if (!state.analysis) {
+    showError('exportError', 'まずリサーチ&分析を完了してください');
+    return;
+  }
+  hideError('exportError');
+  try {
+    const prompt = buildBasePrompt(ai);
+    await navigator.clipboard.writeText(prompt);
+    const profile = AI_PROMPT_PROFILES[ai] || AI_PROMPT_PROFILES.generic;
+    toast(profile.name + ' 用プロンプトをコピーしました(' + prompt.length.toLocaleString() + '文字)');
+  } catch (err) {
+    showError('exportError', 'コピーに失敗しました: ' + err.message);
+    console.error(err);
+  }
+}
+
+// ============================================================
+// Phase 2.1: YouTube Search(Data API v3)
+// ============================================================
+const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
+const YOUTUBE_VIDEOS_URL = 'https://www.googleapis.com/youtube/v3/videos';
+const YOUTUBE_PUBLISHED_AFTER_YEARS = 2;
+const YOUTUBE_MAX_RESULTS = 10;
+
+async function runYoutubeSearch(query) {
+  if (!state.youtubeKey) throw new Error('YouTube API キーが未設定です');
+  const searchResults = await callYoutubeSearch(query);
+  if (searchResults.length === 0) return { videos: [] };
+  const videoIds = searchResults.map(r => r.id);
+  const stats = await callYoutubeStats(videoIds);
+  const videos = searchResults.map(r => ({
+    id: r.id,
+    title: r.title,
+    channel: r.channel,
+    publishedAt: r.publishedAt,
+    description: r.description,
+    url: `https://www.youtube.com/watch?v=${r.id}`,
+    viewCount: stats[r.id] ? stats[r.id].viewCount : null,
+    likeCount: stats[r.id] ? stats[r.id].likeCount : null,
+    commentCount: stats[r.id] ? stats[r.id].commentCount : null,
+    duration: stats[r.id] ? stats[r.id].duration : null
+  }));
+  return { videos };
+}
+
+// 動画長判定用ユーティリティ(v0.2.4 で追加)
+const VIDEO_LONG_THRESHOLD_SECONDS = 3000; // 50分:これ以上は description ベース要約に切替
+
+function parseDurationToSeconds(iso) {
+  if (!iso) return null;
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!m) return null;
+  const h = parseInt(m[1] || '0', 10);
+  const min = parseInt(m[2] || '0', 10);
+  const s = parseInt(m[3] || '0', 10);
+  return h * 3600 + min * 60 + s;
+}
+
+function formatVideoDuration(iso) {
+  const total = parseDurationToSeconds(iso);
+  if (total == null) return '?:??';
+  const h = Math.floor(total / 3600);
+  const min = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h > 0) return `${h}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${min}:${String(s).padStart(2,'0')}`;
+}
+
+async function callYoutubeSearch(query) {
+  const publishedAfter = new Date(Date.now() - YOUTUBE_PUBLISHED_AFTER_YEARS * 365 * 24 * 60 * 60 * 1000).toISOString();
+  const params = new URLSearchParams({
+    part: 'snippet',
+    q: query,
+    type: 'video',
+    relevanceLanguage: 'ja',
+    regionCode: 'JP',
+    maxResults: String(YOUTUBE_MAX_RESULTS),
+    order: 'relevance',
+    publishedAfter: publishedAfter,
+    key: state.youtubeKey
+  });
+  const res = await fetch(`${YOUTUBE_SEARCH_URL}?${params.toString()}`);
+  const data = await res.json();
+  if (data.error) throw new Error('YouTube API: ' + (data.error.message || '不明なエラー'));
+  if (!data.items) return [];
+  return data.items
+    .filter(item => item.id && item.id.videoId)
+    .map(item => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      channel: item.snippet.channelTitle,
+      publishedAt: item.snippet.publishedAt,
+      description: item.snippet.description || ''
+    }));
+}
+
+async function callYoutubeStats(videoIds) {
+  if (videoIds.length === 0) return {};
+  const params = new URLSearchParams({
+    part: 'statistics,contentDetails',
+    id: videoIds.join(','),
+    key: state.youtubeKey
+  });
+  const res = await fetch(`${YOUTUBE_VIDEOS_URL}?${params.toString()}`);
+  const data = await res.json();
+  if (data.error) throw new Error('YouTube Stats: ' + (data.error.message || '不明なエラー'));
+  const result = {};
+  (data.items || []).forEach(item => {
+    result[item.id] = {
+      viewCount: item.statistics ? item.statistics.viewCount : null,
+      likeCount: item.statistics ? item.statistics.likeCount : null,
+      commentCount: item.statistics ? item.statistics.commentCount : null,
+      duration: item.contentDetails ? item.contentDetails.duration : null
+    };
+  });
+  return result;
+}
+
+function renderYoutubeVideos(videos, errorMsg) {
+  const box = document.getElementById('youtubeVideosBox');
+  const wrap = document.getElementById('videosContent');
+  if (!box || !wrap) return;
+  if (errorMsg) {
+    wrap.innerHTML = `<div class="video-error">⚠ YouTube 動画取得エラー: ${escapeHtml(errorMsg)}</div>`;
+    box.classList.remove('hidden');
+    return;
+  }
+  if (!videos || videos.length === 0) {
+    box.classList.add('hidden');
+    return;
+  }
+  wrap.innerHTML = videos.map((v, i) => {
+    const durationSec = parseDurationToSeconds(v.duration);
+    const isLong = durationSec != null && durationSec >= VIDEO_LONG_THRESHOLD_SECONDS;
+    const prevMode = v.summaryMode || '';
+    const summaryBlock = v.summary
+      ? `<div class="video-summary">
+           <div class="video-summary-header">
+             <span>${v.summaryMode === 'description' ? '📝 要約(概要文ベース)' : '✨ 要約(動画ベース)'}</span>
+             <button class="video-summary-redo" onclick="summarizeVideo(${i}, '${prevMode}')">再要約</button>
+           </div>
+           ${escapeHtml(v.summary)}
+         </div>`
+      : '';
+    const errorBlock = v.summaryError && !v.summary
+      ? `<div class="video-summary-error">⚠ 要約エラー: ${escapeHtml(v.summaryError)}</div>`
+      : '';
+    const actionBlock = !v.summary
+      ? (isLong
+          ? `<div class="video-actions">
+               <button class="btn-summary" onclick="summarizeVideo(${i}, 'description')">📝 概要から要約</button>
+               <span class="video-action-hint">長尺のため概要文ベース</span>
+             </div>`
+          : `<div class="video-actions">
+               <button class="btn-summary" onclick="summarizeVideo(${i}, 'video')">✨ 動画から要約</button>
+               <button class="btn-summary btn-summary-light" onclick="summarizeVideo(${i}, 'description')">📝 概要文(節約)</button>
+             </div>`)
+      : '';
+    return `
+    <div class="video-card">
+      <span class="video-num">${String(i+1).padStart(2, '0')}</span>
+      <div class="video-body">
+        <a class="video-title" href="${escapeHtml(v.url)}" target="_blank" rel="noopener">${escapeHtml(v.title)}</a>
+        <div class="video-meta">
+          <span class="video-channel">📺 ${escapeHtml(v.channel)}</span>
+          ${v.duration ? `<span class="video-stat">⏱ ${formatVideoDuration(v.duration)}</span>` : ''}
+          ${v.viewCount ? `<span class="video-stat">👁 ${formatYoutubeNumber(v.viewCount)}</span>` : ''}
+          ${v.likeCount ? `<span class="video-stat">👍 ${formatYoutubeNumber(v.likeCount)}</span>` : ''}
+          ${v.commentCount ? `<span class="video-stat">💬 ${formatYoutubeNumber(v.commentCount)}</span>` : ''}
+          <span class="video-date">${formatYoutubeDate(v.publishedAt)}</span>
+        </div>
+        ${actionBlock}
+        ${errorBlock}
+        ${summaryBlock}
+      </div>
+    </div>
+  `;}).join('');
+  // 一括ボタンの表示制御:全部要約済みなら隠す
+  const allBtn = document.getElementById('summarizeAllBtn');
+  const savingBtn = document.getElementById('summarizeAllSavingBtn');
+  if (allBtn) {
+    const unfinished = videos.filter(v => !v.summary).length;
+    const display = unfinished > 0 ? '' : 'none';
+    allBtn.style.display = display;
+    if (savingBtn) savingBtn.style.display = display;
+    allBtn.textContent = unfinished === videos.length
+      ? '✨ 全動画を要約'
+      : `✨ 残り ${unfinished} 本を要約`;
+    if (savingBtn) {
+      savingBtn.textContent = unfinished === videos.length
+        ? '💰 全て概要文で(節約)'
+        : `💰 残り ${unfinished} 本を概要文で`;
+    }
+  }
+  box.classList.remove('hidden');
+}
+
+// --- Phase 2.2: Gemini Video Understanding ---
+function buildVideoSummaryPrompt() {
+  return `あなたは note 記事の執筆者向けのリサーチ補助 AI です。以下の YouTube 動画を視聴し、note 記事執筆の参考になる情報を抽出してください。
+
+【記事のテーマ】
+${state.theme || '(指定なし)'}
+
+【出力形式】
+■ 動画の主旨(2〜3行)
+■ 記事の参考になる知見(箇条書きで5〜7個、可能なら具体的な数字・事例・固有名詞を含める)
+■ 他のソースで見つけにくい独自視点(あれば、なければ「特になし」)
+
+【重要】
+- 動画の内容に基づく事実だけを書く(推測や創作はしない)
+- 上記のテーマに関連する情報を優先する
+- 出力は日本語で、上記の3つの見出し構造を守ること`;
+}
+
+async function callGeminiVideo(videoUrl, prompt) {
+  if (!state.geminiKey) throw new Error('Gemini API キーが未設定です');
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+  const body = {
+    contents: [{
+      parts: [
+        { fileData: { fileUri: videoUrl } },
+        { text: prompt }
+      ]
+    }],
+    generationConfig: { temperature: 0.4, maxOutputTokens: 2048 }
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'Gemini Video API エラー');
+  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+  return data.candidates[0].content.parts.map(p => p.text || '').join('').trim();
+}
+
+// 長尺動画用:description ベースのテキスト要約(v0.2.4)
+async function callGeminiDescriptionSummary(video, basePrompt) {
+  if (!state.geminiKey) throw new Error('Gemini API キーが未設定です');
+  const promptWithContext = `${basePrompt}
+
+【元の動画情報】
+■ タイトル:${video.title}
+■ チャンネル:${video.channel}
+■ 公開日:${video.publishedAt}
+■ 動画の長さ:${formatVideoDuration(video.duration)}
+■ 動画概要文(投稿者自身による説明文):
+${video.description || '(概要文なし)'}
+
+【重要】
+- この動画は長尺(50分超)のため、動画本体ではなく **上記の概要文から** 要約してください
+- 概要文の情報量が少ない場合は、推測せず「概要文からは判断不可」と明示してください
+- 動画視聴ベースよりも精度は落ちる前提で、確実な情報だけを抽出してください`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+  const body = {
+    contents: [{ parts: [{ text: promptWithContext }] }],
+    generationConfig: { temperature: 0.4, maxOutputTokens: 1024 }
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'Gemini Text API エラー');
+  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+  return data.candidates[0].content.parts.map(p => p.text || '').join('').trim();
+}
+
+async function summarizeVideo(idx, requestedMode = '') {
+  const video = state.youtubeVideos[idx];
+  if (!video) return;
+  delete video.summaryError;
+  // カード内の全ボタンを無効化して loading 表示に
+  const card = document.querySelectorAll('#videosContent .video-card')[idx];
+  if (card) {
+    const buttons = card.querySelectorAll('.btn-summary, .video-summary-redo');
+    buttons.forEach(b => { b.disabled = true; });
+    if (buttons[0]) buttons[0].textContent = '要約中...';
+    // 2つ目のボタンがある場合は非表示にして UI をシンプルに
+    if (buttons[1]) buttons[1].style.display = 'none';
+  }
+  try {
+    const durationSec = parseDurationToSeconds(video.duration);
+    const tooLong = durationSec != null && durationSec >= VIDEO_LONG_THRESHOLD_SECONDS;
+
+    // mode の優先順位:明示指定 > 自動判定
+    let useDescriptionMode;
+    if (requestedMode === 'description') useDescriptionMode = true;
+    else if (requestedMode === 'video') useDescriptionMode = false;
+    else useDescriptionMode = tooLong; // 互換性のための自動判定(モード未指定時)
+
+    // 長尺動画は強制的に description モード(動画モードはトークン上限超で失敗するため)
+    if (tooLong) useDescriptionMode = true;
+
+    const prompt = buildVideoSummaryPrompt();
+    const summary = await withSimpleRetry(
+      async () => useDescriptionMode
+        ? await callGeminiDescriptionSummary(video, prompt)
+        : await callGeminiVideo(video.url, prompt),
+      {
+        max: 2,
+        onRetry: (attempt, max, sec) => {
+          if (card) {
+            const btn = card.querySelector('.btn-summary, .video-summary-redo');
+            if (btn) btn.textContent = `⚠ 再試行中 ${attempt}/${max}(${sec}秒待機)`;
+          }
+        }
+      }
+    );
+    state.youtubeVideos[idx].summaryMode = useDescriptionMode ? 'description' : 'video';
+    state.youtubeVideos[idx].summary = summary;
+    delete state.youtubeVideos[idx].summaryError;
+  } catch (err) {
+    state.youtubeVideos[idx].summaryError = err.message;
+    console.error('Video summary error:', err);
+  } finally {
+    renderYoutubeVideos(state.youtubeVideos);
+  }
+}
+
+let _bulkSummaryRunning = false;
+async function summarizeAllVideos(mode = 'auto') {
+  if (_bulkSummaryRunning) return;
+  if (!state.youtubeVideos || state.youtubeVideos.length === 0) return;
+  _bulkSummaryRunning = true;
+  const allBtn = document.getElementById('summarizeAllBtn');
+  const savingBtn = document.getElementById('summarizeAllSavingBtn');
+  const progress = document.getElementById('videoBulkProgress');
+  const progressText = document.getElementById('videoBulkProgressText');
+  if (allBtn) allBtn.disabled = true;
+  if (savingBtn) savingBtn.disabled = true;
+  if (progress) progress.classList.remove('hidden');
+  const targets = state.youtubeVideos
+    .map((v, i) => ({ v, i }))
+    .filter(x => !x.v.summary);
+  const modeLabel = mode === 'description' ? '節約モード' : '通常';
+  let done = 0;
+  for (const { i } of targets) {
+    if (progressText) progressText.textContent = `${done + 1}/${targets.length}(${modeLabel})`;
+    const requestedMode = mode === 'description' ? 'description' : '';
+    await summarizeVideo(i, requestedMode);
+    done++;
+    // レート制限回避:残りがある時のみ 3秒待機(20 RPM 以下に抑える)
+    if (done < targets.length) {
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+  if (progress) progress.classList.add('hidden');
+  if (allBtn) allBtn.disabled = false;
+  if (savingBtn) savingBtn.disabled = false;
+  _bulkSummaryRunning = false;
+}
+
+function formatYoutubeNumber(n) {
+  const num = parseInt(n, 10);
+  if (isNaN(num)) return '-';
+  if (num >= 10000) return (num / 10000).toFixed(num >= 100000 ? 0 : 1) + '万';
+  return num.toLocaleString();
+}
+
+function formatYoutubeDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ============================================================
+// Rate Limit Retry Helper(Gemini 429 対応)
+// ============================================================
+function parseRateLimitRetrySec(message) {
+  if (!message) return null;
+  const m = message.match(/retry in ([\d.]+)\s*s/i);
+  if (m) return parseFloat(m[1]);
+  if (/quota.*(exceeded|rate)/i.test(message) || /rate.?limit/i.test(message)) return 60;
+  return null;
+}
+
+function setProgressText(key, text) {
+  if (key === 'research') {
+    const el = document.getElementById('researchProgressText');
+    if (el) el.textContent = text;
+    return;
+  }
+  const containerId =
+    key === 'generate' ? 'generateProgress' :
+    key === 'titleRegen' ? 'titleRegenProgress' :
+    key === 'structureRegen' ? 'structureRegenProgress' :
+    null;
+  if (!containerId) return;
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const spans = el.querySelectorAll('span');
+  if (spans.length >= 2) spans[1].textContent = text;
+}
+
+async function countdownAndRetry(totalSec, progressKey) {
+  if (progressKey === 'research') stopProgress();
+  let remaining = Math.ceil(totalSec);
+  while (remaining > 0) {
+    setProgressText(progressKey, `⏳ Gemini のレート上限。あと ${remaining} 秒で自動再試行します(中断するとリセット)`);
+    await new Promise(r => setTimeout(r, 1000));
+    remaining--;
+  }
+  setProgressText(progressKey, '🔁 再試行中...');
+  if (progressKey === 'research') startProgress();
+}
+
+async function withRateLimitRetry(asyncFn, progressKey) {
+  const MAX_TRANSIENT_RETRIES = 2;
+  let transientCount = 0;
+  let rateLimitDone = false;
+  while (true) {
+    try {
+      return await asyncFn();
+    } catch (err) {
+      const sec = parseRateLimitRetrySec(err.message);
+      if (sec != null && !rateLimitDone) {
+        rateLimitDone = true;
+        await countdownAndRetry(sec + 2, progressKey);
+        continue;
+      }
+      if (isTransientError(err.message) && transientCount < MAX_TRANSIENT_RETRIES) {
+        transientCount++;
+        await transientWait(transientCount * 3, progressKey);
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+function isTransientError(message) {
+  if (!message) return false;
+  return /internal error/i.test(message) ||
+         /please retry/i.test(message) ||
+         /service unavailable/i.test(message) ||
+         /\b50[0-3]\b/.test(message) ||
+         /failed to fetch/i.test(message) ||
+         /load failed/i.test(message) ||
+         /network/i.test(message) ||
+         /timeout/i.test(message);
+}
+
+// シンプルなリトライヘルパー(動画要約用、プログレス UI は呼び出し側のコールバックで処理)
+async function withSimpleRetry(asyncFn, opts = {}) {
+  const max = opts.max != null ? opts.max : 2;
+  let lastErr;
+  for (let attempt = 0; attempt <= max; attempt++) {
+    try {
+      return await asyncFn();
+    } catch (err) {
+      lastErr = err;
+      if (attempt === max) throw err;
+      if (!isTransientError(err.message)) throw err;
+      const delaySec = (attempt + 1) * 3;
+      if (opts.onRetry) opts.onRetry(attempt + 1, max, delaySec);
+      await new Promise(r => setTimeout(r, delaySec * 1000));
+    }
+  }
+  throw lastErr;
+}
+
+async function transientWait(seconds, progressKey) {
+  if (progressKey === 'research') stopProgress();
+  let remaining = Math.ceil(seconds);
+  while (remaining > 0) {
+    setProgressText(progressKey, `⚠ Gemini 一時エラー検知。あと ${remaining} 秒で自動再試行します`);
+    await new Promise(r => setTimeout(r, 1000));
+    remaining--;
+  }
+  setProgressText(progressKey, '🔁 再試行中...');
+  if (progressKey === 'research') startProgress();
+}
+
+// ============================================================
+// Gemini API calls
+// ============================================================
+async function callGeminiGrounded(prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    tools: [{ google_search: {} }],
+    generationConfig: { temperature: 0.6, maxOutputTokens: 16384 }
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'Gemini API エラー');
+  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+  const candidate = data.candidates[0];
+  const text = candidate.content.parts.map(p => p.text || '').join('');
+  
+  const sources = [];
+  const meta = candidate.groundingMetadata;
+  if (meta && meta.groundingChunks) {
+    meta.groundingChunks.forEach(c => {
+      if (c.web && c.web.uri) {
+        sources.push({ uri: c.web.uri, title: c.web.title || c.web.uri });
+      }
+    });
+  }
+  return { text, sources, finishReason: candidate.finishReason };
+}
+
+async function callGeminiPlain(prompt, maxTokens = 8192) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: maxTokens }
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'Gemini API エラー');
+  if (!data.candidates || !data.candidates[0]) throw new Error('Gemini からレスポンスがありませんでした');
+  const candidate = data.candidates[0];
+  const text = candidate.content.parts.map(p => p.text || '').join('');
+  return { text, finishReason: candidate.finishReason };
+}
+
+// ============================================================
+// Project History
+// ============================================================
+function saveProject() {
+  capturePerspective();
+  const project = {
+    theme: state.theme,
+    reader: state.reader,
+    perspective: state.perspective,
+    sources: state.sources,
+    youtubeVideos: state.youtubeVideos,
+    analysis: state.analysis,
+    titleCandidates: state.titleCandidates,
+    selectedTitleIndex: state.selectedTitleIndex,
+    finalStructure: state.finalStructure,
+    bodyLength: state.bodyLength,
+    articleType: state.articleType,
+    article: state.article,
+    savedAt: new Date().toISOString()
+  };
+  state.history.unshift(project);
+  if (state.history.length > 30) state.history = state.history.slice(0, 30);
+  localStorage.setItem('weft_history', JSON.stringify(state.history));
+  renderHistory();
+  toast('プロジェクトを保存しました');
+}
+
+function loadHistory() {
+  try {
+    state.history = JSON.parse(localStorage.getItem('weft_history') || '[]');
+  } catch { state.history = []; }
+  renderHistory();
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('historyList');
+  if (!state.history.length) {
+    wrap.innerHTML = '<div style="color: var(--susutake); font-size: 13px; padding: 8px 0;">まだプロジェクトがありません</div>';
+    return;
+  }
+  wrap.innerHTML = state.history.map((p, i) => `
+    <div class="history-item" onclick="loadProject(${i})">
+      <span class="history-theme">${escapeHtml(p.theme)}</span>
+      <span class="history-date">${formatDate(p.savedAt)}</span>
+    </div>
+  `).join('');
+}
+
+function loadProject(idx) {
+  const p = state.history[idx];
+  if (!p) return;
+  state.theme = p.theme;
+  state.reader = p.reader;
+  state.perspective = p.perspective || { experience: '', message: '', angle: '' };
+  state.sources = p.sources || [];
+  state.youtubeVideos = p.youtubeVideos || [];
+  state.analysis = p.analysis;
+  state.titleCandidates = p.titleCandidates || [];
+  state.selectedTitleIndex = p.selectedTitleIndex ?? -1;
+  state.finalStructure = p.finalStructure || (p.analysis && p.analysis.structure) || '';
+  const structureEditor = document.getElementById('structureEditor');
+  if (structureEditor) structureEditor.value = state.finalStructure;
+  if (p.bodyLength && BODY_LENGTH_TOKENS[p.bodyLength]) handleLengthSelect(p.bodyLength);
+  if (p.articleType && ARTICLE_TYPE_INSTRUCTION[p.articleType]) handleTypeSelect(p.articleType);
+  state.article = p.article;
+
+  document.getElementById('themeInput').value = p.theme;
+  document.getElementById('readerInput').value = p.reader || '';
+  document.getElementById('perspectiveExperience').value = state.perspective.experience || '';
+  document.getElementById('perspectiveMessage').value = state.perspective.message || '';
+  document.getElementById('perspectiveAngle').value = state.perspective.angle || '';
+
+  if (state.analysis) {
+    renderSources(state.sources);
+    renderYoutubeVideos(state.youtubeVideos);
+    renderAnalysis(state.analysis);
+    renderTitleCandidates(state.titleCandidates);
+    document.getElementById('generateBtn').disabled = state.selectedTitleIndex < 0;
+    document.getElementById('analysisOutput').classList.remove('hidden');
+    activateSection('analysisSection');
+    activateSection('articleSection');
+  }
+  if (state.article) {
+    document.getElementById('articleOutput').textContent = state.article;
+    document.getElementById('articleWrap').classList.remove('hidden');
+  }
+  toast('プロジェクトを読み込みました');
+  smoothScrollTo('themeSection');
+}
+
+function resetAll() {
+  if (!confirm('現在の作業内容をクリアして新規プロジェクトを始めますか?')) return;
+  state.theme = '';
+  state.reader = '';
+  state.perspective = { experience: '', message: '', angle: '' };
+  state.sources = [];
+  state.analysis = null;
+  state.titleCandidates = [];
+  state.selectedTitleIndex = -1;
+  state.article = '';
+  document.getElementById('themeInput').value = '';
+  document.getElementById('readerInput').value = '';
+  document.getElementById('perspectiveExperience').value = '';
+  document.getElementById('perspectiveMessage').value = '';
+  document.getElementById('perspectiveAngle').value = '';
+  document.getElementById('titleOptions').innerHTML = '<div class="title-empty">リサーチ&分析を完了すると、ここに3つのタイトル案が表示されます。</div>';
+  document.getElementById('generateBtn').disabled = true;
+  hideWaitPanel();
+  document.getElementById('analysisOutput').classList.add('hidden');
+  document.getElementById('articleWrap').classList.add('hidden');
+  document.getElementById('analysisSection').classList.add('is-disabled');
+  document.getElementById('articleSection').classList.add('is-disabled');
+  smoothScrollTo('themeSection');
+}
+
+// ============================================================
+// Utilities
+// ============================================================
+function activateSection(id) {
+  document.getElementById(id).classList.remove('is-disabled');
+}
+
+function smoothScrollTo(id) {
+  setTimeout(() => {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function copyArticle() {
+  if (!state.article) return;
+  navigator.clipboard.writeText(state.article).then(() => toast('コピーしました'));
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function hideError(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+function toast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2400);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+</script>
+
+</body>
+</html>
