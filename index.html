@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Weft — 横糸を、あなたの言葉に</title>
-<meta name="description" content="Weft は note 有料記事のリサーチ・構成・執筆を一気通貫で支援するクロスリサーチ型ツールです。">
+<meta name="description" content="Weft は note 記事のリサーチ・構成・執筆 + シリーズ展開設計まで一気通貫で支援するクロスリサーチ型ツールです。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
     --cream: #f5f1ea;
     --madder: #c9785b;
     --madder-dark: #a85e44;
+    --sage: #6b8665;
     --ink: #2a2e3a;
     --muted: #6b7280;
   }
@@ -29,7 +30,7 @@
     flex-direction: column;
   }
   .container {
-    max-width: 640px;
+    max-width: 680px;
     width: 100%;
     margin: 0 auto;
     padding: 48px 24px 64px;
@@ -139,8 +140,32 @@
     font-size: 18px;
     margin-left: 16px;
   }
+  .whats-new {
+    margin-top: 36px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(201, 120, 91, 0.08) 0%, rgba(107, 134, 101, 0.06) 100%);
+    border: 1px solid rgba(201, 120, 91, 0.25);
+    border-left: 3px solid var(--madder);
+    border-radius: 6px;
+  }
+  .whats-new-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--madder);
+    margin: 0 0 8px;
+  }
+  .whats-new ul {
+    margin: 0;
+    padding-left: 1.1em;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.85;
+  }
+  .whats-new ul strong { color: var(--indigo-deep); }
   .features {
-    margin-top: 48px;
+    margin-top: 36px;
     padding-top: 32px;
     border-top: 1px solid rgba(26, 34, 56, 0.12);
   }
@@ -177,6 +202,7 @@
     background: var(--madder);
     border-radius: 50%;
   }
+  .feature-list li strong { color: var(--indigo-deep); font-weight: 600; }
   .footnote {
     margin-top: 56px;
     padding-top: 28px;
@@ -223,10 +249,10 @@
     <div class="divider"></div>
 
     <p class="lead">
-      Weft は、<strong>note.com / YouTube / 知恵袋 / 学術論文 / Google Trends</strong> を横断して実データで調査し、競合記事と差別化された note 記事の構成・タイトル・本文をワンストップで生成するブラウザツールです。
+      Weft は、<strong>note.com / YouTube / 知恵袋 / 学術論文 / Google Trends</strong> を横断して実データで調査し、競合と差別化された note 記事の構成・タイトル・本文・さらに <strong>シリーズ展開戦略</strong> までワンストップで設計するブラウザツールです。
     </p>
     <p class="lead">
-      AI 知識ベースの推測ではなく、<strong>実データに基づく分析</strong> と <strong>あなた自身の視点</strong> を組み合わせて、有料 note の品質に近づけます。
+      AI 知識ベースの推測ではなく、<strong>実データに基づく分析</strong> と <strong>あなた自身の視点</strong> を組み合わせて、有料 / 無料 note の品質を一段引き上げます。
     </p>
 
     <div class="actions">
@@ -237,33 +263,46 @@
         </span>
         <span class="btn-arrow">→</span>
       </a>
-      <a class="btn btn-secondary" href="docs/10-user-manual.pdf" target="_blank" rel="noopener">
+      <a class="btn btn-secondary" href="app/weft-v0.1-step1.html#manual">
         <span class="btn-label">
-          <span class="btn-sub">Manual / PDF</span>
-          <span>取扱説明書を読む</span>
+          <span class="btn-sub">In-App Manual</span>
+          <span>アプリ内マニュアルを見る(機能ガイド + 裏技)</span>
         </span>
         <span class="btn-arrow">↗</span>
       </a>
     </div>
 
+    <div class="whats-new">
+      <div class="whats-new-title">⭐ What's new — v0.10.x</div>
+      <ul>
+        <li><strong>シリーズ展開モード</strong>:既存記事から派生記事5本 + Threads 投稿候補 + 改善診断を一気に生成</li>
+        <li><strong>有料 / 無料 note の切り替え</strong>:無料 = 情報商材型(視点で完結)/ 有料 = 学習商材型(行動が変わる)</li>
+        <li><strong>記事の長さ 5段階</strong>:短め 2,500字 → 超特大 13,000字まで対応</li>
+        <li><strong>アプリ内マニュアルタブ</strong>:機能カード + トークン消費表 + 裏技6本(Google アカウント複数戦略など)</li>
+        <li><strong>UI 整理</strong>:アコーディオン折りたたみ + フローティング目次で縦長スクロール解消</li>
+      </ul>
+    </div>
+
     <section class="features">
       <h2 class="features-title">主な機能</h2>
       <ul class="feature-list">
-        <li>5つのデータソースを横断したクロスリサーチ(note / YouTube / 知恵袋 / 論文 / Trends)</li>
-        <li>競合パターン・空きスポット分析と、◎○△ 評価付きのタイトル提案</li>
-        <li>知恵袋・論文の知見を踏まえた構成案の自動統合(v0.9.2)</li>
-        <li>過去 note 記事を学習する文体プロファイル(最大3本)</li>
-        <li>Weft 内 Gemini 生成、または Claude / ChatGPT / Gemini Pro へのプロンプト出力</li>
-        <li>API キーはあなたのブラウザにのみ保存され、外部に送信されません</li>
+        <li><strong>クロスリサーチ</strong>:note.com / YouTube / 知恵袋 / 学術論文(OpenAlex 2.5億論文)/ Google Trends を横断して実データ分析</li>
+        <li><strong>競合パターン × 空きスポット分析</strong> + 評価マーク(◎○△)付きタイトル提案3案 + 全素材を踏まえた構成案</li>
+        <li><strong>シリーズ展開モード</strong>:既存記事 → 派生記事5本(深掘り / 対比 / 実践 / 体験談 / 応用)+ ファネル設計 + Threads 投稿候補 + 改善診断</li>
+        <li><strong>有料 / 無料 note の構造分岐</strong>:課金タイプで構成・文体・タイトル方針が自動切替</li>
+        <li><strong>文体プロファイル</strong>:過去 note 記事を最大3本まで学習、新記事に文体を継承</li>
+        <li><strong>本文生成 = 2系統</strong>:Weft 内 Gemini 生成 or Claude / ChatGPT / Gemini Pro 用にエクスポート</li>
+        <li><strong>API キーはブラウザ内のみ保存</strong>、外部サーバーに送信されません</li>
       </ul>
     </section>
 
     <div class="footnote">
-      <strong>初めて利用する方へ:</strong> アプリを起動すると、まず <strong>Gemini API キー</strong>(無料、<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a> で取得)の入力を求められます。詳しくは取扱説明書 PDF をご覧ください。
+      <strong>初めて利用する方へ:</strong> アプリを起動すると、まず <strong>Gemini API キー</strong>(無料、<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a> で取得)の入力を求められます。<br>
+      使い方は <strong>画面上部の「📖 マニュアル」タブ</strong> でいつでも確認できます(機能カード + トークン消費の目安 + おすすめフロー + 裏技集)。
       <br><br>
       ご意見・不具合・改善要望は <strong>制作者 SHIN</strong> まで直接ご連絡ください。
       <br><br>
-      <span class="version">v0.9.2 / 2026-05</span>
+      <span class="version">v0.10.1 / 2026-05-17</span>
     </div>
   </main>
 </body>
