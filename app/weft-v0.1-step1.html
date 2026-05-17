@@ -1694,6 +1694,297 @@ section.section.is-collapsed .section-desc {
   color: var(--susutake);
   line-height: 1.5;
 }
+/* v0.10.1:アプリ全体タブ(Weft / マニュアル)、最上部 sticky + フルワイド + Weft 世界観 */
+/* タブごとに色を分けて識別性UP:Weft=マダー(暖色)/ マニュアル=セージグリーン(織物の縦糸色) */
+.app-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 0;
+  padding: 0;
+  background: var(--cream);
+  box-shadow: 0 3px 14px rgba(26, 34, 56, 0.1);
+}
+.app-tab {
+  flex: 1;
+  padding: 20px 24px;
+  background: #fff;
+  border: none;
+  border-bottom: 4px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: all 0.18s ease;
+  position: relative;
+  text-align: center;
+}
+.app-tab + .app-tab {
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Weft タブ:マダー(暖色、創造性) */
+/* 非 active 時も最初から色を塗って「押せるボタン」感を出す(SHIN さんフィードバック) */
+.app-tab[data-app-tab="weft"] {
+  background: linear-gradient(135deg, rgba(201, 120, 91, 0.18) 0%, rgba(201, 120, 91, 0.08) 100%);
+  color: #a85e44;
+  border-bottom-color: var(--madder);
+}
+.app-tab[data-app-tab="weft"]:hover {
+  background: linear-gradient(135deg, rgba(201, 120, 91, 0.32) 0%, rgba(168, 94, 68, 0.22) 100%);
+  color: #8a4a36;
+}
+.app-tab[data-app-tab="weft"].is-active {
+  background: linear-gradient(135deg, var(--madder) 0%, #a85e44 100%);
+  color: #fff;
+  letter-spacing: 0.07em;
+  border-bottom-color: var(--indigo-deep);
+  box-shadow: inset 0 -4px 0 var(--indigo-deep), 0 4px 10px rgba(201, 120, 91, 0.3);
+}
+
+/* マニュアル タブ:セージグリーン(織物の縦糸、落ち着いた学習空間) */
+.app-tab[data-app-tab="manual"] {
+  background: linear-gradient(135deg, rgba(107, 134, 101, 0.22) 0%, rgba(74, 96, 70, 0.1) 100%);
+  color: #3e5239;
+  border-bottom-color: #6b8665;
+}
+.app-tab[data-app-tab="manual"]:hover {
+  background: linear-gradient(135deg, rgba(107, 134, 101, 0.36) 0%, rgba(74, 96, 70, 0.24) 100%);
+  color: #2e3f2a;
+}
+.app-tab[data-app-tab="manual"].is-active {
+  background: linear-gradient(135deg, #6b8665 0%, #4a6046 100%);
+  color: #fff;
+  letter-spacing: 0.07em;
+  border-bottom-color: var(--madder);
+  box-shadow: inset 0 -4px 0 var(--madder), 0 4px 10px rgba(90, 116, 86, 0.3);
+}
+
+/* タブ内のサブテキスト(押せるボタン感を強める) */
+.app-tab-sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+  opacity: 0.75;
+}
+
+/* v0.10.1:マニュアルタブの中身 */
+.manual-view { background: var(--cream); }
+.manual-intro {
+  padding: 16px 20px;
+  background: rgba(201, 120, 91, 0.06);
+  border: 1px solid rgba(201, 120, 91, 0.3);
+  border-radius: var(--radius);
+  margin-bottom: 32px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--indigo-deep);
+}
+.manual-section { margin-bottom: 48px; }
+.manual-section h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--madder);
+}
+.manual-section-desc {
+  font-size: 13.5px;
+  color: var(--susutake);
+  line-height: 1.7;
+  margin: 4px 0 16px;
+}
+.manual-token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.manual-token-table th,
+.manual-token-table td {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.manual-token-table th {
+  background: var(--cream-light);
+  font-weight: 600;
+  color: var(--indigo-deep);
+}
+.manual-token-table td.token-light,
+.manual-token-table td.token-mid,
+.manual-token-table td.token-heavy,
+.manual-token-table td.token-zero {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.token-light { color: #2d6a31; }
+.token-mid   { color: #b8740a; }
+.token-heavy { color: #a8482d; }
+.token-zero  { color: var(--susutake); }
+.manual-token-tip {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(74, 124, 79, 0.06);
+  border-left: 3px solid #4a7c4f;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.manual-feature {
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.manual-feature summary {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--indigo-deep);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.manual-feature summary::-webkit-details-marker { display: none; }
+.manual-feature summary::before {
+  content: '▶';
+  font-size: 10px;
+  color: var(--madder);
+  transition: transform 0.15s;
+}
+.manual-feature[open] summary::before { transform: rotate(90deg); }
+.manual-feature summary:hover { background: rgba(201, 120, 91, 0.05); }
+.manual-feature dl {
+  padding: 4px 18px 16px;
+  margin: 0;
+}
+.manual-feature dt {
+  font-size: 12px;
+  color: var(--madder);
+  margin-top: 12px;
+  font-weight: 600;
+}
+.manual-feature dd {
+  margin: 4px 0 0;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--ink, var(--indigo-deep));
+}
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+.badge.required    { background: var(--madder); color: var(--cream); }
+.badge.recommended { background: #4a7c4f; color: #fff; }
+.badge.optional    { background: var(--cream-light); color: var(--susutake); border: 1px solid var(--line); }
+.badge.new         { background: var(--indigo-deep); color: var(--cream); }
+.badge.token-light  { background: #d8ecda; color: #2d6a31; }
+.badge.token-mid    { background: #f4e2c4; color: #b8740a; }
+.badge.token-heavy  { background: #f0c8b8; color: #a8482d; }
+.badge.token-zero   { background: var(--cream-light); color: var(--susutake); border: 1px solid var(--line); }
+.manual-recipe {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--madder);
+  border-radius: var(--radius);
+}
+.manual-recipe h3 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  margin: 0 0 8px;
+  color: var(--indigo-deep);
+}
+.manual-recipe ol {
+  margin: 0;
+  padding-left: 1.4em;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+.manual-recipe p {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--susutake);
+}
+.manual-checklist {
+  font-size: 13.5px;
+  line-height: 1.85;
+  padding-left: 1.4em;
+}
+.manual-checklist li { margin: 4px 0; }
+
+/* v0.10.1:裏技セクション(SHIN さん発案)*/
+.manual-trick {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(201, 120, 91, 0.05) 0%, rgba(107, 134, 101, 0.05) 100%);
+  border: 1px solid rgba(184, 116, 10, 0.25);
+  border-left: 4px solid #b8740a;
+  border-radius: var(--radius);
+}
+.manual-trick h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  margin: 0 0 10px;
+  color: #b8740a;
+  font-weight: 600;
+}
+.manual-trick dl {
+  margin: 0;
+}
+.manual-trick dt {
+  font-size: 12px;
+  color: #8c5707;
+  margin-top: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.manual-trick dt:first-child { margin-top: 0; }
+.manual-trick dd {
+  margin: 4px 0 0;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--ink, var(--indigo-deep));
+}
+.manual-trick dd strong {
+  color: #8c5707;
+  font-weight: 600;
+}
+.manual-trick dd a {
+  color: var(--madder);
+  text-decoration: underline;
+}
+@media (max-width: 720px) {
+  .app-tabs { padding: 6px 10px; }
+  .app-tab { padding: 6px 12px; font-size: 13px; }
+  .manual-token-table { font-size: 11.5px; }
+  .manual-token-table th,
+  .manual-token-table td { padding: 6px 8px; }
+}
+
 /* v0.10.0:シリーズ展開モード */
 .series-intro {
   background: rgba(201, 120, 91, 0.06);
@@ -1933,12 +2224,26 @@ footer .accent { color: var(--madder); }
 </head>
 <body>
 
+<!-- v0.10.1:アプリ全体タブ(Weft メイン / マニュアル)、最上部 sticky -->
+<nav class="app-tabs" role="tablist" aria-label="アプリ全体タブ">
+  <button type="button" class="app-tab is-active" data-app-tab="weft" onclick="switchAppTab('weft')" role="tab" aria-selected="true">
+    🪡 Weft
+    <span class="app-tab-sub">アプリを使う</span>
+  </button>
+  <button type="button" class="app-tab" data-app-tab="manual" onclick="switchAppTab('manual')" role="tab" aria-selected="false">
+    📖 マニュアル
+    <span class="app-tab-sub">使い方を見る</span>
+  </button>
+</nav>
+
+<div id="weftView">
+
 <header class="site-header">
   <div class="logo-area">
     <span class="logo-mark">Weft</span>
     <span class="tagline">横糸を、あなたの言葉に</span>
   </div>
-  <span class="version-tag">v0.10.0 / シリーズ展開モード(既存記事から派生記事5本 + Threads + 改善診断)</span>
+  <span class="version-tag">v0.10.1 / マニュアルタブ追加(機能カード + トークン消費表)</span>
 </header>
 
 <main class="main-wrap">
@@ -2604,6 +2909,485 @@ footer .accent { color: var(--madder); }
 <footer>
   Weft v0.1 — Step 1 prototype <span class="accent">/</span> powered by Gemini Search Grounding <span class="accent">/</span> 横糸を、あなたの言葉に
 </footer>
+
+</div><!-- /#weftView -->
+
+<!-- v0.10.1:マニュアルタブ -->
+<div id="manualView" class="hidden manual-view">
+  <header class="site-header">
+    <div class="logo-area">
+      <span class="logo-mark">📖 Weft マニュアル</span>
+      <span class="tagline">機能ごとに「これは何 / いつ使う / トークン消費」を見ながら判断する</span>
+    </div>
+  </header>
+  <main class="main-wrap">
+    <div class="manual-intro">
+      <p>機能カードを開いて、それぞれの機能が <strong>「今回の記事に必要か」</strong> を判断してください。トークン消費量は <strong>Gemini API の無料枠(1,500 回/日)</strong> を分母とした目安です。</p>
+    </div>
+
+    <!-- トークン消費サマリー表 -->
+    <section class="manual-section">
+      <h2>🔥 トークン消費の早見表</h2>
+      <p class="manual-section-desc">1リサーチ = だいたい <strong>15〜25回</strong>(無料枠の 1〜2%)。1日 60〜100 記事分の余裕。<strong>動画要約と論文 ON</strong> が一番重い。</p>
+      <table class="manual-token-table">
+        <thead>
+          <tr><th>機能</th><th>1回あたりの呼び出し</th><th>軽さ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>リサーチ&分析(コア)</td><td>約 1 回(callGeminiGrounded)</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>知恵袋 ON 追加</td><td>+2 回(クエリ拡張 + 検索)</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>論文 ON 追加</td><td>+7〜10 回(拡張 + 関連性フィルタ + 要約×5)</td><td class="token-mid">🟡 中</td></tr>
+          <tr><td>YouTube ON + 動画要約</td><td>+5 回 + 動画ごと +1(時間も長い)</td><td class="token-heavy">🟠 重い</td></tr>
+          <tr><td>Google Trends 分析</td><td>+1〜2 回</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>AI テーマ提案(カテゴリから)</td><td>+1 回</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>自動統合(構成・タイトル)</td><td>+2 回(知恵袋 or 論文 ON 時に自動発動)</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>タイトル再生成</td><td>+1 回</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>構成再構築(全素材踏まえて)</td><td>+1 回</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>本文生成(短め / 標準)</td><td>+1 回</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>本文生成(長め / 特大 / 超特大)</td><td>+1 回(時間長い、切れリスク増)</td><td class="token-mid">🟡 中</td></tr>
+          <tr><td>シリーズ展開モード</td><td>+1 回(全部入り)</td><td class="token-light">🟢 軽い</td></tr>
+          <tr><td>各 AI 用エクスポート</td><td>0 回(クリップボードコピーのみ)</td><td class="token-zero">⚪ 消費なし</td></tr>
+          <tr><td>プロジェクト保存・復元</td><td>0 回(localStorage のみ)</td><td class="token-zero">⚪ 消費なし</td></tr>
+        </tbody>
+      </table>
+      <p class="manual-token-tip">💡 <strong>トークン節約のコツ</strong>:長文記事を書きたい時は <strong>「構成だけ Weft で作って、本文は Claude / ChatGPT にエクスポート」</strong> が一番効率良い。Weft 内本文生成は Gemini が長文出力に時間かかる + 切れリスクあり。</p>
+    </section>
+
+    <!-- 機能カード群 -->
+    <section class="manual-section">
+      <h2>📋 機能ガイド</h2>
+      <p class="manual-section-desc">各機能カードをクリックで詳細を開閉できます。</p>
+
+      <details class="manual-feature">
+        <summary>① API 設定 <span class="badge required">必須</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>Gemini API キーを入力する場所。Weft 全体がこのキーで動きます。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd><strong>初回のみ</strong>。一度入れたらブラウザに保存されます(localStorage)。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(設定だけなので消費なし)</dd>
+          <dt>⚙️ 操作</dt>
+          <dd><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a> で無料 API キーを取得 → ① API 設定セクションに貼り付け → 保存。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>② テーマ入力(3モード)<span class="badge required">必須</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>記事のテーマを入れる場所。<strong>3つのモード</strong>から選べます。</dd>
+          <dt>🎯 モード別の使い分け</dt>
+          <dd>
+            <strong>📝 自由入力</strong>:慣れた人向け、テーマを2〜5語で直接入力<br>
+            <strong>📂 カテゴリから</strong>:初心者向け、17大部門ツリー + AI テーマ提案(◎○△ 評価付き)<br>
+            <strong>📚 既存記事から</strong>:過去 note 記事の続き / シリーズ展開を作りたい時(v0.10.0 新機能)
+          </dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>テーマ入力自体は 0 回。<strong>AI テーマ提案</strong>(カテゴリから内)は +1 回。<strong>シリーズ展開</strong>は +1 回(後述)。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>📺 YouTube(補助ソース)<span class="badge optional">任意</span> <span class="badge token-heavy">🟠 重い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>YouTube で関連動画を検索 → AI 視聴で要約 → 本文プロンプトに「動画から得た知見」を組み込みます。</dd>
+          <dt>🎯 いつ ON する?</dt>
+          <dd>動画解説の多いジャンル(AI 活用 / 副業 / ノウハウ系)。<strong>YouTube Data API キー</strong>が別途必要(無料、aistudio とは別)。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+5 回(クエリ拡張 + 検索)+ 動画ごと +1(要約)。<strong>動画10本を要約すると重い</strong>。「✨ 動画で要約」と「📝 概要文で(節約)」を使い分けることでコスト調整可能。</dd>
+          <dt>⚠️ 注意</dt>
+          <dd>動画要約は時間も長い(1動画あたり30秒〜2分)。急ぎの時は OFF が無難。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>🗣 Yahoo!知恵袋(補助ソース)<span class="badge recommended">推奨</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>Yahoo!知恵袋から <strong>読者の生の悩み・言葉遣い</strong> を抽出 → 本文プロンプトに「冒頭の共感セクションで使う」素材として組み込みます。</dd>
+          <dt>🎯 いつ ON する?</dt>
+          <dd><strong>悩み系テーマ</strong>(復縁 / 転職 / 育児 / お金 / 人間関係)。「💡 ON 推奨」が動的表示されるので、それに従えば OK。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+2 回(クエリ拡張 + Google 経由検索)。軽い。</dd>
+          <dt>📈 効果</dt>
+          <dd>本文の <strong>冒頭の共感セクション</strong> が「読者の言葉そのまま」になり、刺さりやすくなります。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>📚 学術論文(補助ソース)<span class="badge recommended">推奨</span> <span class="badge token-mid">🟡 中</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>OpenAlex(2.5億論文 DB)から関連論文を取得 → AI で平易要約 → 本文に「○○大学の研究によると」の権威付けを組み込みます。</dd>
+          <dt>🎯 いつ ON する?</dt>
+          <dd><strong>エビデンス重視</strong>(健康 / 心理 / 恋愛 / お金)。ほぼ全ジャンルで効きます(脳科学・進化心理学・行動経済学が射程内)。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+7〜10 回(クエリ拡張 + 関連性フィルタ + 上位5件要約)。OpenAlex API は無料、追加キー不要。</dd>
+          <dt>🛡 ハルシネーション対策</dt>
+          <dd>実在の DOI / URL 必須表示。AI 捏造を防止。信頼性スコア(◎○△)で評価。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>📊 Google Trends 分析 <span class="badge optional">任意</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>テーマ選定段階で「今このテーマは旬か?」を判断する4象限分析(note 内 × Google Trends)。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>テーマがふわっとしてる時、「書くべきか / オワコンか / 早すぎか」を可視化したい時。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+1〜2 回</dd>
+          <dt>⚙️ 操作</dt>
+          <dd>カテゴリから タブ内の「📊 トレンドを多角的に分析」ボタン。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>③ リサーチ&分析(コア機能)<span class="badge required">必須</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd><strong>Weft の核機能</strong>。note.com を Gemini Search Grounding で実データ検索 → 競合分析 → タイトル3案 + 構成案を生成。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>すべての記事執筆の出発点。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>コア部分は +1 回。<strong>補助ソース ON</strong> の数だけ追加(上記表参照)。</dd>
+          <dt>⏱ 所要時間</dt>
+          <dd>60〜120 秒。待機中は「あなたの体験」「主張」「独自視点」を埋めると AI が記事の核に据えます(凡庸化対策)。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>タイトル選択・再生成 <span class="badge required">必須</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>3つのタイトル案(◎ 強く推奨 / ○ 推奨 / △ 検討余地 評価付き)から1つ選択。気に入らなければ「🔄 再生成」で何度でも別案を出せる。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>再生成 1回につき +1 回。</dd>
+          <dt>📈 コツ</dt>
+          <dd>初回の3案は note.com のみ由来。知恵袋・論文 ON にしている場合は <strong>自動統合</strong> で全素材を踏まえた版に上書きされる(v0.9.2 機能)。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>構成案・全素材で再構築 <span class="badge optional">任意</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>リサーチで作られた構成案を直接編集できる + 「🔄 全素材を踏まえて再構築」ボタンで再生成。動画要約・知恵袋・論文・視点・文体すべてを踏まえた構成に作り直し。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>再構築 1回につき +1 回。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>記事タイプ(実用 / 読み物)<span class="badge required">必須</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>記事の読まれ方を決める軸。文体・構成・タイトルがこれで変わります。</dd>
+          <dt>🎯 モード別</dt>
+          <dd>
+            <strong>🔧 実用ノウハウ系</strong>(avg 1,842円):「これで○○できる」型、結論ファースト、手順構造、箇条書き多用<br>
+            <strong>✍️ 読み物系</strong>(avg 983円):体験談・気づき型、語りかけ、場面描写、物語の濃度
+          </dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(設定のみ)</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>記事の種類(💰 有料 / 🆓 無料)<span class="badge new">v0.9.10 新</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>収益化軸で記事の構造を変える設定。<strong>無料 = 情報商材型(視点で完結)/ 有料 = 学習商材型(行動が変わる)</strong>の二軸。</dd>
+          <dt>🎯 モード別</dt>
+          <dd>
+            <strong>💰 有料 note</strong>:診断+手順+テンプレ+FAQで「明日からやれる」状態に持っていく構造<br>
+            <strong>🆓 無料 note</strong>:無料だが手は抜かない。視点・気づきで完結。Threads / プロフィールへ控えめに誘導
+          </dd>
+          <dt>📐 切り替え時</dt>
+          <dd>無料を選んだ瞬間、変換プレビューカード(構成・文体・末尾動線の変化)が緑色で開きます。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(設定のみ、プロンプトに反映されるだけ)</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>記事の長さ(5段階)<span class="badge required">必須</span> <span class="badge token-mid">🟡 長め以上は重い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>本文の目標字数 + 最大トークン数の設定。5段階から選択。</dd>
+          <dt>🎯 段階別</dt>
+          <dd>
+            <strong>短め</strong>(〜2,500字 / 4,096 tokens):凝縮、即効性<br>
+            <strong>標準</strong>(〜4,500字 / 8,192 tokens):中央値、迷ったらこれ<br>
+            <strong>長め</strong>(〜7,000字 / 12,288 tokens):読み物系・体験談<br>
+            <strong>特大</strong>(〜10,000字 / 16,384 tokens):完全保存版・網羅型<br>
+            <strong>超特大</strong>(〜13,000字 / 24,576 tokens):バイブル / シリーズ用決定版
+          </dd>
+          <dt>⚠️ 特大・超特大の注意</dt>
+          <dd>Weft 内本文生成だと <strong>時間長い + 切れリスク</strong>。<strong>Claude / ChatGPT エクスポート推奨</strong>。構成だけ Weft で作って本文は外部 AI で書く運用が現実的。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>✍️ 文体プロファイル <span class="badge optional">任意</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>過去の自分の note 記事を最大3本まで貼り付け → AI が文体を学習 → 新記事に反映。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>「AI っぽくない自分の文体で書きたい」時。過去 note 記事を持つ人だけ ON。</dd>
+          <dt>📐 推奨</dt>
+          <dd>各記事 500字以上で効果が出る。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(プロンプトに参照源として埋め込むだけ)</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>④ 本文生成(Weft 内 Gemini)<span class="badge optional">任意</span> <span class="badge token-mid">🟡 長さによる</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>「本文を生成」ボタンで Gemini が記事を一気書き。30〜90秒で完成。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>短め・標準・長め までは推奨。特大・超特大は <strong>外部 AI エクスポート</strong> の方が安定。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+1 回。ただし maxOutputTokens は長さに応じて 4K〜24K まで変化。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>📁 各 AI 用エクスポート <span class="badge recommended">推奨(長文)</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>Weft のリサーチ結果を Claude / ChatGPT / Gemini Pro / 汎用 向けに最適化されたプロンプトにしてクリップボードへコピー。</dd>
+          <dt>🎯 使い分け</dt>
+          <dd>
+            <strong>Claude</strong> 推奨:文体保持、読み物系、長文の自然さ<br>
+            <strong>ChatGPT</strong> 推奨:実用ノウハウ系、構造化、表整理<br>
+            <strong>Gemini Pro</strong> 推奨:大量素材をそのまま渡したい時<br>
+            <strong>汎用</strong>:好きな AI に貼る用、システムプロンプト無し
+          </dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(クリップボードコピーのみ、Weft 内生成しない)。<strong>外部 AI のトークンは別途消費</strong>するので、無料ユーザーは Claude / ChatGPT の無料プランを使うのが王道。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>📚 シリーズ展開モード <span class="badge new">v0.10.0 新</span> <span class="badge token-light">🟢 軽い</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>既存記事(過去 note 本文 or 過去 Weft プロジェクト)を起点に、<strong>派生記事5本案 + Threads 投稿候補 + 改善診断</strong> を一気に生成。</dd>
+          <dt>🎯 動線タイプ4種(必須選択)</dt>
+          <dd>
+            <strong>🆓→💰 無料→有料</strong>:無料記事の読者を有料 note へ誘導する派生記事5本<br>
+            <strong>💰→💎 有料→上位</strong>:有料 note 購入者を上位商品(コンサル等)へ<br>
+            <strong>🔄 横展開</strong>:同レベル内で読者を逃さず複数記事を読ませる<br>
+            <strong>📋 ファネル設計</strong>:5本連載のロードマップ(認知→共感→教育→信頼→販売)
+          </dd>
+          <dt>📊 改善診断(任意)</dt>
+          <dd>PV / スキ数 / 購入数 / 公開日 を入れると <strong>数字に基づく診断</strong>(「PV低いのはタイトル弱い」等)。数字なくてもテキスト品質チェックは実行されます。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>+1 回(全部入り)。コスパ最強。</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>💾 プロジェクト保存・履歴復元 <span class="badge optional">任意</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>現在の状態(テーマ・補助ソース ON/OFF・タイトル候補・構成案・本文)をブラウザの localStorage に保存 → 後で復元可能。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>同じテーマで何度もリトライしたい時、シリーズ記事を計画的に作りたい時(過去プロジェクトから読み込んで「📚 既存記事から」タブで派生記事を出せる)。</dd>
+          <dt>⚠️ 注意</dt>
+          <dd>localStorage はブラウザごとに分離。<strong>別ブラウザ・別端末では復元不可</strong>。重要な本文は別ファイルにもコピー推奨。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>🎛 UI 機能(アコーディオン + フローティング目次)<span class="badge new">v0.9.11 新</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>各セクションの番号バッジの横に「▼ 閉じる」ボタンで <strong>折りたたみ</strong> 可能。画面右下のフローティング目次で <strong>瞬間ジャンプ</strong>。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>縦長 UI が辛い時、特定のセクションへ素早く戻りたい時。</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(UI 機能のみ)</dd>
+        </dl>
+      </details>
+    </section>
+
+    <!-- 推奨フローレシピ -->
+    <section class="manual-section">
+      <h2>🎬 おすすめフロー 3パターン</h2>
+
+      <div class="manual-recipe">
+        <h3>🪶 軽量フロー(無料枠を温存したい人)</h3>
+        <ol>
+          <li>カテゴリから or 自由入力でテーマ</li>
+          <li>補助ソースは <strong>知恵袋のみ ON</strong>(論文・YouTube は OFF)</li>
+          <li>記事の長さ:標準</li>
+          <li>本文は <strong>Claude or ChatGPT へエクスポート</strong>(Weft 内生成しない)</li>
+        </ol>
+        <p>消費目安:<strong>約 5 回</strong>/記事 → 1日 300 記事分の余裕</p>
+      </div>
+
+      <div class="manual-recipe">
+        <h3>📚 高品質フロー(エビデンスベース記事)</h3>
+        <ol>
+          <li>カテゴリから(AI テーマ提案も使う)</li>
+          <li>補助ソース:<strong>知恵袋 + 論文 ON</strong></li>
+          <li>記事の種類:💰 有料note</li>
+          <li>記事の長さ:長め(7,000字)</li>
+          <li>本文は <strong>Claude へエクスポート</strong>(構成は Weft 内で再構築してから)</li>
+        </ol>
+        <p>消費目安:<strong>約 15〜20 回</strong>/記事 → 1日 75 記事分の余裕</p>
+      </div>
+
+      <div class="manual-recipe">
+        <h3>🔄 シリーズ展開フロー(連載で読者を囲い込む)</h3>
+        <ol>
+          <li>既存記事(過去 note 本文 or 過去プロジェクト)を <strong>「📚 既存記事から」タブ</strong> に入れる</li>
+          <li>動線タイプ:<strong>📋 ファネル設計</strong> を選択</li>
+          <li>「シリーズ展開を実行」 → 派生記事5本 + 連載ロードマップ + Threads 投稿候補 + 改善診断が出る</li>
+          <li>気に入った派生記事を、もう一度 Weft の「② テーマ」に入れて本文化</li>
+        </ol>
+        <p>消費目安:<strong>+1 回</strong>(シリーズ展開実行)、その後の本文化で追加</p>
+      </div>
+    </section>
+
+    <!-- 裏技・節約テクニック -->
+    <section class="manual-section">
+      <h2>💎 裏技・節約テクニック</h2>
+      <p class="manual-section-desc">Gemini API の無料枠(1日 1,500回)を <strong>実質的に拡張・温存</strong> するためのテクニック集。テスター運用で本当に効くやつだけ。</p>
+
+      <div class="manual-trick">
+        <h3>🎭 ① Google アカウント複数戦略(無料枠 ×N 倍)</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>Gemini API キーは <strong>Google アカウントごとに発行される</strong>。1日 1,500回の枠は <strong>アカウントごとに独立</strong>。複数 Google アカウントを持っていれば、それぞれで API キーを取得して切り替えるだけで <strong>無料枠が実質 3,000 / 4,500 / ... 回に増える</strong>。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. 別の Google アカウント(仕事用・個人用・サブ垢など)で <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a> にログイン<br>
+            2. 「Create API key」で新規キー発行<br>
+            3. Weft の「① API 設定」で API キー欄を差し替え → 保存<br>
+            4. 1日の枠を使い切ったら次のキーに切り替え
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>アカウント数 ×1,500 回/日。3アカウントなら <strong>1日 4,500回</strong> = 200〜300 記事分の余裕。</dd>
+          <dt>⚠️ 注意</dt>
+          <dd>各アカウントの Google 利用規約は遵守すること。営利利用の規模が大きい場合は有料プランへ。</dd>
+        </dl>
+      </div>
+
+      <div class="manual-trick">
+        <h3>🚀 ② 構成だけ Weft、本文は外部 AI に渡す(王道の節約術)</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>Weft 内の本文生成は重い(1記事で +1回 + 長い時間)。<strong>構成までを Weft で作って、本文は Claude / ChatGPT / Gemini Pro の Web 版に渡す</strong> と、Weft の無料枠を温存できる + 外部 AI の独立した無料枠も使える。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. Weft で「リサーチ&分析」→ タイトル選択 → 構成案を確認(必要なら再構築)<br>
+            2. ④ ドラフトの「📁 各 AI 用プロンプトをコピー」→ <strong>Claude / ChatGPT / Gemini Pro</strong> を選択<br>
+            3. 各 AI の Web 画面で貼り付けて本文を書かせる<br>
+            4. Weft 内の「本文を生成」ボタンは使わない
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>Weft の API 消費が <strong>記事あたり -1回</strong>。Claude / ChatGPT 無料プランの枠も活用可能。長文(特大・超特大)は外部 AI の方が圧倒的に安定。</dd>
+          <dt>🏆 おすすめ AI 別の使い分け</dt>
+          <dd>
+            <strong>Claude</strong>(文体保持・読み物系・長文の自然さ)/ <strong>ChatGPT</strong>(実用ノウハウ系・構造化)/ <strong>Gemini Pro Web</strong>(API とは別枠、大量素材OK)
+          </dd>
+        </dl>
+      </div>
+
+      <div class="manual-trick">
+        <h3>📝 ③ 動画要約は「概要文(節約)」で代替する</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>YouTube 動画要約は1動画あたり <strong>Gemini AI 視聴で +1回 + 数十秒</strong>と重い。すべての動画を AI 視聴する必要はなく、<strong>多くの場合は概要文(タイトル + 説明欄)で十分</strong>な情報が取れる。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. YouTube 結果が並んだら、本当に深掘りしたい1〜2本だけ「✨ 動画で要約」<br>
+            2. その他は「📝 概要文(節約)」 or 「💰 全て概要文で」を選択<br>
+            3. 動画10本中、AI 視聴は2本に抑える運用が現実的
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>動画10本フル AI 視聴で +10回だったところを、+2回に削減。<strong>YouTube 機能を使う1リサーチあたり -8回の節約</strong>。</dd>
+        </dl>
+      </div>
+
+      <div class="manual-trick">
+        <h3>💾 ④ 過去プロジェクト保存でリサーチを流用</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>同じテーマで <strong>記事の方向性違いを試したい</strong> 時、リサーチを再実行するのは無駄。「💾 プロジェクトに保存」しておけば、過去履歴から呼び出してタイトルや構成だけ変えて何度でも本文化できる。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. リサーチ完了 → 構成確定の時点で「💾 ここまでをプロジェクトに保存」<br>
+            2. 別の角度で記事を作りたい時、「📂 過去のプロジェクト」から復元<br>
+            3. タイトルだけ再生成 → 構成だけ再構築 → 別の角度の記事が完成<br>
+            4. <strong>シリーズ展開モード</strong> で過去プロジェクトを読み込めば、派生記事5本が一気に出る(さらに効率)
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>1リサーチ(15-25回)で <strong>2-3本の記事を派生可能</strong>。同じテーマで連載する人には必須テクニック。</dd>
+        </dl>
+      </div>
+
+      <div class="manual-trick">
+        <h3>🎯 ⑤ 特大・超特大は「Weft 構成のみ + 外部 AI 本文」専用と割り切る</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>10,000字超の長文は、Gemini API の出力で <strong>途中切れリスク + 時間がかかる</strong>。Weft 内本文生成じゃ実用に耐えない。<strong>構成だけ Weft、本文は Claude / ChatGPT で書く</strong> 運用が現実的。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. 長さは「特大」or「超特大」を選択<br>
+            2. 「本文を生成」ボタンは押さない<br>
+            3. ④ ドラフトの「📁 各 AI 用プロンプトをコピー」→ <strong>Claude</strong> 推奨(長文耐性高い)<br>
+            4. Claude.ai(無料プラン)に貼って本文書かせる<br>
+            5. 必要なら ChatGPT で整形(note 直貼り用に Markdown 整理)
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>Weft の API 消費なし(構成生成 +1回のみ)。Claude / ChatGPT の独立した無料枠で長文を仕上げる。</dd>
+        </dl>
+      </div>
+
+      <div class="manual-trick">
+        <h3>🔄 ⑥ シリーズ展開モードを最初に1回叩く(連載前提なら最強)</h3>
+        <dl>
+          <dt>💡 概要</dt>
+          <dd>1本目の記事を書く前に、まず <strong>「📚 既存記事から」タブで仮の本文を入れてシリーズ展開モード</strong> を1回回す。連載5本のロードマップが先に出るので、各記事のリサーチが最小限で済む。</dd>
+          <dt>⚙️ やり方</dt>
+          <dd>
+            1. 仮の記事概要(箇条書きでも OK)を「📚 既存記事から」タブに入れる<br>
+            2. 動線タイプ「📋 ファネル設計」を選択<br>
+            3. 「シリーズ展開を実行」 → 5本連載のロードマップ + 派生記事案 + Threads 候補が一気に出る<br>
+            4. その後、各記事を Weft で1本ずつリサーチ&分析していく
+          </dd>
+          <dt>📊 効果</dt>
+          <dd>「次に何を書けばいいか」で詰まる時間が消える + Threads 投稿候補も同時に取れる。<strong>シリーズ展開 +1回の消費で、5本分の方向性が固まる</strong>。</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 困った時 -->
+    <section class="manual-section">
+      <h2>🚨 困った時のチェック</h2>
+      <ul class="manual-checklist">
+        <li><strong>「Gemini レート上限」エラー</strong> → 自動カウントダウン後に再試行(約51秒待つ)</li>
+        <li><strong>「429 / quota exceeded」</strong> → 1日無料枠(1,500回)を使い切った可能性。<strong>日本時間 午後4〜5時頃にリセット</strong>(米国西海岸の午前0時)</li>
+        <li><strong>本文が途中で切れる</strong> → 記事の長さを「短め」に下げる、または再生成</li>
+        <li><strong>構成案が空</strong> → 「リサーチ&分析」を再実行</li>
+        <li><strong>YouTube に変な動画(中国ドラマ等)</strong> → カテゴリから選ぶと AI 拡張で日本語キーワードに絞れる</li>
+        <li><strong>論文 0件</strong> → 上部の AI 拡張キーワードを確認、テーマを少し抽象化して再試行</li>
+        <li><strong>F12 のコンソール</strong>で詳細なエラー内容が見れる(原因切り分けに有効)</li>
+      </ul>
+    </section>
+  </main>
+  <footer>Weft マニュアル v0.10.1 — タブを切り替えて Weft に戻る</footer>
+</div><!-- /#manualView -->
 
 <script>
 // ============================================================
@@ -6422,6 +7206,31 @@ function escapeHtml(str) {
 function formatDate(iso) {
   const d = new Date(iso);
   return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+// v0.10.1:アプリ全体タブの切替(Weft / マニュアル)
+// 両タブのスクロール位置を独立に保存・復元(SHIN さんフィードバック)
+const tabScrollPositions = { weft: 0, manual: 0 };
+let currentAppTab = 'weft';
+function switchAppTab(tab) {
+  if (tab === currentAppTab) return;
+  // 現在のタブのスクロール位置を保存
+  tabScrollPositions[currentAppTab] = window.scrollY;
+  currentAppTab = tab;
+  document.querySelectorAll('.app-tab').forEach(t => {
+    const active = t.dataset.appTab === tab;
+    t.classList.toggle('is-active', active);
+    t.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  document.getElementById('weftView').classList.toggle('hidden', tab !== 'weft');
+  document.getElementById('manualView').classList.toggle('hidden', tab !== 'manual');
+  // フローティング目次は Weft タブのみ表示(v0.9.11)
+  const toc = document.getElementById('floatingToc');
+  if (toc) toc.classList.toggle('hidden', tab !== 'weft');
+  // 切替先のスクロール位置を復元(DOM 表示更新を待つ)
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: tabScrollPositions[tab] || 0, behavior: 'auto' });
+  });
 }
 
 // v0.9.11:各 section に折りたたみトグルを後付け

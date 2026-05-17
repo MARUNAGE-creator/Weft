@@ -15,7 +15,7 @@
 
 ## 現在の状態
 
-- **バージョン:** v0.10.0(シリーズ展開モード:既存記事から派生記事5本+Threads候補+改善診断、配布版・GitHub Pages 公開済み)
+- **バージョン:** v0.10.1(マニュアルタブ追加:機能カード+トークン消費表+裏技6本、配布版・GitHub Pages 公開済み)
 - **公開 URL:** https://marunage-creator.github.io/Weft/
 - **リポジトリ:** https://github.com/MARUNAGE-creator/Weft(Public)
 - **次のマイルストーン:** 実テスターからのフィードバック収集と対応 → モバイル最適化 or マネタイズ準備
