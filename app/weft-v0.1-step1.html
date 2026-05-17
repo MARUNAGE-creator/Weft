@@ -1222,6 +1222,50 @@ section.section.is-collapsed .section-desc {
   gap: 10px;
 }
 
+/* v0.11.0:ペルソナ詳細パネル */
+.persona-panel {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--cream-light);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--madder);
+  border-radius: var(--radius);
+}
+.persona-panel summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--indigo-deep);
+  padding: 4px 0;
+  list-style: none;
+}
+.persona-panel summary::-webkit-details-marker { display: none; }
+.persona-panel summary::before {
+  content: '▶ ';
+  font-size: 10px;
+  color: var(--madder);
+  transition: transform 0.15s;
+  display: inline-block;
+}
+.persona-panel[open] summary::before { transform: rotate(90deg); }
+.persona-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.persona-field-wide { grid-column: 1 / -1; }
+.persona-hint {
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.65;
+  margin: 10px 0 0;
+}
+@media (max-width: 720px) {
+  .persona-grid { grid-template-columns: 1fr; }
+}
+
 /* ===== v0.3.0:テーマ入力タブ + カテゴリ選択 ===== */
 .theme-tabs {
   display: flex;
@@ -2105,6 +2149,80 @@ section.section.is-collapsed .section-desc {
 }
 .series-result-card strong { color: var(--indigo-deep); }
 .series-result-text { white-space: pre-wrap; font-size: 13.5px; line-height: 1.75; }
+/* v0.10.2:派生記事ワンクリック転送パネル */
+.series-transfer-panel {
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(74, 124, 79, 0.1) 0%, rgba(201, 120, 91, 0.06) 100%);
+  border: 1px solid rgba(74, 124, 79, 0.35);
+  border-left: 4px solid #4a7c4f;
+  border-radius: var(--radius);
+}
+.series-transfer-panel h4 {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: #2d6a31;
+}
+.series-transfer-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.series-transfer-btn {
+  text-align: left;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--indigo-deep);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.series-transfer-btn:hover {
+  background: rgba(74, 124, 79, 0.08);
+  border-color: #4a7c4f;
+  transform: translateX(2px);
+  box-shadow: 0 2px 6px rgba(74, 124, 79, 0.15);
+}
+.series-transfer-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #4a7c4f;
+  font-weight: 600;
+}
+.series-transfer-type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--madder);
+  background: rgba(201, 120, 91, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.series-transfer-title {
+  flex: 1;
+  color: var(--indigo-deep);
+  font-weight: 500;
+}
+.series-transfer-arrow {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--madder);
+}
+.series-transfer-hint {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.65;
+}
 @media (max-width: 720px) {
   .series-flow-options,
   .series-stats-grid { grid-template-columns: 1fr; }
@@ -2243,7 +2361,7 @@ footer .accent { color: var(--madder); }
     <span class="logo-mark">Weft</span>
     <span class="tagline">横糸を、あなたの言葉に</span>
   </div>
-  <span class="version-tag">v0.10.1 / マニュアルタブ追加(機能カード + トークン消費表)</span>
+  <span class="version-tag">v0.11.1 / ペルソナ独立セクション化 + 論文フィルタ maxTokens 再々増強</span>
 </header>
 
 <main class="main-wrap">
@@ -2331,6 +2449,43 @@ footer .accent { color: var(--madder); }
       <div class="style-actions">
         <button class="btn btn-ghost" onclick="clearStyleProfile()">すべてクリア</button>
       </div>
+    </div>
+  </details>
+
+  <!-- ===== PERSONA PROFILE(v0.11.1:独立セクション化、文体プロファイルから分離して見つけやすく) ===== -->
+  <details class="settings-panel" id="personaPanel">
+    <summary>
+      <span>🎭 ペルソナ情報(任意・ブランド一貫性を強化)</span>
+      <span id="personaStatusBadge" class="settings-status status-missing">未設定</span>
+    </summary>
+    <div class="settings-body">
+      <div class="callout" style="background: linear-gradient(135deg, rgba(201, 120, 91, 0.06) 0%, rgba(107, 134, 101, 0.05) 100%); border-color: rgba(201, 120, 91, 0.3);">
+        <strong>これは何?</strong> 名乗り・タグライン・口癖・絵文字を登録すると、生成記事の自己紹介・章の語り・末尾の締めに自動で反映されます。<strong>シリーズで同じキャラを通す</strong>(=ブランド一貫性)ための機能。<br>
+        <strong>いつ使う?</strong> 自分のペンネームや「@hogehoge」のキャラで note を量産したい時。空欄でも問題なく Weft は動きます。
+      </div>
+      <div class="persona-grid">
+        <div class="field">
+          <label class="field-label">ペルソナ名 / 名乗り</label>
+          <input type="text" class="field-input" id="stylePersonaName" placeholder="例:のうみそ恋愛研究所🧠 / Claude実験室" oninput="handleStylePersonaInput('personaName')">
+        </div>
+        <div class="field">
+          <label class="field-label">タグライン(締めに自然に使う)</label>
+          <input type="text" class="field-input" id="styleTagline" placeholder="例:全部、脳のせいです。 / AIで人生を作る。" oninput="handleStylePersonaInput('tagline')">
+        </div>
+        <div class="field">
+          <label class="field-label">口癖・語感(カンマ区切り)</label>
+          <input type="text" class="field-input" id="styleCatchphrases" placeholder="例:ガチで, マジで, めっちゃ, ヤバい, 〜なの, 〜よね" oninput="handleStylePersonaInput('catchphrases')">
+        </div>
+        <div class="field">
+          <label class="field-label">よく使う絵文字(本文に自然に挿入)</label>
+          <input type="text" class="field-input" id="styleEmojis" placeholder="例:🧠 ✨ 🤍 / 🪡 📚 ☕" oninput="handleStylePersonaInput('emojis')">
+        </div>
+        <div class="field persona-field-wide">
+          <label class="field-label">著者紹介(本文の自己紹介セクションで使う、200〜400字推奨)</label>
+          <textarea class="field-textarea" id="styleSelfIntro" rows="4" placeholder="例:のうみそ恋愛研究所🧠の研究員(自称)。3年前の失恋から脳科学にハマって論文200本越え、相談300人越え。占いに数万円突っ込んだ過去もある人間が、恋愛を脳のレベルで解剖してます。" oninput="handleStylePersonaInput('selfIntro')"></textarea>
+        </div>
+      </div>
+      <p class="persona-hint">どれも任意。入力されたものだけ本文プロンプトに渡されます。「②文体プロファイル」が ON の時に有効になります(過去記事は別に登録)。</p>
     </div>
   </details>
 
@@ -2486,6 +2641,33 @@ footer .accent { color: var(--madder); }
             <input type="radio" name="flowType" value="funnel">
             <div class="series-flow-title">📋 ファネル設計</div>
             <div class="series-flow-desc">5本連載のロードマップ(認知→共感→教育→信頼→販売)で最終的に有料 note or LINE/メルマガ登録へ</div>
+          </label>
+        </div>
+      </div>
+
+      <!-- v0.11.0:Threads 投稿フォーマット選択(派生記事ごとの集客フックの構造を決める) -->
+      <div class="series-flow-section">
+        <h4 class="series-section-h">Threads 投稿候補のフォーマット(派生記事ごとに何を出すか)</h4>
+        <div class="series-flow-options">
+          <label class="series-flow-option" data-threads-fmt="1post">
+            <input type="radio" name="threadsFormat" value="1post">
+            <div class="series-flow-title">📝 1投稿(200-300字)</div>
+            <div class="series-flow-desc">朝予約・通常運用向け。あるある冒頭 + 脳科学 + 今夜できる行動 + CTA</div>
+          </label>
+          <label class="series-flow-option" data-threads-fmt="2step">
+            <input type="radio" name="threadsFormat" value="2step">
+            <div class="series-flow-title">🔗 2段スレッド</div>
+            <div class="series-flow-desc">1/2:共感+「具体的には、」引き / 2/2:対処法+問いかけ</div>
+          </label>
+          <label class="series-flow-option" data-threads-fmt="3step">
+            <input type="radio" name="threadsFormat" value="3step">
+            <div class="series-flow-title">🪜 3段スレッド</div>
+            <div class="series-flow-desc">共感冒頭 → 事実+対処法 → 個人体験+続編予告+CTA</div>
+          </label>
+          <label class="series-flow-option is-selected" data-threads-fmt="4step">
+            <input type="radio" name="threadsFormat" value="4step" checked>
+            <div class="series-flow-title">⭐ 4段スレッド(有料級・推奨)</div>
+            <div class="series-flow-desc"><strong>8要素バズり法則</strong>を全部使う。感情フック+物語性+衝撃数値+体験+CTA軽いジャブで <strong>フォロワー獲得最強</strong>(週4本推奨)</div>
           </label>
         </div>
       </div>
@@ -2829,6 +3011,90 @@ footer .accent { color: var(--madder); }
       </div>
     </div>
 
+    <!-- v0.11.0:CTA タイプ選択(本文末尾の CTA を6パターンから選ぶ) -->
+    <div class="length-selector" id="ctaTypeSelector">
+      <div class="length-selector-header">
+        <h3>CTA タイプ(本文末尾の誘導)</h3>
+        <span class="length-hint">「やってみる人 ♡」「共感した人フォロー」など、押し売り感ゼロの軽いジャブ型 CTA を選びます</span>
+      </div>
+      <div class="length-options" id="ctaTypeOptions">
+        <label class="length-option is-selected" data-cta="auto">
+          <input type="radio" name="ctaType" value="auto" checked onchange="handleCtaTypeSelect('auto')">
+          <div class="length-option-body">
+            <div class="length-option-title">🤖 自動選定</div>
+            <div class="length-option-meta">DEFAULT</div>
+            <div class="length-option-reason">文脈から AI が最適なものを選ぶ。迷ったらこれ。</div>
+          </div>
+        </label>
+        <label class="length-option" data-cta="action">
+          <input type="radio" name="ctaType" value="action" onchange="handleCtaTypeSelect('action')">
+          <div class="length-option-body">
+            <div class="length-option-title">🚀 行動誘発系</div>
+            <div class="length-option-meta">「今夜やってみる人 ♡」</div>
+            <div class="length-option-reason">読者に具体的な行動を促す、実用ノウハウ向け</div>
+          </div>
+        </label>
+        <label class="length-option" data-cta="empathy">
+          <input type="radio" name="ctaType" value="empathy" onchange="handleCtaTypeSelect('empathy')">
+          <div class="length-option-body">
+            <div class="length-option-title">🤍 共感系</div>
+            <div class="length-option-meta">「私も同じ ♡で仲間」</div>
+            <div class="length-option-reason">読者の連帯感を作る、悩み系・体験談向け</div>
+          </div>
+        </label>
+        <label class="length-option" data-cta="learning">
+          <input type="radio" name="ctaType" value="learning" onchange="handleCtaTypeSelect('learning')">
+          <div class="length-option-body">
+            <div class="length-option-title">📚 学び系</div>
+            <div class="length-option-meta">「続編出すよフォロー」</div>
+            <div class="length-option-reason">知的好奇心を駆動、エビデンス記事・連載向け</div>
+          </div>
+        </label>
+        <label class="length-option" data-cta="salvation">
+          <input type="radio" name="ctaType" value="salvation" onchange="handleCtaTypeSelect('salvation')">
+          <div class="length-option-body">
+            <div class="length-option-title">🙏 救済系</div>
+            <div class="length-option-meta">「次の話も届くよ」</div>
+            <div class="length-option-reason">共闘感、寄り添い系・救いを求める読者向け</div>
+          </div>
+        </label>
+        <label class="length-option" data-cta="diagnosis">
+          <input type="radio" name="ctaType" value="diagnosis" onchange="handleCtaTypeSelect('diagnosis')">
+          <div class="length-option-body">
+            <div class="length-option-title">🔍 診断系</div>
+            <div class="length-option-meta">「気になる人続編で」</div>
+            <div class="length-option-reason">謎残し型、診断・チェックリスト系向け</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- v0.11.0:構成テンプレ選択(自動最適化 or 13セクション固定テンプレ) -->
+    <div class="length-selector" id="structureTemplateSelector">
+      <div class="length-selector-header">
+        <h3>構成テンプレ</h3>
+        <span class="length-hint">AI に任せるか、有料note 王道の13セクション固定構造で書かせるか</span>
+      </div>
+      <div class="length-options" id="structureTemplateOptions">
+        <label class="length-option is-selected" data-stpl="auto">
+          <input type="radio" name="structureTemplate" value="auto" checked onchange="handleStructureTemplateSelect('auto')">
+          <div class="length-option-body">
+            <div class="length-option-title">🤖 自動最適化</div>
+            <div class="length-option-meta">DEFAULT</div>
+            <div class="length-option-reason">リサーチ結果 + 記事タイプ + 素材から AI が最適な章立てを毎回設計。汎用的に良い構成が出る。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stpl="paid-template-v1">
+          <input type="radio" name="structureTemplate" value="paid-template-v1" onchange="handleStructureTemplateSelect('paid-template-v1')">
+          <div class="length-option-body">
+            <div class="length-option-title">📋 有料note 王道テンプレ v1</div>
+            <div class="length-option-meta">13セクション固定</div>
+            <div class="length-option-reason">「はじめに → 著者紹介 → 向く人 → なぜ起きるか → 放置すると → 有料境界 → 具体行動 → FAQ → まとめ → おわりに → P.S.×3」の <strong>固定構造</strong>。有料 note で実績のある型。</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
     <div class="structure-panel" id="structurePanel">
       <div class="structure-panel-header">
         <h3>記事の構成</h3>
@@ -3139,6 +3405,32 @@ footer .accent { color: var(--madder); }
           <dd>「AI っぽくない自分の文体で書きたい」時。過去 note 記事を持つ人だけ ON。</dd>
           <dt>📐 推奨</dt>
           <dd>各記事 500字以上で効果が出る。</dd>
+          <dt>📍 場所</dt>
+          <dd>画面上部の <strong>「② 文体プロファイル(任意)」</strong> パネルをクリックして開く → 過去記事3本の枠が出る → 一番下の「ON」チェックボックスで有効化</dd>
+          <dt>🔥 トークン消費</dt>
+          <dd>0 回(プロンプトに参照源として埋め込むだけ)</dd>
+        </dl>
+      </details>
+
+      <details class="manual-feature">
+        <summary>🎭 ペルソナ情報 <span class="badge optional">任意</span> <span class="badge new">v0.11.0 新</span> <span class="badge token-zero">消費なし</span></summary>
+        <dl>
+          <dt>💡 これは何?</dt>
+          <dd>名乗り・タグライン・口癖・絵文字・著者紹介の5項目を登録すると、生成記事の自己紹介・章の語り・末尾の締めに <strong>自動で反映</strong> される。<strong>シリーズで同じキャラを通すブランド一貫性</strong> 用の機能。</dd>
+          <dt>🎯 いつ使う?</dt>
+          <dd>自分のペンネームや「@hogehoge」のキャラで note を量産したい時。SHIN さんの「のうみそ恋愛研究所🧠」のような <strong>持続的なブランド運用</strong> を Weft で再現するため。</dd>
+          <dt>📍 場所(v0.11.1 で見つけやすく独立セクション化)</dt>
+          <dd>画面上部の「①API 設定」「②文体プロファイル」の <strong>すぐ下</strong> に「🎭 ペルソナ情報(任意・ブランド一貫性を強化)」パネルがある。クリックして開く → 5項目を入力(全部任意)。</dd>
+          <dt>📝 入力項目(全部任意)</dt>
+          <dd>
+            ・<strong>ペルソナ名 / 名乗り</strong>(例:「のうみそ恋愛研究所🧠」)<br>
+            ・<strong>タグライン</strong>(例:「全部、脳のせいです。」)<br>
+            ・<strong>口癖・語感</strong>(カンマ区切り、例:「ガチで, マジで, めっちゃ」)<br>
+            ・<strong>よく使う絵文字</strong>(例:「🧠 ✨ 🤍」)<br>
+            ・<strong>著者紹介</strong>(200-400字、本文の自己紹介セクションで使う)
+          </dd>
+          <dt>⚠️ 注意</dt>
+          <dd>ペルソナ情報を <strong>有効にするには「②文体プロファイル」の ON チェックも必要</strong>。ペルソナ情報だけ入力 + 文体プロファイル OFF だと反映されません。</dd>
           <dt>🔥 トークン消費</dt>
           <dd>0 回(プロンプトに参照源として埋め込むだけ)</dd>
         </dl>
@@ -3424,11 +3716,26 @@ let state = {
   bodyLength: 'standard',
   articleType: 'practical',
   monetization: 'paid', // v0.9.10:有料note(学習商材型) / 無料note(情報提供型)
-  styleProfile: { enabled: false, articles: ['', '', ''] },
+  // v0.11.0:文体プロファイル拡張(ペルソナ情報を追加)
+  styleProfile: {
+    enabled: false,
+    articles: ['', '', ''],
+    personaName: '',    // ペルソナ名(例:「のうみそ恋愛研究所🧠」)
+    tagline: '',         // タグライン(例:「全部、脳のせいです。」)
+    catchphrases: '',    // 口癖・語感(例:「ガチで」「マジで」「めっちゃ」)
+    emojis: '',          // よく使う絵文字(例:「🧠 ✨ 🤍」)
+    selfIntro: ''        // 著者紹介(本文に組み込み可、200-300字)
+  },
   article: '',
   // v0.10.0:シリーズ展開モード
   pastArticle: null, // { title, body, monetizationOfPast, flowType, reader, stats }
   seriesExpansionResult: null, // { text, sources, generatedAt }
+  // v0.11.0:Threads 投稿フォーマット('1post' / '2step' / '3step' / '4step')、初期値は有料級の4段スレッド
+  threadsFormat: '4step',
+  // v0.11.0:構成テンプレ('auto' / 'paid-template-v1')、初期値は AI 自動最適化
+  structureTemplate: 'auto',
+  // v0.11.0:CTA 軽いジャブのタイプ('auto' / 'action' / 'empathy' / 'learning' / 'salvation' / 'diagnosis')
+  ctaType: 'auto',
   history: []
 };
 
@@ -3685,6 +3992,43 @@ const AI_PROMPT_PROFILES = {
   }
 };
 
+// v0.11.0:構成テンプレ(有料note 王道13セクションを汎用化したもの)
+const STRUCTURE_TEMPLATE_INSTRUCTION = {
+  auto: '', // 自動最適化:既存の章立てロジックを使う(指示なし)
+  'paid-template-v1': `【構成テンプレ:有料note 王道 v1(13セクション固定)】
+以下の **13セクション** を必ずこの順で構築すること(本文生成プロンプトでも踏襲):
+
+1. **はじめに**(知恵袋型のあるある冒頭で読者の悩みを言語化、共感)
+2. **著者紹介**(なぜこの記事を書けるか、実績・経験・専門性を1〜2段落)
+3. **このnoteが向いてる人 / 向いてない人**(箇条書きでターゲットを明示、適合判定を促す)
+4. **第1章:なぜこの現象が起きるのか**(根拠ベース、エビデンスや論文を引用しながら)
+5. **第2章:放置するとどうなるか**(リスク提示、読まないと損する感)
+6. **ここから先で渡すもの**(有料エリアの境界、何を手に入れられるか宣言)
+7. **第3章以降:具体行動・スクリプト・診断・テンプレ**(本記事の核心、複数の章に分けて深掘り)
+8. **FAQ(5問)**(購入前の不安を先回りして潰す、必須)
+9. **まとめ**(キーポイント5〜6個で凝縮)
+10. **おわりに**(キーフレーズ・記事を閉じる印象的な一文)
+11. **P.S.1:関連 note 誘導**(続編 / 上位商品への自然な動線)
+12. **P.S.2:他の有料 note 誘導**(横展開、他のテーマも興味あれば)
+13. **P.S.3:SNS / コミュニティ誘導**(Threads・LINE 等への控えめ誘導)
+
+【厳守ルール】
+- 13セクションすべてを順番通りに含めること
+- 「### N. セクション名」のマークダウン見出しで各セクションを明示
+- セクション 6(有料境界)は **有料note のみ**(無料の場合はスキップして 7 に進む)
+- 各セクションは構成案では2〜3行のポイント、本文生成時に肉付けされる`
+};
+
+// v0.11.0:CTA 軽いジャブ 5パターン(SHIN さん「のうみそ式」を汎用化)
+const CTA_TYPE_INSTRUCTION = {
+  auto: '', // 自動選定:文脈から AI が最適なものを選ぶ
+  action:    '【CTA タイプ:行動誘発系】「今夜やってみる」「明日試してみる」って人に向けて、押し付けず「♡ で教えて / フォローでこっそり報告」型の軽い CTA',
+  empathy:   '【CTA タイプ:共感系】「私も同じ」「これ私のことだ」と思った人に向けて、「仲間集めよ」「同じ悩みの人と繋がろう」型の CTA',
+  learning:  '【CTA タイプ:学び系】「これ知りたかった」と思った人に向けて、「他の知見も拾ってね」「続編出すよ」型の知的好奇心駆動 CTA',
+  salvation: '【CTA タイプ:救済系】「救われた」「楽になった」と感じた人に向けて、「次の話も届くよ」「一緒にぶち破ろう」型の共闘感 CTA',
+  diagnosis: '【CTA タイプ:診断系】「気になる」「自分はどうなんだろう」と疑問を持った人に向けて、「続編で診断出すよ」型の謎残し型 CTA'
+};
+
 // v0.9.10:課金タイプ別の執筆指針 (paid = 学習商材型 / free = 情報提供型)
 const MONETIZATION_INSTRUCTION = {
   paid: `【記事の種類:💰 有料note(学習商材型)】
@@ -3745,6 +4089,11 @@ window.addEventListener('DOMContentLoaded', () => {
   // v0.9.10:monetization の復元(なければデフォルト 'paid')
   const savedMon = localStorage.getItem('weft_monetization');
   if (savedMon && MONETIZATION_INSTRUCTION[savedMon]) handleMonetizationSelect(savedMon);
+  // v0.11.0:構成テンプレ + CTA タイプの復元
+  const savedTpl = localStorage.getItem('weft_structureTemplate');
+  if (savedTpl && STRUCTURE_TEMPLATE_INSTRUCTION.hasOwnProperty(savedTpl)) handleStructureTemplateSelect(savedTpl);
+  const savedCta = localStorage.getItem('weft_ctaType');
+  if (savedCta && CTA_TYPE_INSTRUCTION.hasOwnProperty(savedCta)) handleCtaTypeSelect(savedCta);
   // v0.10.0:シリーズ展開モードの初期化
   setupSeriesFlowOptions();
   populatePastArticleProjects();
@@ -4446,6 +4795,15 @@ ${list}
 - 6-7:テーマの核心に関連する
 - 8-10:テーマそのものを直接扱っている
 
+【判定の重み付けヒント(v0.11.0)】
+- **テーマが恋愛・心理・脳科学系**なら、以下の研究者の論文は信頼度高め:
+  Helen Fisher(報酬系MRI)/ Lieberman 2007(affect labeling)/ Aron(自己拡張理論)/
+  Bartholomew & Horowitz 1991(愛着スタイル)/ Kross 2011(失恋の物理的痛み, PNAS)/
+  Gottman(四騎士、5:1法則)/ DeWall 2011(回避型と不貞)/ Sue Johnson EFT /
+  Tedeschi & Calhoun(PTG)/ Joel & MacDonald(両価性)
+- **テーマと明らかに別ジャンルの論文**(医学・ウイルス分類・サルコペニア・リチウム電池・ゲノム解析・タンパク質ネットワーク・建材化学 など)は **0-2 で除外**(高引用でも関連性なしと判定)
+- abstract が「テーマと無関係な医学疾患・工学現象」を扱っていれば容赦なく 0-2
+
 【出力形式 ※必ずこの形式、説明文不要】
 [0]: スコア
 [1]: スコア
@@ -4457,8 +4815,8 @@ ${list}
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + state.geminiKey;
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
-    // v0.9.11:maxOutputTokens 2048 → 4096(v0.9.10 確認時に「上限到達」エラーが出たため再増強。reasoning スペース確保)
-    generationConfig: { temperature: 0.2, maxOutputTokens: 4096 }
+    // v0.11.1:maxOutputTokens 4096 → 8192(v0.11.0 確認時にも「上限到達」エラーが出たため更に増強。25件の関連性判定 + reasoning に十分な空間を確保)
+    generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
   };
 
   let scores = {};
@@ -4825,14 +5183,25 @@ function handlePastProjectSelect() {
   if (proj.reader) document.getElementById('pastArticleReader').value = proj.reader;
 }
 
-// v0.10.0:動線タイプのラジオ選択ハンドラ
+// v0.10.0:動線タイプのラジオ選択ハンドラ(v0.11.0 で Threads フォーマットも同じ仕組み)
 function setupSeriesFlowOptions() {
-  document.querySelectorAll('.series-flow-option').forEach(opt => {
+  // 動線タイプ
+  document.querySelectorAll('.series-flow-option[data-flow]').forEach(opt => {
     opt.addEventListener('click', () => {
-      document.querySelectorAll('.series-flow-option').forEach(o => o.classList.remove('is-selected'));
+      document.querySelectorAll('.series-flow-option[data-flow]').forEach(o => o.classList.remove('is-selected'));
       opt.classList.add('is-selected');
       const radio = opt.querySelector('input[type="radio"]');
       if (radio) radio.checked = true;
+    });
+  });
+  // v0.11.0:Threads 投稿フォーマット
+  document.querySelectorAll('.series-flow-option[data-threads-fmt]').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.series-flow-option[data-threads-fmt]').forEach(o => o.classList.remove('is-selected'));
+      opt.classList.add('is-selected');
+      const radio = opt.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      state.threadsFormat = opt.dataset.threadsFmt || '4step';
     });
   });
 }
@@ -4907,6 +5276,51 @@ ${stats.pv != null ? '・PV 数:' + stats.pv + '\n' : ''}${stats.likes != null ?
     ? '数字データをもとに既存記事の弱点を3点診断する。例:「PV低い → タイトルが弱い」「PVあるのに売れない → CTA が弱い / 信頼構築不足」'
     : '本文の品質チェック(タイトルと中身の整合性、構成の抜け、フックの強さ、CTA の自然さなど)から改善案を3点提示する';
 
+  // v0.11.0:Threads 投稿フォーマット選択(SHIN さん の のうみそ式 4段スレッドを汎用化)
+  const threadsFormat = state.threadsFormat || '4step';
+  const threadsFormatLabels = {
+    '1post': '1投稿(200-300字)',
+    '2step': '2段スレッド',
+    '3step': '3段スレッド',
+    '4step': '4段スレッド(有料級)'
+  };
+  const threadsFormatLabel = threadsFormatLabels[threadsFormat] || threadsFormatLabels['4step'];
+  const threadsFormatInstructions = {
+    '1post': `【フォーマット:1投稿、200-300字】
+- 構造:あるある冒頭(共感)+ 本質的な気づき(脳科学・心理学があれば1つだけ) + 今夜できる行動1個 + 軽い CTA
+- 改行を活かして読みやすく(2-3行ごとに空行)
+- 「正直に言うと…」「これ気づいてない人多い…」のような語りかけで始める`,
+    '2step': `【フォーマット:2段スレッド】
+1/2: 共感+問題提起+「具体的には、」で次へ引く
+2/2: 対処法 + 読者への問いかけ + 軽い CTA
+- 各段は150-250字
+- 1/2 で「気になる…」を作って 2/2 で解放するリズム`,
+    '3step': `【フォーマット:3段スレッド】
+1/3: 共感冒頭(あるある)+ 引き
+2/3: 事実 / 脳科学 / データ + 対処法 + 問いかけ
+3/3: 個人体験 +「続編予告 / 関連 note 誘導」+ 軽い CTA
+- 各段150-250字`,
+    '4step': `【フォーマット:4段スレッド(有料級・最強)】
+**8要素バズり法則を必ず全部含めること**:
+① 感情フック冒頭(衝撃数値・「読み終わる頃には変わる」予告)
+② 具体数値の衝撃(86% vs 33% のような対比)
+③ 物語性(「○○大学の○○先生が40年研究」「ラブラボ」のような第三者性)
+④ 共感あるある(夜中の会いたい衝動・SNS監視 など読者の生活シーン)
+⑤ 個人体験(「ちな私も…」型、信頼性UP)
+⑥ 今夜できる行動1個(具体的、再現性)
+⑦ CTA 軽いジャブ(「やってみる人 ♡&フォロー」型、押し売り感ゼロ)
+⑧ リピート予告(「これからも投下していく」型、フォロー誘発)
+
+構造:
+1/4: ①感情フック導入 + ②衝撃数値(=「6年後、彼と一緒にいられるか…」型)
+2/4: ③物語性 / 研究の深さ(=「○○大学が40年追跡」型)
+3/4: ②具体データ + 対処法 + ④共感あるある
+4/4: ⑤個人体験 + ⑥今夜の行動 + ⑦CTA軽いジャブ + ⑧リピート予告
+
+各段:200-350字、改行を活かし2-3行ごとに空行`
+  };
+  const threadsFormatInstruction = threadsFormatInstructions[threadsFormat] || threadsFormatInstructions['4step'];
+
   return `あなたは note ビジネスの戦略コンサルタントです。既存記事を起点に、読者を逃さず次の記事へ繋ぐ **シリーズ展開** を設計してください。
 
 【既存記事のタイトル】
@@ -4959,12 +5373,12 @@ ${flowType === 'funnel' ? `**Step 3:ファネル設計(5本連載のロードマ
 - 5本目【販売】:ゴール = 有料 note / メルマガ登録(無料リード磁石 or 有料商品)
 各記事に「役割」「派生記事5本のどれを当てるか」「次の記事への動線設計」を明記。
 
-` : ''}**Step ${flowType === 'funnel' ? '4' : '3'}:Threads 投稿候補**
-派生記事5本それぞれについて、Threads に投稿できる **集客フック**(150字以内、改行を活かす)を1個ずつ提案。投稿の型は以下から最適なもの:
-- 脆弱性の開示(「正直に言うと…」)
-- 意味の書き換え(「○○じゃなくて△△だった」)
-- 問いかけ(「最近こう感じてない?」)
-末尾に「続きは note で 🔗」を含める。
+` : ''}**Step ${flowType === 'funnel' ? '4' : '3'}:Threads 投稿候補(フォーマット:${threadsFormatLabel})**
+派生記事5本それぞれについて、Threads に投稿できる **集客フック** を1個ずつ提案する。指定フォーマットに従うこと:
+
+${threadsFormatInstruction}
+
+末尾には「続きは note で 🔗」または「@アカウント / プロフィール」への自然な誘導を含める。煽りすぎない、共感ベース。
 
 **Step ${flowType === 'funnel' ? '5' : '4'}:既存記事の改善診断**
 ${diagnosisInstruction}。各改善案には「具体的に何を変えるか」を1行で添える。
@@ -5029,9 +5443,63 @@ ${flowType === 'funnel' ? `## Step 3:ファネル設計
 }
 
 // v0.10.0:シリーズ展開結果を整形表示
+// v0.10.2:派生記事のタイトルを抽出して、ワンクリックで自由入力に転送できるようにする
+function extractSeriesArticleTitles(text) {
+  const titles = [];
+  // 「### 1.【深掘り編】タイトル本体」「### 2. 【対比編】タイトル本体」などにマッチ(全角/半角ピリオド、スペース有無に寛容)
+  const re = /^###\s+(\d+)[\.\.\、]?\s*【([^】]+)】\s*(.+?)$/gm;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    titles.push({ num: m[1], type: m[2], title: m[3].trim() });
+  }
+  return titles;
+}
+
+// v0.10.2:派生記事タイトルを「📝 自由入力」タブに転送 → リサーチ&分析の準備完了状態に
+function transferSeriesArticleToTheme(encodedTitle, type) {
+  let title;
+  try { title = decodeURIComponent(encodedTitle); } catch (e) { title = encodedTitle; }
+  // 自由入力タブに切替
+  if (typeof switchThemeTab === 'function') switchThemeTab('free');
+  // テーマ入力欄に転送
+  const themeInput = document.getElementById('themeInput');
+  if (themeInput) {
+    themeInput.value = title;
+    themeInput.focus();
+  }
+  // Section 02 にスクロール
+  const themeSection = document.getElementById('themeSection');
+  if (themeSection) {
+    // section が折りたたまれていれば開く(v0.9.11 対応)
+    themeSection.classList.remove('is-collapsed');
+    themeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if (typeof toast === 'function') {
+    toast(`【${type}】「${title.length > 30 ? title.slice(0, 30) + '…' : title}」を自由入力に転送しました`);
+  }
+}
+
 function renderSeriesExpansion(text) {
   const wrap = document.getElementById('seriesResultContent');
   if (!wrap) return;
+
+  // v0.10.2:派生記事タイトルを抽出 → ワンクリック転送ボタン群を上部に表示
+  const titles = extractSeriesArticleTitles(text);
+  let transferPanelHtml = '';
+  if (titles.length > 0) {
+    const buttons = titles.map(t => {
+      const enc = encodeURIComponent(t.title);
+      const safeType = (t.type || '').replace(/'/g, "&#39;");
+      const safeTitle = (t.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return `<button type="button" class="series-transfer-btn" onclick="transferSeriesArticleToTheme('${enc}', '${safeType}')"><span class="series-transfer-num">${t.num}.</span> <span class="series-transfer-type">【${safeType}】</span> <span class="series-transfer-title">${safeTitle}</span> <span class="series-transfer-arrow">→</span></button>`;
+    }).join('');
+    transferPanelHtml = `<div class="series-transfer-panel">
+      <h4>📝 派生記事から本文化を始める(ワンクリック転送)</h4>
+      <div class="series-transfer-buttons">${buttons}</div>
+      <p class="series-transfer-hint">↑ クリックすると「📝 自由入力」タブにタイトルが自動入力されます。そのまま「リサーチ&分析」を実行すると、その派生記事の本文化フローに進めます。</p>
+    </div>`;
+  }
+
   // マークダウンを最低限の HTML に変換(改行・太字・h2/h3)
   const html = text
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -5040,7 +5508,7 @@ function renderSeriesExpansion(text) {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n\n/g, '</div>\n\n<div class="series-result-text">')
     .replace(/\n/g, '<br>');
-  wrap.innerHTML = '<div class="series-result-text">' + html + '</div>';
+  wrap.innerHTML = transferPanelHtml + '<div class="series-result-text">' + html + '</div>';
 }
 
 function populateMajorOptions() {
@@ -5836,6 +6304,9 @@ function buildStructurePrompt() {
     ? '🆓 無料note(情報提供型:視点・気づきで完結、その記事だけで読者を満足させる)'
     : '💰 有料note(学習商材型:診断・手順・テンプレ・FAQ込みで実践できる構造)';
   const monetizationRule = MONETIZATION_INSTRUCTION[state.monetization] || MONETIZATION_INSTRUCTION.paid;
+  // v0.11.0:構成テンプレ
+  const structureTplRule = STRUCTURE_TEMPLATE_INSTRUCTION[state.structureTemplate] || '';
+  const structureTplBlock = structureTplRule ? '\n\n' + structureTplRule : '';
 
   return `あなたは note 記事の編集者です。以下の **すべての素材** から、note 記事の構成案を1つ提示してください。
 
@@ -5849,7 +6320,7 @@ ${state.reader || '(指定なし)'}${titleBlock}
 【記事の種類】${monetizationLabel}
 【目標字数】${lengthLabel}${perspectiveBlock}
 
-${monetizationRule}
+${monetizationRule}${structureTplBlock}
 
 【リサーチで判明したパターン】
 ${state.analysis.patterns}
@@ -5978,12 +6449,36 @@ ${state.analysis.gap}${chiebukuroBlock}${papersBlock}${perspectiveBlock}
 function handleLengthSelect(value) {
   if (!BODY_LENGTH_TOKENS[value]) return;
   state.bodyLength = value;
-  document.querySelectorAll('.length-option').forEach(el => {
+  document.querySelectorAll('.length-option[data-len]').forEach(el => {
     el.classList.toggle('is-selected', el.dataset.len === value);
   });
   const radio = document.querySelector(`.length-option[data-len="${value}"] input[type="radio"]`);
   if (radio) radio.checked = true;
   localStorage.setItem('weft_bodyLength', value);
+}
+
+// v0.11.0:構成テンプレ選択
+function handleStructureTemplateSelect(value) {
+  if (!STRUCTURE_TEMPLATE_INSTRUCTION.hasOwnProperty(value)) return;
+  state.structureTemplate = value;
+  document.querySelectorAll('.length-option[data-stpl]').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.stpl === value);
+  });
+  const radio = document.querySelector(`.length-option[data-stpl="${value}"] input[type="radio"]`);
+  if (radio) radio.checked = true;
+  localStorage.setItem('weft_structureTemplate', value);
+}
+
+// v0.11.0:CTA タイプ選択
+function handleCtaTypeSelect(value) {
+  if (!CTA_TYPE_INSTRUCTION.hasOwnProperty(value)) return;
+  state.ctaType = value;
+  document.querySelectorAll('.length-option[data-cta]').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.cta === value);
+  });
+  const radio = document.querySelector(`.length-option[data-cta="${value}"] input[type="radio"]`);
+  if (radio) radio.checked = true;
+  localStorage.setItem('weft_ctaType', value);
 }
 
 function handleTypeSelect(value) {
@@ -6041,12 +6536,20 @@ function handleStyleToggle() {
 
 function clearStyleProfile() {
   if (!confirm('文体プロファイルをすべて消去しますか?(取り消せません)')) return;
-  state.styleProfile = { enabled: false, articles: ['', '', ''] };
+  state.styleProfile = {
+    enabled: false, articles: ['', '', ''],
+    personaName: '', tagline: '', catchphrases: '', emojis: '', selfIntro: ''
+  };
   for (let i = 0; i < 3; i++) {
     const el = document.getElementById('styleArticle' + i);
     if (el) el.value = '';
     updateStyleCount(i);
   }
+  // v0.11.0:ペルソナ詳細もクリア
+  ['stylePersonaName', 'styleTagline', 'styleCatchphrases', 'styleEmojis', 'styleSelfIntro'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   document.getElementById('styleEnabled').checked = false;
   persistStyleProfile();
 }
@@ -6054,7 +6557,24 @@ function clearStyleProfile() {
 function persistStyleProfile() {
   localStorage.setItem('weft_styleProfile', JSON.stringify(state.styleProfile));
   updateStyleStatusBadge();
+  updatePersonaStatusBadge(); // v0.11.1
   flashSaveHint();
+}
+
+// v0.11.1:ペルソナ情報のステータスバッジ更新(独立セクション化されたので個別管理)
+function updatePersonaStatusBadge() {
+  const badge = document.getElementById('personaStatusBadge');
+  if (!badge) return;
+  const sp = state.styleProfile;
+  const filled = ['personaName', 'tagline', 'catchphrases', 'emojis', 'selfIntro']
+    .filter(k => (sp[k] || '').trim().length > 0).length;
+  if (filled === 0) {
+    badge.textContent = '未設定';
+    badge.className = 'settings-status status-missing';
+  } else {
+    badge.textContent = `${filled}/5 項目入力済み`;
+    badge.className = 'settings-status status-ok';
+  }
 }
 
 function loadStyleProfile() {
@@ -6070,9 +6590,44 @@ function loadStyleProfile() {
       if (el) el.value = state.styleProfile.articles[i];
       updateStyleCount(i);
     }
+    // v0.11.0:ペルソナ情報を復元
+    state.styleProfile.personaName = parsed.personaName || '';
+    state.styleProfile.tagline = parsed.tagline || '';
+    state.styleProfile.catchphrases = parsed.catchphrases || '';
+    state.styleProfile.emojis = parsed.emojis || '';
+    state.styleProfile.selfIntro = parsed.selfIntro || '';
+    const personaInputs = {
+      'stylePersonaName': 'personaName',
+      'styleTagline': 'tagline',
+      'styleCatchphrases': 'catchphrases',
+      'styleEmojis': 'emojis',
+      'styleSelfIntro': 'selfIntro'
+    };
+    Object.entries(personaInputs).forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = state.styleProfile[key] || '';
+    });
     document.getElementById('styleEnabled').checked = state.styleProfile.enabled;
     updateStyleStatusBadge();
+    updatePersonaStatusBadge(); // v0.11.1
   } catch (e) { console.warn('styleProfile load failed', e); }
+}
+
+// v0.11.0:ペルソナ情報の入力ハンドラ
+function handleStylePersonaInput(key) {
+  const idMap = {
+    personaName: 'stylePersonaName',
+    tagline: 'styleTagline',
+    catchphrases: 'styleCatchphrases',
+    emojis: 'styleEmojis',
+    selfIntro: 'styleSelfIntro'
+  };
+  const id = idMap[key];
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  state.styleProfile[key] = el.value;
+  persistStyleProfile();
 }
 
 function updateStyleStatusBadge() {
@@ -6106,14 +6661,27 @@ function flashSaveHint() {
 
 function buildStyleBlock() {
   if (!state.styleProfile.enabled) return '';
-  const articles = state.styleProfile.articles
-    .map(a => (a || '').trim())
-    .filter(a => a.length >= 100);
-  if (articles.length === 0) return '';
-  const body = articles.map((text, i) =>
-    `▼ 過去記事${i+1}\n${text}`
-  ).join('\n\n');
-  return `\n\n【あなたの過去記事 ※文体・語彙・トーンの参照源】\n${body}\n\n上記はあなた自身が書いた過去記事です。新記事を書く際は、これらの「文章のリズム、語彙、句読点の打ち方、章のテンポ、語尾」を引き継いでください。一方で、過去記事の固有名詞や具体的な事例は新記事に持ち込まないでください(別テーマなので)。引き継ぐのは「書き手の声」だけです。`;
+  const sp = state.styleProfile;
+  const articles = sp.articles.map(a => (a || '').trim()).filter(a => a.length >= 100);
+
+  // v0.11.0:ペルソナ情報ブロック(過去記事と独立、片方だけでも有効)
+  const personaParts = [];
+  if (sp.personaName)  personaParts.push('■ ペルソナ名 / 名乗り:' + sp.personaName);
+  if (sp.tagline)      personaParts.push('■ タグライン(締めに自然に使う):' + sp.tagline);
+  if (sp.catchphrases) personaParts.push('■ 口癖・語感:' + sp.catchphrases);
+  if (sp.emojis)       personaParts.push('■ よく使う絵文字(本文に自然に挿入):' + sp.emojis);
+  if (sp.selfIntro)    personaParts.push('■ 著者紹介(本文の自己紹介セクションで使う):\n' + sp.selfIntro);
+  const personaBlock = personaParts.length > 0
+    ? `\n\n【ペルソナ情報 ※書き手の声・キャラを統一】\n${personaParts.join('\n')}\n\n上記のペルソナ要素を、新記事の自己紹介・章の語り・末尾の締めに自然に組み込んでください。ただし押し付けがましくならない範囲で。`
+    : '';
+
+  // 過去記事ブロック
+  const articlesBlock = articles.length > 0
+    ? `\n\n【あなたの過去記事 ※文体・語彙・トーンの参照源】\n${articles.map((text, i) => `▼ 過去記事${i+1}\n${text}`).join('\n\n')}\n\n上記はあなた自身が書いた過去記事です。新記事を書く際は、これらの「文章のリズム、語彙、句読点の打ち方、章のテンポ、語尾」を引き継いでください。一方で、過去記事の固有名詞や具体的な事例は新記事に持ち込まないでください(別テーマなので)。引き継ぐのは「書き手の声」だけです。`
+    : '';
+
+  if (!personaBlock && !articlesBlock) return '';
+  return personaBlock + articlesBlock;
 }
 
 async function regenerateTitles() {
@@ -6331,6 +6899,11 @@ ${state.papers.map(p => {
     ? '🆓 無料note(情報提供型)'
     : '💰 有料note(学習商材型)';
   const monetizationRule = MONETIZATION_INSTRUCTION[state.monetization] || MONETIZATION_INSTRUCTION.paid;
+  // v0.11.0:構成テンプレ + CTA タイプ
+  const structureTplRule = STRUCTURE_TEMPLATE_INSTRUCTION[state.structureTemplate] || '';
+  const structureTplSection = structureTplRule ? '\n────────────────────────────────────\n📋 構成テンプレ\n────────────────────────────────────\n\n' + structureTplRule + '\n' : '';
+  const ctaTypeRule = CTA_TYPE_INSTRUCTION[state.ctaType] || '';
+  const ctaTypeSection = ctaTypeRule ? '\n' + ctaTypeRule + '\n末尾の CTA はこのタイプで書くこと(押し売り感ゼロ、共感ベース)。\n' : '';
 
   // 構造ルール(記事タイプ別)
   const structureRule = STRUCTURE_RULES[state.articleType] || STRUCTURE_RULES.practical;
@@ -6387,7 +6960,7 @@ ${videoSection}${chiebukuroSection}${papersSection}${styleBlock ? '\n' + styleBl
 【構成案 ※この骨格で書く(読みやすさのため微調整は可)】
 ${state.finalStructure || state.analysis.structure}
 
-${state.monetization === 'free' ? `────────────────────────────────────
+${structureTplSection}${ctaTypeSection}${state.monetization === 'free' ? `────────────────────────────────────
 🆓 無料 note の構造ルール
 ────────────────────────────────────
 

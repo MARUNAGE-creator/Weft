@@ -15,7 +15,7 @@
 
 ## 現在の状態
 
-- **バージョン:** v0.10.1(マニュアルタブ追加:機能カード+トークン消費表+裏技6本、配布版・GitHub Pages 公開済み)
+- **バージョン:** v0.11.1(ペルソナ独立セクション化 + 論文フィルタ maxTokens 再々増強、配布版・GitHub Pages 公開済み)
 - **公開 URL:** https://marunage-creator.github.io/Weft/
 - **リポジトリ:** https://github.com/MARUNAGE-creator/Weft(Public)
 - **次のマイルストーン:** 実テスターからのフィードバック収集と対応 → モバイル最適化 or マネタイズ準備
