@@ -2338,6 +2338,149 @@ footer .accent { color: var(--madder); }
   .section-title { font-size: 24px; }
   .article-output { padding: 28px 24px; }
 }
+
+/* ============================================================ */
+/* v0.11.2:モバイル最適化(D-1)スマホで実機確認しやすく整える   */
+/* ============================================================ */
+
+/* iOS の自動ズーム回避:入力欄のフォントサイズを 16px 以上に保つ */
+@media (max-width: 720px) {
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  input[type="email"],
+  input[type="date"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* タブレット〜小スマホ(560px 以下) */
+@media (max-width: 560px) {
+  /* アプリ全体タブ:padding 縮小、フォント抑え気味、サブテキスト改行 */
+  .app-tabs { box-shadow: 0 2px 8px rgba(26, 34, 56, 0.08); }
+  .app-tab {
+    padding: 12px 10px;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .app-tab.is-active { letter-spacing: 0.04em; font-size: 15px; }
+  .app-tab-sub { font-size: 10px; display: block; opacity: 0.85; }
+
+  /* メイン余白を縮小 */
+  .main-wrap { padding: 24px 16px 80px; }
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 22px; }
+  .section-desc { font-size: 13px; }
+  .section-num { font-size: 10px; }
+
+  /* テーマタブ(自由入力/カテゴリ/既存記事):横スクロール許可 */
+  .theme-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .theme-tab { white-space: nowrap; flex-shrink: 0; }
+
+  /* カテゴリ select 3列:強制的に縦並び */
+  .category-selectors-row { flex-direction: column !important; gap: 12px !important; }
+
+  /* 記事の長さ・CTA タイプ・構成テンプレ:1列に */
+  .length-options { grid-template-columns: 1fr !important; }
+  .length-option { padding: 12px 14px; }
+
+  /* 記事の種類(2タイル)、記事タイプ(2タイル):1列に */
+  .type-options { grid-template-columns: 1fr !important; }
+
+  /* シリーズ展開モードの動線タイプ・Threads フォーマット:1列に(既に対応済みだが念のため) */
+  .series-flow-options { grid-template-columns: 1fr !important; }
+
+  /* ペルソナグリッド、改善診断数字:1列に */
+  .persona-grid,
+  .series-stats-grid { grid-template-columns: 1fr !important; }
+
+  /* シリーズ展開モードの内部レイアウト */
+  .series-row { flex-direction: column; }
+  .series-row .field { width: 100%; min-width: 0; }
+  .series-intro { font-size: 12.5px; padding: 10px 12px; }
+  .series-flow-section { padding: 12px; }
+  .series-flow-title { font-size: 13px; }
+  .series-flow-desc { font-size: 11.5px; }
+
+  /* フローティング目次:小型化 */
+  .floating-toc {
+    bottom: 8px;
+    right: 8px;
+    padding: 5px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: calc(100vw - 16px);
+    gap: 3px;
+  }
+  .floating-toc-title { display: none; }
+  .toc-chip { padding: 4px 7px; font-size: 10.5px; }
+
+  /* 設定パネルの summary を読みやすく */
+  .settings-panel > summary { padding: 14px 16px; font-size: 14px; }
+  .settings-body { padding: 16px; }
+  .callout { font-size: 12.5px; padding: 10px 12px; }
+
+  /* 文体プロファイル(過去記事3スロット):縦並び */
+  .style-slots { grid-template-columns: 1fr !important; }
+
+  /* マニュアルの token-table:横スクロール許可 */
+  .manual-token-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    font-size: 11px;
+  }
+  .manual-token-table th,
+  .manual-token-table td { padding: 5px 7px; }
+
+  /* マニュアル機能カード:padding 縮小 */
+  .manual-feature summary { padding: 10px 12px; font-size: 13.5px; }
+  .manual-feature dl { padding: 4px 14px 14px; }
+  .manual-trick { padding: 12px 14px; }
+  .manual-trick h3 { font-size: 14.5px; }
+
+  /* シリーズ展開ワンクリック転送ボタン:折り返し許可 */
+  .series-transfer-btn { font-size: 12.5px; padding: 10px 12px; }
+  .series-transfer-title { font-size: 12.5px; }
+
+  /* 構造編集エディタの高さ抑え */
+  .structure-textarea { min-height: 220px; }
+
+  /* ボタン共通の padding 抑制 */
+  .btn { padding: 12px 16px; font-size: 14px; }
+
+  /* 待機パネル */
+  .wait-panel { padding: 16px; }
+  .wait-callout { padding: 10px 12px; font-size: 12.5px; }
+}
+
+/* 極小スマホ(420px 以下) */
+@media (max-width: 420px) {
+  .app-tab { padding: 10px 6px; font-size: 14px; }
+  .app-tab-sub { font-size: 9.5px; }
+  .main-wrap { padding: 20px 12px 70px; }
+  .section-title { font-size: 20px; }
+  .section { margin-bottom: 28px; }
+
+  /* タブレット〜PC で大きめのフォントを抑える */
+  .lead, .section-desc { font-size: 13px; }
+  .feature-list li { font-size: 13px; }
+
+  /* リサーチオプションの説明文 */
+  .research-option-hint { font-size: 11.5px; }
+
+  /* 詳細キーワード等の入力欄:余白縮小 */
+  .field { margin-bottom: 12px; }
+}
 </style>
 </head>
 <body>
@@ -2361,7 +2504,7 @@ footer .accent { color: var(--madder); }
     <span class="logo-mark">Weft</span>
     <span class="tagline">横糸を、あなたの言葉に</span>
   </div>
-  <span class="version-tag">v0.11.1 / ペルソナ独立セクション化 + 論文フィルタ maxTokens 再々増強</span>
+  <span class="version-tag">v0.11.2 / テンプレ指示文残し抑制 + 架空note誘導禁止 + モバイル最適化(D-1)</span>
 </header>
 
 <main class="main-wrap">
@@ -4016,7 +4159,22 @@ const STRUCTURE_TEMPLATE_INSTRUCTION = {
 - 13セクションすべてを順番通りに含めること
 - 「### N. セクション名」のマークダウン見出しで各セクションを明示
 - セクション 6(有料境界)は **有料note のみ**(無料の場合はスキップして 7 に進む)
-- 各セクションは構成案では2〜3行のポイント、本文生成時に肉付けされる`
+- 各セクションは構成案では2〜3行のポイント、本文生成時に肉付けされる
+
+【v0.11.2:絶対禁止 ※読者が見る本文に絶対残してはいけないもの】
+- **「[ここに〜してください]」「[あなたの〜に置き換えてください]」のような編集指示文** ← 本文に絶対残すな
+- **「[著者の経歴]」「[この段落は…]」のようなテンプレ穴埋め指示** ← 本文に絶対残すな
+- **「※ここを編集してください」「(著者情報を入力)」のような注記** ← 本文に絶対残すな
+- **「あなたの実績を入れる」のような二人称ユーザー指示** ← 本文に絶対残すな
+
+【ペルソナ情報が空の場合の挙動】
+- 著者紹介の素材(名乗り・タグライン・著者紹介)が **何も渡されていない場合**:
+  - 「[ここに著者情報を入れてください]」ではなく、**「この記事を書いている私自身も、同じ悩みを抱えてきた一人です。〜」のような汎用的な書き出し** で 200-300字書く
+  - または、**著者紹介セクションを丸ごと省略**(③ 向いてる人〜 にスキップ)も許容
+- 名乗り(ペルソナ名)があれば、その名前で「私(○○)は〜」と書く
+- タグライン があれば、末尾の「10. おわりに」で自然に1度だけ使う
+- 過去記事(文体プロファイル)があれば、その文体・語彙・リズムを継承
+- いずれも空なら、汎用的かつ誠実な書き手として書く(指示文を残すな、空のままにするな)`
 };
 
 // v0.11.0:CTA 軽いジャブ 5パターン(SHIN さん「のうみそ式」を汎用化)
@@ -6994,6 +7152,26 @@ ${state.monetization === 'free' ? `- まとめ(その記事の核心を3〜5点�
 - 誇大:「驚くべきことに」「画期的な」「世界初」
 - 規約違反気味:「絶対」「100%」「必ず稼げる」
 - 怪しい煽り:「これを知らないと損する」「衝撃の事実」
+
+────────────────────────────────────
+🚨 本文に絶対残してはいけないテンプレ指示文(v0.11.2)
+────────────────────────────────────
+読者が本文を読む時、以下のような **編集指示文 / プレースホルダ / 二人称ユーザー指示** が残っていると致命的に信頼を失う。**最終出力に絶対残すな**:
+
+- 「[この段落は〜してください]」「[あなたの〜に置き換えてください]」
+- 「[ここに〜を入れる]」「[著者の経歴・実績]」
+- 「※編集時に〜」「(本文に著者情報を入力)」
+- 「あなたの実績を反映する」「ご自身の〜に書き換え」のような二人称ユーザー指示
+
+【ペルソナ情報や著者紹介が渡されていない場合】
+- 著者紹介セクションは **「この記事を書いている私自身も、同じ悩みを抱えてきた一人です。〜」のような汎用的・誠実な書き出し** で書く(200-300字)
+- 名乗りが渡されていれば「私(○○)」と書く
+- 何も書けない場合は **セクションを省略** する(指示文を残すぐらいなら省略の方が良い)
+- 「[ここに〜]」を残すのは **絶対禁止**、Gemini は本文に直接書き手として埋める責任を負う
+
+【関連 note 誘導(P.S.2)が渡されていない場合】
+- 実在しない記事タイトルを **創作して並べてはいけない**(読者が探して見つからないと信頼崩壊)
+- 関連記事の素材がない場合、P.S.2 を「執筆中の続編予告」または **セクションごと省略** する
 
 ${CTA_EXAMPLES}
 
