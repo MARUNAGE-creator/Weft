@@ -587,6 +587,148 @@ section.section.is-collapsed .section-desc {
   line-height: 1.65;
 }
 
+/* ===== v0.11.7:出力タブ統一パネル ===== */
+.output-tabs-panel {
+  margin-top: 28px;
+  padding: 18px 18px 16px;
+  background: var(--cream-light);
+  border: 1px solid var(--cream-dark);
+  border-radius: 12px;
+}
+.output-tabs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.output-tabs-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--indigo-deep);
+  font-family: var(--font-display);
+}
+.output-tabs-actions {
+  display: flex;
+  gap: 6px;
+}
+.output-tabs-actions .btn {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.output-tab-bar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--cream-dark);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.output-tab {
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--susutake);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease;
+}
+.output-tab:hover {
+  color: var(--indigo-deep);
+}
+.output-tab.is-active {
+  color: var(--madder);
+  border-bottom-color: var(--madder);
+}
+.output-tab-body {
+  min-height: 200px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: var(--cream);
+  border: 1px solid var(--cream-dark);
+  border-radius: 8px;
+  padding: 16px;
+}
+.output-tab-content {
+  display: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--indigo-deep);
+}
+.output-tab-content.is-active {
+  display: block;
+}
+.output-tab-empty {
+  color: var(--susutake);
+  font-style: italic;
+  font-family: var(--font-body);
+}
+.output-tab-footer-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--susutake);
+}
+
+/* ===== v0.11.6:導入・CTA 独立生成パネル ===== */
+.intro-cta-panel {
+  margin-bottom: 20px;
+}
+.intro-cta-panel details {
+  background: var(--cream-light);
+  border: 1px solid var(--cream-dark);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.intro-cta-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--indigo-deep);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-cta-panel summary::-webkit-details-marker {
+  display: none;
+}
+.intro-cta-panel summary::before {
+  content: "▶";
+  display: inline-block;
+  font-size: 10px;
+  color: var(--madder);
+  transition: transform .2s ease;
+}
+.intro-cta-panel details[open] summary::before {
+  transform: rotate(90deg);
+}
+.intro-cta-body {
+  margin-top: 12px;
+}
+.intro-cta-hint {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: var(--susutake);
+  line-height: 1.6;
+}
+.intro-cta-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--indigo-deep);
+}
+.intro-cta-confirm-hint {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.5;
+}
+
 /* ===== v0.4.0:プロンプトエクスポートパネル ===== */
 .export-panel {
   margin-bottom: 20px;
@@ -1030,6 +1172,20 @@ section.section.is-collapsed .section-desc {
   font-size: 11.5px;
   color: var(--susutake);
   line-height: 1.5;
+}
+/* v0.11.8:長さオプション内の警告バッジ(外部 AI 推奨ラベル) */
+.length-warning-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: #b54a2c;
+  background: rgba(201, 120, 91, 0.12);
+  border: 1px solid rgba(201, 120, 91, 0.35);
+  border-radius: 10px;
+  vertical-align: middle;
 }
 @media (max-width: 600px) {
   .length-options { grid-template-columns: 1fr; }
@@ -2504,7 +2660,7 @@ footer .accent { color: var(--madder); }
     <span class="logo-mark">Weft</span>
     <span class="tagline">横糸を、あなたの言葉に</span>
   </div>
-  <span class="version-tag">v0.11.2 / テンプレ指示文残し抑制 + 架空note誘導禁止 + モバイル最適化(D-1)</span>
+  <span class="version-tag">v0.11.8 / 字数オプション8段階に拡張(2k〜40k 字、20k 以上は外部AIプロンプト推奨)</span>
 </header>
 
 <main class="main-wrap">
@@ -3151,6 +3307,88 @@ footer .accent { color: var(--madder); }
             <div class="length-option-reason">バイブル / シリーズ用決定版。<strong>構成だけ作って外部 AI で本文生成</strong>する運用が現実的。</div>
           </div>
         </label>
+        <label class="length-option" data-len="giant">
+          <input type="radio" name="bodyLength" value="giant" onchange="handleLengthSelect('giant')">
+          <div class="length-option-body">
+            <div class="length-option-title">巨大 <span class="length-warning-badge">⚠ 外部AI推奨</span></div>
+            <div class="length-option-meta">〜 20,000字</div>
+            <div class="length-option-reason">章を厚く積層する超長尺。Weft 内 Gemini では <strong>切れリスク非常に高い</strong>。<strong>Claude / ChatGPT Pro へエクスポート</strong>して書かせるのが現実的。プロンプトには字数指定がそのまま入る。</div>
+          </div>
+        </label>
+        <label class="length-option" data-len="huge">
+          <input type="radio" name="bodyLength" value="huge" onchange="handleLengthSelect('huge')">
+          <div class="length-option-body">
+            <div class="length-option-title">超巨大 <span class="length-warning-badge">⚠ 外部AI必須</span></div>
+            <div class="length-option-meta">〜 30,000字</div>
+            <div class="length-option-reason">マニュアル級。診断・テンプレ・FAQ をフル装備。<strong>外部 AI(Claude Sonnet / GPT-5 Pro)必須</strong>。Weft 内生成では実用に耐えない。</div>
+          </div>
+        </label>
+        <label class="length-option" data-len="mammoth">
+          <input type="radio" name="bodyLength" value="mammoth" onchange="handleLengthSelect('mammoth')">
+          <div class="length-option-body">
+            <div class="length-option-title">書籍級 <span class="length-warning-badge">⚠ 外部AI必須</span></div>
+            <div class="length-option-meta">〜 40,000字</div>
+            <div class="length-option-reason">フルマニュアル / 書籍級バイブル。導入 → 理論 → 実践 → 応用 → ケース → 付録 のフルレンジ。<strong>外部 AI(Claude Sonnet 200K context)推奨</strong>。Weft はプロンプト作成専用で使う。</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- v0.11.4:文体プリセット選択(5タイプ、過去記事ベースの文体プロファイルとは併用可能) -->
+    <div class="length-selector" id="stylePresetSelector">
+      <div class="length-selector-header">
+        <h3>文体プリセット</h3>
+        <span class="length-hint">本文のトーン・語り口・密度を5タイプから選びます。過去記事の文体プロファイル(任意)とは併用可能で、プリセット=トーン、過去記事=語彙リズム の役割分担になります</span>
+      </div>
+      <div class="length-options" id="stylePresetOptions">
+        <label class="length-option is-selected" data-stylep="none">
+          <input type="radio" name="stylePreset" value="none" checked onchange="handleStylePresetSelect('none')">
+          <div class="length-option-body">
+            <div class="length-option-title">🤖 指定なし</div>
+            <div class="length-option-meta">DEFAULT</div>
+            <div class="length-option-reason">プリセット指示なし。過去記事の文体プロファイル(任意)に完全に委ねる、または AI 任意のトーンで書かせる。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stylep="natural">
+          <input type="radio" name="stylePreset" value="natural" onchange="handleStylePresetSelect('natural')">
+          <div class="length-option-body">
+            <div class="length-option-title">🌿 やさしい解説型</div>
+            <div class="length-option-meta">敬体 / 結論先出し / 改行多め</div>
+            <div class="length-option-reason">幅広い読者向け。過度な装飾なし、誠実なトーンで一貫。最も無難に効くタイプ。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stylep="empathy">
+          <input type="radio" name="stylePreset" value="empathy" onchange="handleStylePresetSelect('empathy')">
+          <div class="length-option-body">
+            <div class="length-option-title">💗 共感ストーリー型</div>
+            <div class="length-option-meta">二人称 / 場面描写 / 感情曲線</div>
+            <div class="length-option-reason">「これ私のことだ」と没入させる文体。体験談・悩み解決・読み物系に最適。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stylep="practical">
+          <input type="radio" name="stylePreset" value="practical" onchange="handleStylePresetSelect('practical')">
+          <div class="length-option-body">
+            <div class="length-option-title">📋 実務マニュアル型</div>
+            <div class="length-option-meta">STEP / 指示形 / 箇条書き</div>
+            <div class="length-option-reason">「明日からやれる」感を最大化。実用ノウハウ系・チュートリアル系に最適。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stylep="sharp">
+          <input type="radio" name="stylePreset" value="sharp" onchange="handleStylePresetSelect('sharp')">
+          <div class="length-option-body">
+            <div class="length-option-title">⚡ 甘やかさない断定型</div>
+            <div class="length-option-meta">断定 / 根拠ベース / 媚びない</div>
+            <div class="length-option-reason">読者の甘い前提を真正面から否定。本気の改善を促す層・上級者向け記事に。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stylep="formal">
+          <input type="radio" name="stylePreset" value="formal" onchange="handleStylePresetSelect('formal')">
+          <div class="length-option-body">
+            <div class="length-option-title">📘 書籍級フォーマル型</div>
+            <div class="length-option-meta">章番号 / 【ポイント】 / である調</div>
+            <div class="length-option-reason">書籍的な重厚感。高単価マニュアル・有料note の決定版風に。</div>
+          </div>
+        </label>
       </div>
     </div>
 
@@ -3227,6 +3465,30 @@ footer .accent { color: var(--madder); }
             <div class="length-option-reason">リサーチ結果 + 記事タイプ + 素材から AI が最適な章立てを毎回設計。汎用的に良い構成が出る。</div>
           </div>
         </label>
+        <label class="length-option" data-stpl="prep-plus">
+          <input type="radio" name="structureTemplate" value="prep-plus" onchange="handleStructureTemplateSelect('prep-plus')">
+          <div class="length-option-body">
+            <div class="length-option-title">⚡ PREP+ 型</div>
+            <div class="length-option-meta">結論→理由→設計→具体→注意→まとめ</div>
+            <div class="length-option-reason">実用ノウハウの王道フレーム。読者を最短で「答え」に到達させ、具体例と注意点で行動可能にする。チュートリアル・解説系に最適。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stpl="pasona">
+          <input type="radio" name="structureTemplate" value="pasona" onchange="handleStructureTemplateSelect('pasona')">
+          <div class="length-option-body">
+            <div class="length-option-title">🎯 PASONA 型</div>
+            <div class="length-option-meta">Problem→Agitation→Solution→Narrowing→Action</div>
+            <div class="length-option-reason">セールスライティングの古典フレーム。問題提起 → 損失回避 → 解決策 → 絞り込み → 行動喚起 で感情を順に動かす。マネタイズ系・行動誘発系に最適。</div>
+          </div>
+        </label>
+        <label class="length-option" data-stpl="story-journey">
+          <input type="radio" name="structureTemplate" value="story-journey" onchange="handleStructureTemplateSelect('story-journey')">
+          <div class="length-option-body">
+            <div class="length-option-title">📖 体験談→学び→再現手順→導線</div>
+            <div class="length-option-meta">物語型フレーム</div>
+            <div class="length-option-reason">著者の固有体験を起点に、読者にも普遍化された学びと行動を渡す物語型。エッセイ + 実用のハイブリッド。読み物系・共感系に最適。</div>
+          </div>
+        </label>
         <label class="length-option" data-stpl="paid-template-v1">
           <input type="radio" name="structureTemplate" value="paid-template-v1" onchange="handleStructureTemplateSelect('paid-template-v1')">
           <div class="length-option-body">
@@ -3292,6 +3554,45 @@ footer .accent { color: var(--madder); }
       </details>
     </div>
 
+    <!-- v0.11.6:導入・CTA を本文生成より先に独立生成して確定する仕組み(任意・スキップ可) -->
+    <div class="intro-cta-panel" id="introCtaPanel">
+      <details>
+        <summary>
+          <span>🎯 導入・CTA だけ先に詰める <span class="badge optional">任意</span> <span class="badge token-light">🟢 軽い</span></span>
+        </summary>
+        <div class="intro-cta-body">
+          <p class="intro-cta-hint">
+            本文を一発で書く前に、<strong>記事で一番重要な「冒頭3行」と「末尾の CTA」</strong>を先に独立生成して詰められます。納得いくものになってから本文生成へ進めば、ハズレ率が大きく下がります。スキップしても本文生成は通常通り可能です。
+          </p>
+          <button class="btn btn-ghost" id="generateIntroCtaBtn" onclick="generateIntroCta()" disabled>
+            ✨ 導入・CTA を生成
+          </button>
+          <div id="introCtaProgress" class="progress hidden" style="margin-top: 8px;">
+            <span class="progress-dot"></span>
+            <span>導入・CTA を生成中...</span>
+          </div>
+          <div id="introCtaError" class="error-msg hidden"></div>
+
+          <div id="introCtaResult" class="hidden" style="margin-top: 16px;">
+            <div class="intro-cta-field">
+              <label for="introDraftEditor"><strong>📝 導入(冒頭3〜10行・読者を一瞬で掴む)</strong></label>
+              <textarea class="field-textarea" id="introDraftEditor" rows="8" placeholder="生成された導入文がここに入ります。直接編集も可能です。" oninput="handleIntroCtaEdit('intro')"></textarea>
+            </div>
+            <div class="intro-cta-field" style="margin-top: 12px;">
+              <label for="ctaDraftEditor"><strong>🎬 CTA(末尾の軽い誘導・押し売り感ゼロ)</strong></label>
+              <textarea class="field-textarea" id="ctaDraftEditor" rows="5" placeholder="生成された CTA がここに入ります。直接編集も可能です。" oninput="handleIntroCtaEdit('cta')"></textarea>
+            </div>
+            <p class="intro-cta-confirm-hint" style="margin-top: 10px;">
+              ✅ 編集内容は自動保存されます。本文生成時、この導入と CTA が <strong>そのまま冒頭・末尾に組み込まれる</strong> ように指示が渡ります。気に入らない部分があれば、上のボタンで再生成してください。
+            </p>
+            <button class="btn btn-ghost" onclick="clearIntroCta()" style="margin-top: 8px;">
+              🗑 確定をクリア(本文生成時に踏襲しない)
+            </button>
+          </div>
+        </div>
+      </details>
+    </div>
+
     <div style="margin-bottom: 20px;">
       <button class="btn btn-accent btn-arrow" id="generateBtn" onclick="runGeneration()" disabled>本文を生成(Weft 内 Gemini)</button>
     </div>
@@ -3310,6 +3611,33 @@ footer .accent { color: var(--madder); }
         <button class="btn btn-ghost" onclick="saveProject()">💾 プロジェクトに保存</button>
         <button class="btn btn-ghost" onclick="resetAll()">🔄 新規プロジェクト</button>
       </div>
+    </div>
+
+    <!-- v0.11.7:出力タブ統一パネル(全生成物を1箇所で見渡す + 3形式エクスポート) -->
+    <div class="output-tabs-panel" id="outputTabsPanel">
+      <div class="output-tabs-header">
+        <h3 class="output-tabs-title">📋 出力センター(全生成物を見渡す)</h3>
+        <div class="output-tabs-actions">
+          <button class="btn btn-ghost" onclick="copyActiveTab()">📋 コピー</button>
+          <button class="btn btn-ghost" onclick="exportActiveTabAs('markdown')">📥 Markdown</button>
+          <button class="btn btn-ghost" onclick="exportActiveTabAs('html')">📥 HTML</button>
+        </div>
+      </div>
+      <div class="output-tab-bar" id="outputTabBar">
+        <button type="button" class="output-tab is-active" data-tab="research" onclick="switchOutputTab('research')">🔬 リサーチ</button>
+        <button type="button" class="output-tab" data-tab="structure" onclick="switchOutputTab('structure')">🏗 構成</button>
+        <button type="button" class="output-tab" data-tab="introcta" onclick="switchOutputTab('introcta')">🎯 導入・CTA</button>
+        <button type="button" class="output-tab" data-tab="article" onclick="switchOutputTab('article')">📝 本文</button>
+        <button type="button" class="output-tab" data-tab="prompt" onclick="switchOutputTab('prompt')">🤖 外部AIプロンプト</button>
+      </div>
+      <div class="output-tab-body">
+        <div class="output-tab-content is-active" id="outputTab-research"><span class="output-tab-empty">リサーチ&分析を実行すると、ここに結果が入ります。</span></div>
+        <div class="output-tab-content" id="outputTab-structure"><span class="output-tab-empty">構成案がまだありません。</span></div>
+        <div class="output-tab-content" id="outputTab-introcta"><span class="output-tab-empty">導入・CTA がまだ確定されていません(任意機能)。</span></div>
+        <div class="output-tab-content" id="outputTab-article"><span class="output-tab-empty">本文がまだ生成されていません。</span></div>
+        <div class="output-tab-content" id="outputTab-prompt"><span class="output-tab-empty">リサーチ&分析を完了すると、外部 AI 用プロンプトがここに出ます。</span></div>
+      </div>
+      <p class="output-tab-footer-hint">💡 各タブの内容は、上部のリサーチ・構成編集・導入CTA・本文生成エリアの「現在の状態」を反映しています。コピー / Markdown / HTML ボタンで現在表示中のタブをエクスポートできます。</p>
     </div>
   </section>
 
@@ -3875,10 +4203,14 @@ let state = {
   seriesExpansionResult: null, // { text, sources, generatedAt }
   // v0.11.0:Threads 投稿フォーマット('1post' / '2step' / '3step' / '4step')、初期値は有料級の4段スレッド
   threadsFormat: '4step',
-  // v0.11.0:構成テンプレ('auto' / 'paid-template-v1')、初期値は AI 自動最適化
+  // v0.11.0:構成テンプレ。v0.11.5 で 3種追加('auto' / 'prep-plus' / 'pasona' / 'story-journey' / 'paid-template-v1')、初期値は AI 自動最適化
   structureTemplate: 'auto',
   // v0.11.0:CTA 軽いジャブのタイプ('auto' / 'action' / 'empathy' / 'learning' / 'salvation' / 'diagnosis')
   ctaType: 'auto',
+  // v0.11.4:文体プリセット('none' / 'natural' / 'empathy' / 'practical' / 'sharp' / 'formal')
+  stylePreset: 'none',
+  // v0.11.6:導入・CTA を本文生成より先に独立生成して確定する仕組み(任意・スキップ可)
+  introCtaDraft: { intro: '', cta: '', generatedAt: null },
   history: []
 };
 
@@ -3887,20 +4219,29 @@ const STYLE_RECOMMENDED_MIN = 500; // 各記事の推奨最低字数(これ以�
 // 記事の長さ → maxOutputTokens のマップ
 // 出典:docs/09-market-research.md(R-001)
 // v0.9.10:xlong / xxlong を追加(構成だけ作って外部 AI に渡す運用も想定)
+// v0.11.8:8段階に拡張。giant / huge / mammoth は Weft 内 Gemini 生成では切れる前提、外部 AI(Claude / ChatGPT Pro)用プロンプト出力での運用を想定
 const BODY_LENGTH_TOKENS = {
   short:    4096,
   standard: 8192,
   long:     12288,
   xlong:    16384,
-  xxlong:   24576
+  xxlong:   24576,
+  giant:    32768,  // 20,000 字相当、Weft 内生成は切れる可能性高
+  huge:     49152,  // 30,000 字相当、外部 AI 必須
+  mammoth:  65536   // 40,000 字相当、外部 AI 必須(Gemini 2.5 Flash の output 上限)
 };
 const BODY_LENGTH_INSTRUCTION = {
   short:    '- 全体で2,000〜2,800字でコンパクトに、要点を凝縮して書く',
   standard: '- 全体で4,000〜5,500字を目安に書く',
   long:     '- 全体で6,000〜8,000字でじっくり書く(体験談や具体例を厚めに)',
   xlong:    '- 全体で8,500〜10,000字で完全保存版を意識して書く(具体例・テンプレ・実例を網羅)',
-  xxlong:   '- 全体で11,000〜13,000字でバイブル / シリーズ用の決定版として書く(章を増やし、ワーク・チェックリストを大幅に追加)'
+  xxlong:   '- 全体で11,000〜13,000字でバイブル / シリーズ用の決定版として書く(章を増やし、ワーク・チェックリストを大幅に追加)',
+  giant:    '- 全体で18,000〜22,000字の超長尺で書く。章ごとに「具体例 → ワーク → スクリプト → チェックリスト」を厚く積層する。読者が辞書的に何度も読み返せる粒度に',
+  huge:     '- 全体で28,000〜32,000字のマニュアル級で書く。各章に診断・テンプレ・FAQ をフルで盛り、体系書として完結させる。複数の読者層の使い分けを意識する',
+  mammoth:  '- 全体で38,000〜42,000字の書籍級バイブルとして書く。導入 → 理論 → 実践 → 応用 → ケーススタディ → 付録 のフルレンジ構成、全章で「他では見つからない密度」を出す'
 };
+// v0.11.8:Weft 内 Gemini 生成では実用に耐えない長さ(警告対象)
+const BODY_LENGTH_INTERNAL_RISKY = new Set(['giant', 'huge', 'mammoth']);
 
 // v0.3.0:カテゴリツリー(17大部門 + その他)
 const CATEGORIES = {
@@ -4138,28 +4479,126 @@ const AI_PROMPT_PROFILES = {
 // v0.11.0:構成テンプレ(有料note 王道13セクションを汎用化したもの)
 const STRUCTURE_TEMPLATE_INSTRUCTION = {
   auto: '', // 自動最適化:既存の章立てロジックを使う(指示なし)
+  'prep-plus': `【構成テンプレ:PREP+ 型(結論→理由→設計→具体→注意→まとめ)】
+実用ノウハウ系の王道フレーム。読者を最短で「答え」に到達させ、行動可能にする構造で書くこと。
+
+1. **結論**(冒頭で結論を明示、読者を一瞬で掴む)
+   【心理的役割:認知負荷の最小化】読者が「答えが分かった」感覚を冒頭で得て、続きを読む意欲を作る。「結論から言うと〜」型で具体的に書く。
+
+2. **理由**(なぜそう言えるか、根拠1〜3点)
+   【心理的役割:信頼形成】根拠を見せることで結論の説得力を担保。データ・論文・経験のいずれかを必ず含める。
+
+3. **設計**(その結論を実現する仕組み・全体像)
+   【心理的役割:解像度向上】抽象的な結論から、構造化された理解への移行を促す。図解的な説明を意識する。
+
+4. **具体**(具体例・数字・ケース、3パターン以上)
+   【心理的役割:再現性の担保】読者の現実に着地させる。「自分の場合はこう使える」とイメージできる粒度で書く。
+
+5. **注意**(よくある誤解・落とし穴・失敗パターン)
+   【心理的役割:失敗防止】先回りで読者の躓きポイントを潰す。「ここでみんな失敗する」型で書く。
+
+6. **まとめ**(本記事の核心を3〜5点に凝縮)
+   【心理的役割:記憶定着】持ち帰り情報の明示。スキャンで読み返した時に拾える形に。
+
+【厳守ルール】
+- 6セクションすべてを順番通りに含めること
+- 「### N. セクション名」のマークダウン見出しで各セクションを明示
+- 「結論」は冒頭1段落以内に必ず置く(理由から始めない)
+- 「具体」は最低3パターン(箇条書きや小見出しで明示)`,
+  'pasona': `【構成テンプレ:PASONA 型(Problem→Agitation→Solution→Narrowing→Action)】
+セールスライティングの古典フレーム。読者の感情を順に動かし、最後に行動へ導く構造で書くこと。
+
+1. **Problem(問題提起)** — 読者の悩みを言語化する
+   【心理的役割:自己同一化】「これ私のことだ」を作る。一般論で始めず、具体的な状況描写・あるある質問から入る。
+
+2. **Agitation(煽動・共感)** — 放置するとどうなるか、痛みの拡大
+   【心理的役割:損失回避の発動】行動しない損害を可視化。3年後・5年後の機会損失まで射程に入れる。事実ベースで、煽らない。
+
+3. **Solution(解決策の提示)** — 本記事が渡す解決の核
+   【心理的役割:救済の提示】読者に希望を与える。Solution の中身は具体的に、抽象論で逃げない。
+
+4. **Narrowing(絞り込み)** — 対象者・限定性・適合判定
+   【心理的役割:自己選別】「自分のための解決策だ」と確信させる。「こういう人には向かない」を明示することで残った読者の確信が逆に上がる(NG ポジ表示効果)。
+
+5. **Action(行動喚起)** — 具体的な次のステップ
+   【心理的役割:行動誘発】読者に最初の一歩を踏み出させる。「今夜やる1つ」「明日試す1つ」の粒度まで落とす。
+
+【厳守ルール】
+- 5セクションすべてを順番通りに含めること
+- 「### N. セクション名」のマークダウン見出しで各セクションを明示
+- 「Problem → Agitation」は連続させる(間に長い解説を挟まない)
+- Agitation は **事実ベース** で書く(規約違反「絶対」「100%」「必ず稼げる」は禁止)
+- Action は **具体的な動作1つ** に絞る(「色々やってください」は禁止)`,
+  'story-journey': `【構成テンプレ:体験談→学び→再現手順→導線 型】
+著者の固有体験を起点に、読者にも普遍化された学びと行動を渡す物語型フレーム。
+
+1. **体験談(導入)** — 具体的な場面・状況・出来事を物語として描写
+   【心理的役割:物語没入】読者を著者の体験に引き込む。情景・感情・台詞を交えて描写する。
+
+2. **学び(気づき)** — その体験から得た気づき・教訓を言語化
+   【心理的役割:普遍化】個別体験を読者にも当てはまる教訓に昇華。「この体験から学んだのは〜」型。
+
+3. **再現手順(行動)** — 読者が同じ学びを得る/同じ失敗を避けるための具体ステップ
+   【心理的役割:自己効力感】物語で終わらせず行動可能にする。手順・チェックリスト・テンプレのいずれかを含める。
+
+4. **導線(余韻)** — 次のアクション・関連 note・コミュニティ等
+   【心理的役割:継続関係】読了後の接点を作る。押し売りせず、自然な誘導で。
+
+【厳守ルール】
+- 4セクションすべてを順番通りに含めること
+- 「### N. セクション名」のマークダウン見出しで各セクションを明示
+- **体験談は著者の実体験のみを使う**(架空エピソード創作は禁止、v0.11.2 ルール継承)
+- ユーザーが体験を入力していない場合は「読者の典型ケース」「相談で多い例」のような **三人称事例** として書く(「私自身〜」のような一人称創作はしない)
+- 「学び」は1つに絞る(複数並べると物語の力が弱まる)`,
   'paid-template-v1': `【構成テンプレ:有料note 王道 v1(13セクション固定)】
-以下の **13セクション** を必ずこの順で構築すること(本文生成プロンプトでも踏襲):
+以下の **13セクション** を必ずこの順で構築すること(本文生成プロンプトでも踏襲)。
+各セクションには **「心理的役割」** を明示してある。本文生成時はこの役割を達成することを最優先にし、表面的な見出し模倣に終わらせないこと。
 
 1. **はじめに**(知恵袋型のあるある冒頭で読者の悩みを言語化、共感)
+   【心理的役割:自己同一化】読者が冒頭3行で「これ私のことだ」と思える具体描写を出す。一般論で始めず、具体シーン or あるある質問から入る。
+
 2. **著者紹介**(なぜこの記事を書けるか、実績・経験・専門性を1〜2段落)
+   【心理的役割:権威性・信頼担保】「誰が書いているか」で説得力を底上げする。実績がなければ「同じ悩みを通った当事者性」で代替する(嘘の権威は厳禁)。
+
 3. **このnoteが向いてる人 / 向いてない人**(箇条書きでターゲットを明示、適合判定を促す)
+   【心理的役割:自己選別・コミット形成】読者に「自分のための記事だ」と能動的に確信させる。除外条件を入れることで残った読者の購入意欲が逆に上がる(NG ポジ表示効果)。
+
 4. **第1章:なぜこの現象が起きるのか**(根拠ベース、エビデンスや論文を引用しながら)
+   【心理的役割:認知的解像度の向上】「知らなかった理由が分かる」快感を提供する。原因の構造を1〜2個に絞って深く解説、浅い羅列は禁止。
+
 5. **第2章:放置するとどうなるか**(リスク提示、読まないと損する感)
+   【心理的役割:損失回避(プロスペクト理論)】「行動しなかった場合の未来」を具体的に描く。脅しではなく事実ベースで、3〜5年後の機会損失まで射程に入れる。
+
 6. **ここから先で渡すもの**(有料エリアの境界、何を手に入れられるか宣言)
+   【心理的役割:価値の事前提示・支払い正当化】「何が手に入るか」を箇条書きで明示し、支払い判断の根拠を与える。曖昧な期待ではなく具体的な成果物を約束する。
+
 7. **第3章以降:具体行動・スクリプト・診断・テンプレ**(本記事の核心、複数の章に分けて深掘り)
+   【心理的役割:自己効力感の獲得 + 具体的手順】読了後に「明日からやれる」と感じる粒度で書く。手順・スクリプト・診断のいずれかは必ず再現可能な形で含める。
+
 8. **FAQ(5問)**(購入前の不安を先回りして潰す、必須)
+   【心理的役割:購入不安の除去】「これって自分にも当てはまる?」「効果が出なかったら?」のような購入直前の疑念に正面から答える。回避的な回答は信頼を下げる。
+
 9. **まとめ**(キーポイント5〜6個で凝縮)
+   【心理的役割:記憶定着・スキャナビリティ確保】読み返した時に拾える「持ち帰り箇条書き」を提供する。新情報は入れず、本文の凝縮に徹する。
+
 10. **おわりに**(キーフレーズ・記事を閉じる印象的な一文)
+    【心理的役割:物語没入の余韻・キーフレーズ刻印】記事全体の感情温度を一段上げて閉じる。タグライン or 印象的な一文で「読み終わった満足感」を作る。
+
 11. **P.S.1:関連 note 誘導**(続編 / 上位商品への自然な動線)
+    【心理的役割:次行動の提示・LTV 向上】「もっと深く知りたい」となった読者の受け皿を示す。実在しない記事を創作するのは絶対禁止(v0.11.2)。
+
 12. **P.S.2:他の有料 note 誘導**(横展開、他のテーマも興味あれば)
+    【心理的役割:横展開・関心の取りこぼし防止】別テーマの note への誘導。これも実在する記事のみ(架空タイトル創作禁止)。
+
 13. **P.S.3:SNS / コミュニティ誘導**(Threads・LINE 等への控えめ誘導)
+    【心理的役割:弱い接続の構築・継続接点】プッシュ販売ではなく「気が向いたら覗いて」型の関係性提示。
 
 【厳守ルール】
 - 13セクションすべてを順番通りに含めること
 - 「### N. セクション名」のマークダウン見出しで各セクションを明示
 - セクション 6(有料境界)は **有料note のみ**(無料の場合はスキップして 7 に進む)
 - 各セクションは構成案では2〜3行のポイント、本文生成時に肉付けされる
+- **本文生成時は「心理的役割」を達成しているかを自己チェックしてから出力すること**(見出しの形式コピーで満足するな)
 
 【v0.11.2:絶対禁止 ※読者が見る本文に絶対残してはいけないもの】
 - **「[ここに〜してください]」「[あなたの〜に置き換えてください]」のような編集指示文** ← 本文に絶対残すな
@@ -4175,6 +4614,47 @@ const STRUCTURE_TEMPLATE_INSTRUCTION = {
 - タグライン があれば、末尾の「10. おわりに」で自然に1度だけ使う
 - 過去記事(文体プロファイル)があれば、その文体・語彙・リズムを継承
 - いずれも空なら、汎用的かつ誠実な書き手として書く(指示文を残すな、空のままにするな)`
+};
+
+// v0.11.4:文体プリセット5種(過去記事ベースの文体プロファイルとは併用可能)
+// Note Forge X Pro の dropdown 構造を参考に、Weft 独自の名前と指示文で書き起こし
+const STYLE_PRESET_INSTRUCTION = {
+  none: '', // 未選択:プリセット指示なし(文体プロファイルに完全に委ねる、または AI 任意)
+  natural: `【文体プリセット:🌿 やさしい解説型】
+読者の知的負荷を下げ、最後まで読み切らせることを最優先にした文体で書く。
+- 敬体(です・ます調)を基本とし、過度な装飾を避ける
+- 各段落は2〜4文で改行し、視覚的に詰まらない構造にする
+- 各章・各セクションは「結論を先に、根拠を後ろに」の順で書く
+- 専門用語は使うなら必ず併記で平易な言い換えを添える
+- 強い断定・煽り・絵文字過剰は避け、誠実なトーンで一貫させる`,
+  empathy: `【文体プリセット:💗 共感ストーリー型】
+読者が「これ私のことだ」と思い、感情で記事に没入する文体で書く。
+- 二人称「あなた」を積極的に使い、読者と並んで歩くトーン
+- 章の冒頭は具体的な場面描写・心情描写から入る(一般論で始めない)
+- 「私も同じでした」「あの時の私に伝えたい」のような体験ベースの語り
+- 感情の動きを丁寧に追う(気づき → 葛藤 → 受容のような感情曲線)
+- 数字・データの羅列は最小限、必要な時は「物語の根拠」として控えめに添える`,
+  practical: `【文体プリセット:📋 実務マニュアル型】
+読者が「明日からそのまま使える」と感じる文体で書く。
+- ステップ番号(STEP 1 / STEP 2 …)や手順 No. を積極的に使う
+- 「〜してください」「〜を実行します」の指示形を躊躇なく使う
+- 専門用語は使う、ただし初出時にカッコ書きで定義を添える
+- 箇条書きを多用、長文の段落より構造化された情報の塊で見せる
+- 「目的 → 手順 → 確認ポイント」のフレーミングを各章で繰り返す`,
+  sharp: `【文体プリセット:⚡ 甘やかさない断定型】
+読者の都合の良い思い込みを否定し、本気の改善を促す文体で書く。
+- 断定調を基本に、根拠ベースで読者の甘い前提を真正面から否定する
+- 「結論、〇〇は無理です。理由は〜」のような冒頭で本題に直行
+- 媚びない、しかし煽らない(規約違反になる「絶対」「100%」「必ず稼げる」は使わない)
+- 「楽な方法はない」「近道は存在しない」を根拠付きで明示
+- 解決策を示す時は必ず「ただし、〇〇は覚悟してください」を添える`,
+  formal: `【文体プリセット:📘 書籍級フォーマル型】
+有料マニュアル・書籍に近い重厚感で、価格に見合う密度を演出する文体で書く。
+- 「本書では〜」「第1章では〜」「以下に詳述する」のような書籍的な書き出し
+- 章ごとに【ポイント】【補足】【注意】のような明示ラベルを散りばめる
+- 文末は「である」「だ」混じり、または硬めの敬体で統一
+- 章番号・項目番号(1.1 / 1.2 のような階層)を積極的に使う
+- 必要に応じて「図表」「フローチャート」の言及を入れる(実装は外部、本文では言及のみ)`
 };
 
 // v0.11.0:CTA 軽いジャブ 5パターン(SHIN さん「のうみそ式」を汎用化)
@@ -4252,6 +4732,9 @@ window.addEventListener('DOMContentLoaded', () => {
   if (savedTpl && STRUCTURE_TEMPLATE_INSTRUCTION.hasOwnProperty(savedTpl)) handleStructureTemplateSelect(savedTpl);
   const savedCta = localStorage.getItem('weft_ctaType');
   if (savedCta && CTA_TYPE_INSTRUCTION.hasOwnProperty(savedCta)) handleCtaTypeSelect(savedCta);
+  // v0.11.4:文体プリセットの復元
+  const savedStylePreset = localStorage.getItem('weft_stylePreset');
+  if (savedStylePreset && STYLE_PRESET_INSTRUCTION.hasOwnProperty(savedStylePreset)) handleStylePresetSelect(savedStylePreset);
   // v0.10.0:シリーズ展開モードの初期化
   setupSeriesFlowOptions();
   populatePastArticleProjects();
@@ -6157,6 +6640,8 @@ async function runResearchAndAnalysis() {
     document.getElementById('analysisOutput').classList.remove('hidden');
     activateSection('analysisSection');
     activateSection('articleSection');
+    // v0.11.7:出力タブパネルを更新(リサーチ・構成・プロンプトがこのタイミングで揃う)
+    updateOutputTabs();
     finishProgress();
     smoothScrollTo('analysisSection');
   } catch (err) {
@@ -6346,6 +6831,9 @@ function handleTitleSelect(idx) {
   });
   // 本文生成ボタンを有効化
   document.getElementById('generateBtn').disabled = false;
+  // v0.11.6:導入・CTA 生成ボタンも有効化(任意機能、本文より先に詰めたい人向け)
+  const introCtaBtn = document.getElementById('generateIntroCtaBtn');
+  if (introCtaBtn) introCtaBtn.disabled = false;
 }
 
 // Phase 2.3:構成案エディタの編集を state に反映
@@ -6353,6 +6841,8 @@ function handleStructureEdit() {
   const el = document.getElementById('structureEditor');
   if (!el) return;
   state.finalStructure = el.value;
+  // v0.11.7:出力タブにも反映
+  updateOutputTabs();
 }
 
 // Phase 2.3:構成案の再構築(タイトル + 動画要約 + 視点を踏まえる)
@@ -6397,6 +6887,8 @@ async function regenerateStructure() {
 
     state.finalStructure = text;
     document.getElementById('structureEditor').value = text;
+    // v0.11.7:出力タブにも反映
+    updateOutputTabs();
     toast('構成案を再構築しました');
   } catch (err) {
     showError('structureRegenError', `エラー: ${err.message}`);
@@ -6455,7 +6947,10 @@ function buildStructurePrompt() {
     standard: '4,000〜5,500字',
     long:     '6,000〜8,000字',
     xlong:    '8,500〜10,000字',
-    xxlong:   '11,000〜13,000字'
+    xxlong:   '11,000〜13,000字',
+    giant:    '18,000〜22,000字',
+    huge:     '28,000〜32,000字',
+    mammoth:  '38,000〜42,000字'
   }[state.bodyLength] || '4,000〜5,500字';
   // v0.9.10:課金タイプ
   const monetizationLabel = state.monetization === 'free'
@@ -6465,6 +6960,9 @@ function buildStructurePrompt() {
   // v0.11.0:構成テンプレ
   const structureTplRule = STRUCTURE_TEMPLATE_INSTRUCTION[state.structureTemplate] || '';
   const structureTplBlock = structureTplRule ? '\n\n' + structureTplRule : '';
+  // v0.11.4:文体プリセット(章タイトルや章のポイントの書き口に影響する)
+  const stylePresetRule = STYLE_PRESET_INSTRUCTION[state.stylePreset] || '';
+  const stylePresetBlock = stylePresetRule ? '\n\n' + stylePresetRule : '';
 
   return `あなたは note 記事の編集者です。以下の **すべての素材** から、note 記事の構成案を1つ提示してください。
 
@@ -6478,7 +6976,7 @@ ${state.reader || '(指定なし)'}${titleBlock}
 【記事の種類】${monetizationLabel}
 【目標字数】${lengthLabel}${perspectiveBlock}
 
-${monetizationRule}${structureTplBlock}
+${monetizationRule}${structureTplBlock}${stylePresetBlock}
 
 【リサーチで判明したパターン】
 ${state.analysis.patterns}
@@ -6637,6 +7135,18 @@ function handleCtaTypeSelect(value) {
   const radio = document.querySelector(`.length-option[data-cta="${value}"] input[type="radio"]`);
   if (radio) radio.checked = true;
   localStorage.setItem('weft_ctaType', value);
+}
+
+// v0.11.4:文体プリセット選択
+function handleStylePresetSelect(value) {
+  if (!STYLE_PRESET_INSTRUCTION.hasOwnProperty(value)) return;
+  state.stylePreset = value;
+  document.querySelectorAll('.length-option[data-stylep]').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.stylep === value);
+  });
+  const radio = document.querySelector(`.length-option[data-stylep="${value}"] input[type="radio"]`);
+  if (radio) radio.checked = true;
+  localStorage.setItem('weft_stylePreset', value);
 }
 
 function handleTypeSelect(value) {
@@ -6959,8 +7469,193 @@ function renderAnalysis(a, truncated = false) {
 // ============================================================
 // Stage 2: Article Generation
 // ============================================================
+// ============================================================
+// v0.11.6:導入・CTA 独立生成(本文より先に詰める)
+// ============================================================
+function buildIntroCtaPrompt() {
+  capturePerspective();
+
+  const selectedTitle = (state.selectedTitleIndex >= 0 && state.titleCandidates[state.selectedTitleIndex])
+    ? state.titleCandidates[state.selectedTitleIndex].title
+    : '';
+  const finalStructure = state.finalStructure || (state.analysis && state.analysis.structure) || '';
+
+  // 視点
+  const p = state.perspective || {};
+  const perspectiveBlock = (p.experience || p.message || p.angle)
+    ? `\n\n【著者の視点 ※冒頭の導入に必ず組み込む】\n${p.experience ? '■ 体験:' + p.experience + '\n' : ''}${p.message ? '■ 主張:' + p.message + '\n' : ''}${p.angle ? '■ 独自視点:' + p.angle + '\n' : ''}`
+    : '';
+
+  // ペルソナ情報
+  const persona = state.persona || {};
+  const hasPersona = !!(persona.name || persona.tagline || persona.catchphrases || persona.emojis || persona.selfIntro);
+  const personaBlock = hasPersona ? `\n\n【ペルソナ情報 ※トーン・名乗りに反映】\n${persona.name ? '■ 名乗り:' + persona.name + '\n' : ''}${persona.tagline ? '■ タグライン:' + persona.tagline + '\n' : ''}${persona.catchphrases ? '■ よく使うフレーズ:' + persona.catchphrases + '\n' : ''}${persona.emojis ? '■ よく使う絵文字:' + persona.emojis + '\n' : ''}` : '';
+
+  // 知恵袋(冒頭の共感に重要)
+  const chiebukuroBlock = state.chiebukuroVoices
+    ? `\n\n【読者の生の声(Yahoo!知恵袋)】\n${state.chiebukuroVoices}\n→ 冒頭の共感パートでこの言葉遣いをそのまま使ってよい`
+    : '';
+
+  // 文体プリセット
+  const stylePresetRule = STYLE_PRESET_INSTRUCTION[state.stylePreset] || '';
+  const stylePresetBlock = stylePresetRule ? '\n\n' + stylePresetRule : '';
+
+  // CTA タイプ
+  const ctaTypeRule = CTA_TYPE_INSTRUCTION[state.ctaType] || '';
+  const ctaTypeBlock = ctaTypeRule ? '\n\n' + ctaTypeRule : '';
+
+  // 課金タイプ
+  const monetizationLabel = state.monetization === 'free' ? '🆓 無料note' : '💰 有料note';
+
+  return `あなたは note 記事のプロライターです。本文を書く前に、記事で **最も重要な2箇所** だけを先に独立して生成してください。
+
+【記事タイトル】
+${selectedTitle || '(未確定)'}
+
+【記事テーマ】
+${state.theme || '(指定なし)'}
+
+【想定読者】
+${state.reader || '(指定なし)'}
+
+【記事の種類】${monetizationLabel}
+
+【構成案(本文全体の骨格)】
+${finalStructure}${perspectiveBlock}${personaBlock}${chiebukuroBlock}${stylePresetBlock}${ctaTypeBlock}
+
+────────────────────────────────────
+🎯 生成タスク
+────────────────────────────────────
+
+以下の2つを **独立して** 生成してください。本文の他の部分は今は書きません。
+
+## ① 導入(冒頭3〜10行、約 300-500字)
+
+役割:**読者が3行で「これは私のための記事だ」と確信し、続きを読まずにいられなくなる**こと。
+
+書き方の指針:
+- 一般論で始めない(「最近〇〇が話題ですね」のような書き出し禁止)
+- 具体的な場面・あるある質問・読者の悩みの言語化から入る
+- 知恵袋の言葉遣いが渡されているなら、そのまま使ってよい
+- 著者の視点(体験・主張)があれば、ここで一度顔を見せる
+- 末尾で「この記事で何が手に入るか」を1行で約束する
+
+## ② CTA(末尾の軽い誘導、約 100-200字)
+
+役割:**読了後、押し売り感ゼロで読者に「もう少しこの人と繋がりたい」と思わせる**こと。
+
+書き方の指針:
+- 「絶対」「100%」「必ず稼げる」のような規約違反表現は禁止
+- 押し売りせず、共感ベースの軽いジャブ(指定された CTA タイプに従う)
+- 具体的な動作1つに絞る(「色々やってください」は禁止)
+- 著者のタグラインがあれば、自然に1度だけ使ってよい
+
+────────────────────────────────────
+📤 出力形式(厳守)
+────────────────────────────────────
+
+以下の形式で出力してください。前置きや説明は一切不要、この形式以外の文字を出さないこと。
+
+===INTRO===
+(導入の本文をここに、改行込みで)
+===INTRO_END===
+
+===CTA===
+(CTA の本文をここに、改行込みで)
+===CTA_END===
+`;
+}
+
+function parseIntroCtaResponse(text) {
+  const introMatch = text.match(/===INTRO===\s*([\s\S]*?)\s*===INTRO_END===/);
+  const ctaMatch = text.match(/===CTA===\s*([\s\S]*?)\s*===CTA_END===/);
+  return {
+    intro: introMatch ? introMatch[1].trim() : '',
+    cta: ctaMatch ? ctaMatch[1].trim() : ''
+  };
+}
+
+async function generateIntroCta() {
+  if (!state.analysis) {
+    showError('introCtaError', 'まずリサーチ&分析を実行してください');
+    return;
+  }
+  if (!state.finalStructure && !(state.analysis && state.analysis.structure)) {
+    showError('introCtaError', '構成案がまだありません。構成を確定してから実行してください');
+    return;
+  }
+  hideError('introCtaError');
+  document.getElementById('introCtaProgress').classList.remove('hidden');
+  document.getElementById('generateIntroCtaBtn').disabled = true;
+
+  try {
+    const prompt = buildIntroCtaPrompt();
+    // 導入 500字 + CTA 200字 + マーカー余白 → 2048 トークンで十分
+    const result = await withRateLimitRetry(() => callGeminiPlain(prompt, 2048), 'introCta');
+    const parsed = parseIntroCtaResponse(result.text);
+
+    if (!parsed.intro && !parsed.cta) {
+      throw new Error('Gemini の応答からマーカー(===INTRO=== / ===CTA===)を検出できませんでした。再試行してください');
+    }
+
+    state.introCtaDraft = {
+      intro: parsed.intro,
+      cta: parsed.cta,
+      generatedAt: new Date().toISOString()
+    };
+
+    // UI に反映
+    document.getElementById('introDraftEditor').value = parsed.intro;
+    document.getElementById('ctaDraftEditor').value = parsed.cta;
+    document.getElementById('introCtaResult').classList.remove('hidden');
+    // v0.11.7:出力タブにも反映
+    updateOutputTabs();
+    toast('導入・CTA を生成しました。編集も可能です。');
+  } catch (err) {
+    showError('introCtaError', `エラー: ${err.message}`);
+    console.error(err);
+  } finally {
+    document.getElementById('introCtaProgress').classList.add('hidden');
+    document.getElementById('generateIntroCtaBtn').disabled = false;
+  }
+}
+
+function handleIntroCtaEdit(field) {
+  if (field === 'intro') {
+    state.introCtaDraft.intro = document.getElementById('introDraftEditor').value;
+  } else if (field === 'cta') {
+    state.introCtaDraft.cta = document.getElementById('ctaDraftEditor').value;
+  }
+  // v0.11.7:出力タブにも即時反映
+  updateOutputTabs();
+}
+
+function clearIntroCta() {
+  state.introCtaDraft = { intro: '', cta: '', generatedAt: null };
+  document.getElementById('introDraftEditor').value = '';
+  document.getElementById('ctaDraftEditor').value = '';
+  document.getElementById('introCtaResult').classList.add('hidden');
+  // v0.11.7:出力タブも更新
+  updateOutputTabs();
+  toast('導入・CTA の確定をクリアしました(本文生成時に踏襲しません)');
+}
+
 async function runGeneration() {
   if (!state.analysis) { showError('generateError', 'まずリサーチ&分析を実行してください'); return; }
+  // v0.11.8:20k 字以上は Weft 内 Gemini では実用に耐えない → 外部 AI 推奨を強く促す
+  if (BODY_LENGTH_INTERNAL_RISKY.has(state.bodyLength)) {
+    const lengthName = ({ giant: '巨大(〜20,000字)', huge: '超巨大(〜30,000字)', mammoth: '書籍級(〜40,000字)' })[state.bodyLength] || '';
+    const ok = confirm(
+      '⚠ 字数オプション「' + lengthName + '」が選ばれています。\n\n' +
+      'Weft 内 Gemini 生成では、この長さは出力が高確率で途中で切れます。実用に耐えません。\n\n' +
+      '推奨運用:画面上部の「📋 外部 AI 用プロンプト出力」から Claude / ChatGPT Pro 用にコピー → そちらで本文生成してください(プロンプトには字数指定がそのまま入っています)。\n\n' +
+      'それでも Weft 内 Gemini で生成を試みますか?(高確率で末尾が切れます)'
+    );
+    if (!ok) {
+      toast('生成をキャンセルしました。プロンプトをコピーして外部 AI で書くのが現実的です。');
+      return;
+    }
+  }
   hideError('generateError');
   document.getElementById('generateProgress').classList.remove('hidden');
   document.getElementById('generateBtn').disabled = true;
@@ -6977,6 +7672,9 @@ async function runGeneration() {
     state.article = articleText;
     document.getElementById('articleOutput').textContent = articleText;
     document.getElementById('articleWrap').classList.remove('hidden');
+    // v0.11.7:出力タブパネルを更新 + 完成タブにフォーカス
+    updateOutputTabs();
+    switchOutputTab('article');
     smoothScrollTo('articleSection');
   } catch (err) {
     showError('generateError', `エラー: ${err.message}`);
@@ -6985,6 +7683,162 @@ async function runGeneration() {
     document.getElementById('generateProgress').classList.add('hidden');
     document.getElementById('generateBtn').disabled = false;
   }
+}
+
+// ============================================================
+// v0.11.7:出力タブ統一パネル(リサーチ/構成/導入CTA/本文/プロンプトを1箇所で見渡す)
+// ============================================================
+const OUTPUT_TAB_LABELS = {
+  research: 'リサーチ&分析',
+  structure: '構成案',
+  introcta: '導入・CTA',
+  article: '本文',
+  prompt: '外部AI用プロンプト'
+};
+
+function getOutputTabContent(tab) {
+  switch (tab) {
+    case 'research': {
+      if (!state.analysis) return '';
+      const a = state.analysis;
+      const parts = [];
+      if (a.patterns) parts.push('## 競合パターン\n' + a.patterns);
+      if (a.gap) parts.push('## 狙うべき空きスポット\n' + a.gap);
+      if (a.structure) parts.push('## 初期構成案(参考)\n' + a.structure);
+      return parts.join('\n\n');
+    }
+    case 'structure':
+      return state.finalStructure || (state.analysis && state.analysis.structure) || '';
+    case 'introcta': {
+      const d = state.introCtaDraft || {};
+      if (!d.intro && !d.cta) return '';
+      const parts = [];
+      if (d.intro) parts.push('## 導入(冒頭で踏襲)\n' + d.intro);
+      if (d.cta) parts.push('## CTA(末尾で踏襲)\n' + d.cta);
+      return parts.join('\n\n');
+    }
+    case 'article':
+      return state.article || '';
+    case 'prompt': {
+      if (!state.analysis) return '';
+      try {
+        return buildBasePrompt('generic');
+      } catch (err) {
+        console.error(err);
+        return '';
+      }
+    }
+    default:
+      return '';
+  }
+}
+
+function updateOutputTabs() {
+  Object.keys(OUTPUT_TAB_LABELS).forEach(tab => {
+    const el = document.getElementById('outputTab-' + tab);
+    if (!el) return;
+    const content = getOutputTabContent(tab);
+    if (content) {
+      el.textContent = content;
+      el.classList.remove('output-tab-empty');
+    } else {
+      const placeholders = {
+        research: 'リサーチ&分析を実行すると、ここに結果が入ります。',
+        structure: '構成案がまだありません。',
+        introcta: '導入・CTA がまだ確定されていません(任意機能)。',
+        article: '本文がまだ生成されていません。',
+        prompt: 'リサーチ&分析を完了すると、外部 AI 用プロンプトがここに出ます。'
+      };
+      el.innerHTML = '<span class="output-tab-empty">' + (placeholders[tab] || '') + '</span>';
+    }
+  });
+}
+
+function switchOutputTab(tab) {
+  document.querySelectorAll('.output-tab').forEach(btn => {
+    btn.classList.toggle('is-active', btn.dataset.tab === tab);
+  });
+  document.querySelectorAll('.output-tab-content').forEach(el => {
+    el.classList.toggle('is-active', el.id === 'outputTab-' + tab);
+  });
+  // 最新内容に更新(プロンプトは状態変化に追従しないので毎回再構築)
+  updateOutputTabs();
+}
+
+function getActiveOutputTab() {
+  const active = document.querySelector('.output-tab.is-active');
+  return active ? active.dataset.tab : 'research';
+}
+
+async function copyActiveTab() {
+  const tab = getActiveOutputTab();
+  const content = getOutputTabContent(tab);
+  if (!content) {
+    toast(`「${OUTPUT_TAB_LABELS[tab]}」はまだ空です`);
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(content);
+    toast(`「${OUTPUT_TAB_LABELS[tab]}」をコピーしました(${content.length.toLocaleString()}文字)`);
+  } catch (err) {
+    toast('コピーに失敗しました: ' + err.message);
+    console.error(err);
+  }
+}
+
+function exportActiveTabAs(format) {
+  const tab = getActiveOutputTab();
+  const content = getOutputTabContent(tab);
+  if (!content) {
+    toast(`「${OUTPUT_TAB_LABELS[tab]}」はまだ空です`);
+    return;
+  }
+  const safeTitle = (state.theme || 'weft-output').replace(/[\\/:*?"<>|]/g, '_').slice(0, 60);
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  let blob, filename;
+
+  if (format === 'markdown') {
+    const md = `# ${OUTPUT_TAB_LABELS[tab]}\n\n*${state.theme || ''}*\n*生成日時:${new Date().toLocaleString('ja-JP')}*\n\n---\n\n${content}\n`;
+    blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    filename = `${safeTitle}__${tab}__${stamp}.md`;
+  } else if (format === 'html') {
+    const escaped = content
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>${OUTPUT_TAB_LABELS[tab]} — ${state.theme || 'Weft Output'}</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.85; color: #1a2238; }
+  h1 { font-size: 24px; border-bottom: 2px solid #c9785b; padding-bottom: 8px; }
+  .meta { color: #888; font-size: 12px; margin-bottom: 24px; }
+  pre { white-space: pre-wrap; word-break: break-word; font-family: inherit; font-size: 15px; }
+</style>
+</head>
+<body>
+  <h1>${OUTPUT_TAB_LABELS[tab]}</h1>
+  <p class="meta">${state.theme || ''} ／ 生成日時:${new Date().toLocaleString('ja-JP')}</p>
+  <pre>${escaped}</pre>
+</body>
+</html>`;
+    blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    filename = `${safeTitle}__${tab}__${stamp}.html`;
+  } else {
+    return;
+  }
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast(`${filename} としてダウンロードしました`);
 }
 
 // v0.4.0:有料note向け統合プロンプトビルダー(全 AI で同じ品質基準)
@@ -7062,6 +7916,30 @@ ${state.papers.map(p => {
   const structureTplSection = structureTplRule ? '\n────────────────────────────────────\n📋 構成テンプレ\n────────────────────────────────────\n\n' + structureTplRule + '\n' : '';
   const ctaTypeRule = CTA_TYPE_INSTRUCTION[state.ctaType] || '';
   const ctaTypeSection = ctaTypeRule ? '\n' + ctaTypeRule + '\n末尾の CTA はこのタイプで書くこと(押し売り感ゼロ、共感ベース)。\n' : '';
+  // v0.11.6:確定済み導入・CTA があれば本文生成時に踏襲する
+  const introDraft = (state.introCtaDraft && state.introCtaDraft.intro || '').trim();
+  const ctaDraft = (state.introCtaDraft && state.introCtaDraft.cta || '').trim();
+  const introCtaSection = (introDraft || ctaDraft) ? `
+────────────────────────────────────
+🎯 確定済みの導入・CTA(v0.11.6:必ず踏襲)
+────────────────────────────────────
+本文生成より先に独立して詰めた「導入」と「CTA」が確定されています。**本文の冒頭と末尾は、以下の文言をそのまま組み込んでください**(微調整は禁止、文意・語尾・改行リズムを尊重)。
+${introDraft ? `
+【確定済み導入(冒頭で必ずこのまま使う)】
+${introDraft}
+` : ''}${ctaDraft ? `
+【確定済み CTA(末尾で必ずこのまま使う)】
+${ctaDraft}
+` : ''}
+これらは事前に十分に練り込まれたものです。Gemini が改善したつもりで書き換えると、確定の意味がなくなります。**そのまま使うこと**。
+` : '';
+
+  // v0.11.4:文体プリセット(本文のトーン・語り口・密度を指定)
+  const stylePresetRule = STYLE_PRESET_INSTRUCTION[state.stylePreset] || '';
+  const stylePresetCoexist = styleBlock
+    ? '\n※ 上記の文体プリセットと、別ブロックで渡している「文体プロファイル(過去記事ベース)」は **併用** すること。プリセット = 全体のトーン・密度・語り口の方針、過去記事 = 語彙の選び方・改行リズム・固有の口癖、という役割分担で両立させる。矛盾が生じた場合は **過去記事の自然な書き方を優先** し、プリセットはそれを覆さない範囲でトーン調整に使う。\n'
+    : '';
+  const stylePresetSection = stylePresetRule ? '\n────────────────────────────────────\n✏️ 文体プリセット\n────────────────────────────────────\n\n' + stylePresetRule + stylePresetCoexist : '';
 
   // 構造ルール(記事タイプ別)
   const structureRule = STRUCTURE_RULES[state.articleType] || STRUCTURE_RULES.practical;
@@ -7073,6 +7951,8 @@ ${state.papers.map(p => {
     state.chiebukuroVoices ? '- ✅ Yahoo!知恵袋から抽出した読者の生の悩み・言葉遣い' : '',
     (state.papers && state.papers.length > 0) ? '- ✅ OpenAlex から取得した実在の関連論文(エビデンス)' : '',
     styleBlock ? '- ✅ 著者の過去記事から学んだ文体プロファイル' : '',
+    stylePresetRule ? '- ✅ 文体プリセット(本文のトーン・語り口の明示指定)' : '',
+    (introDraft || ctaDraft) ? '- ✅ 事前に独立生成・編集確定された導入・CTA(v0.11.6)' : '',
     '- ✅ タイトルに最適化された構成案'
   ].filter(Boolean).join('\n');
 
@@ -7118,7 +7998,7 @@ ${videoSection}${chiebukuroSection}${papersSection}${styleBlock ? '\n' + styleBl
 【構成案 ※この骨格で書く(読みやすさのため微調整は可)】
 ${state.finalStructure || state.analysis.structure}
 
-${structureTplSection}${ctaTypeSection}${state.monetization === 'free' ? `────────────────────────────────────
+${structureTplSection}${stylePresetSection}${ctaTypeSection}${introCtaSection}${state.monetization === 'free' ? `────────────────────────────────────
 🆓 無料 note の構造ルール
 ────────────────────────────────────
 
@@ -7172,6 +8052,19 @@ ${state.monetization === 'free' ? `- まとめ(その記事の核心を3〜5点�
 【関連 note 誘導(P.S.2)が渡されていない場合】
 - 実在しない記事タイトルを **創作して並べてはいけない**(読者が探して見つからないと信頼崩壊)
 - 関連記事の素材がない場合、P.S.2 を「執筆中の続編予告」または **セクションごと省略** する
+
+────────────────────────────────────
+🎯 心理設計タグの自己チェック(v0.11.3)
+────────────────────────────────────
+有料note 王道テンプレ(paid-template-v1)を選択している場合、各セクションには **【心理的役割】** が明示されている。
+
+本文を書く時は以下を守ること:
+- 見出しの形式コピーで満足せず、**「心理的役割」が読者の中で実際に発生する書き方** をする
+- 例:第2章「放置するとどうなるか」の役割は **損失回避**。「3年後に同じ悩みを抱えたまま」のような具体的な未来像を出す。「大変なことになります」のような曖昧な脅しは役割未達
+- 例:FAQ の役割は **購入不安の除去**。「効果がなかったら?」のような買い手の本音質問に正面から答える。逃げた回答は信頼を下げる
+- 例:第7章以降(具体行動)の役割は **自己効力感+具体的手順**。手順・スクリプト・診断のいずれかを **明日コピペで使える粒度** で含める
+
+セクションを書き終えるたびに自問する:**「このセクションは設計された心理効果を本当に起こせているか?」**
 
 ${CTA_EXAMPLES}
 
@@ -7874,9 +8767,23 @@ function loadProject(idx) {
     renderAnalysis(state.analysis);
     renderTitleCandidates(state.titleCandidates);
     document.getElementById('generateBtn').disabled = state.selectedTitleIndex < 0;
+    // v0.11.6:導入・CTA 生成ボタンも同条件で有効化
+    const introCtaBtn = document.getElementById('generateIntroCtaBtn');
+    if (introCtaBtn) introCtaBtn.disabled = state.selectedTitleIndex < 0;
+    // v0.11.6:導入・CTA の確定済みドラフトがあれば UI に復元
+    if (state.introCtaDraft && (state.introCtaDraft.intro || state.introCtaDraft.cta)) {
+      const introEditor = document.getElementById('introDraftEditor');
+      const ctaEditor = document.getElementById('ctaDraftEditor');
+      if (introEditor) introEditor.value = state.introCtaDraft.intro || '';
+      if (ctaEditor) ctaEditor.value = state.introCtaDraft.cta || '';
+      const result = document.getElementById('introCtaResult');
+      if (result) result.classList.remove('hidden');
+    }
     document.getElementById('analysisOutput').classList.remove('hidden');
     activateSection('analysisSection');
     activateSection('articleSection');
+    // v0.11.7:出力タブにも反映
+    updateOutputTabs();
   }
   if (state.article) {
     document.getElementById('articleOutput').textContent = state.article;

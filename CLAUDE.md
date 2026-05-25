@@ -15,7 +15,7 @@
 
 ## 現在の状態
 
-- **バージョン:** v0.11.2(テンプレ指示文残し抑制 + 架空note誘導禁止 + モバイル最適化、配布版・GitHub Pages 公開済み)
+- **バージョン:** v0.11.8(字数オプション8段階に拡張:2k〜40k 字、20k 以上は外部AIプロンプト推奨、配布版・GitHub Pages 公開済み)
 - **公開 URL:** https://marunage-creator.github.io/Weft/
 - **リポジトリ:** https://github.com/MARUNAGE-creator/Weft(Public)
 - **次のマイルストーン:** 実テスターからのフィードバック収集と対応 → モバイル最適化 or マネタイズ準備
