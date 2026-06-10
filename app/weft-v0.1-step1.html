@@ -587,6 +587,111 @@ section.section.is-collapsed .section-desc {
   line-height: 1.65;
 }
 
+/* ===== v0.11.10:レシピ束(全設定を一発で決める) ===== */
+.recipe-panel {
+  margin-bottom: 28px;
+  padding: 20px 22px;
+  background: linear-gradient(135deg, var(--cream-light) 0%, rgba(245, 241, 234, 0.6) 100%);
+  border: 1.5px solid var(--cream-dark);
+  border-radius: 14px;
+}
+.recipe-header {
+  margin-bottom: 14px;
+}
+.recipe-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--indigo-deep);
+  font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.recipe-title-badge {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  background: var(--madder);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+.recipe-subtitle {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--susutake);
+  line-height: 1.55;
+}
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.recipe-card {
+  background: white;
+  border: 1.5px solid var(--cream-dark);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all .15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.recipe-card:hover {
+  border-color: var(--madder);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 34, 56, 0.08);
+}
+.recipe-card.is-selected {
+  border-color: var(--madder);
+  background: rgba(201, 120, 91, 0.06);
+  box-shadow: 0 0 0 3px rgba(201, 120, 91, 0.12);
+}
+.recipe-card-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--indigo-deep);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.recipe-card-sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--madder);
+  letter-spacing: 0.02em;
+}
+.recipe-card-desc {
+  font-size: 11.5px;
+  color: var(--susutake);
+  line-height: 1.55;
+  margin-top: 2px;
+}
+.recipe-footer-hint {
+  margin: 12px 0 0;
+  font-size: 11px;
+  color: var(--susutake);
+  line-height: 1.5;
+}
+.recipe-clear-btn {
+  background: transparent;
+  border: 1px solid var(--cream-dark);
+  color: var(--susutake);
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+.recipe-clear-btn:hover {
+  border-color: var(--madder);
+  color: var(--madder);
+}
+
 /* ===== v0.11.7:出力タブ統一パネル ===== */
 .output-tabs-panel {
   margin-top: 28px;
@@ -2660,7 +2765,7 @@ footer .accent { color: var(--madder); }
     <span class="logo-mark">Weft</span>
     <span class="tagline">横糸を、あなたの言葉に</span>
   </div>
-  <span class="version-tag">v0.11.8 / 字数オプション8段階に拡張(2k〜40k 字、20k 以上は外部AIプロンプト推奨)</span>
+  <span class="version-tag">v0.11.10 / レシピで一発設定(7種:マネタイズ王道/体験談/完全保存版/無料集客/辛口診断/軽めエッセイ/書籍級)+ high demand 自動再試行</span>
 </header>
 
 <main class="main-wrap">
@@ -3179,6 +3284,21 @@ footer .accent { color: var(--madder); }
         <span>タイトル案を再生成中...(5〜10秒)</span>
       </div>
       <div id="titleRegenError" class="error-msg hidden"></div>
+    </div>
+
+    <!-- v0.11.10:レシピ束(全設定を一発で決める。「どんな記事を書くか」が先に決まれば設定で迷わない) -->
+    <div class="recipe-panel" id="recipePanel">
+      <div class="recipe-header">
+        <h3 class="recipe-title">📋 レシピで一発設定 <span class="recipe-title-badge">RECOMMENDED</span></h3>
+        <p class="recipe-subtitle">「どんな記事を書くか」を最初に決めると、以下の設定(記事タイプ・課金タイプ・字数・構成テンプレ・文体プリセット・CTA タイプ)が一発で揃います。あとから個別に微調整も自由。<strong>選び直すと全項目が新しいレシピで上書き</strong>されます。</p>
+      </div>
+      <div class="recipe-grid" id="recipeGrid">
+        <!-- JS で動的描画 -->
+      </div>
+      <p class="recipe-footer-hint">
+        💡 「レシピなし」のまま、下の各セレクタで個別に設定することも可能です。
+        <button type="button" class="recipe-clear-btn" onclick="clearRecipe()">レシピをクリア</button>
+      </p>
     </div>
 
     <div class="type-selector" id="typeSelector">
@@ -4209,6 +4329,8 @@ let state = {
   ctaType: 'auto',
   // v0.11.4:文体プリセット('none' / 'natural' / 'empathy' / 'practical' / 'sharp' / 'formal')
   stylePreset: 'none',
+  // v0.11.10:レシピ(全設定を一発で決める。'none' = 未選択、その他は ARTICLE_RECIPES のキー)
+  activeRecipe: 'none',
   // v0.11.6:導入・CTA を本文生成より先に独立生成して確定する仕組み(任意・スキップ可)
   introCtaDraft: { intro: '', cta: '', generatedAt: null },
   history: []
@@ -4616,6 +4738,87 @@ const STRUCTURE_TEMPLATE_INSTRUCTION = {
 - いずれも空なら、汎用的かつ誠実な書き手として書く(指示文を残すな、空のままにするな)`
 };
 
+// v0.11.10:レシピ束(全設定を一発で決める。「どんな記事を書くか」が先に決まれば設定で迷わない発想)
+const ARTICLE_RECIPES = {
+  monetize_classic: {
+    icon: '🍳',
+    label: 'マネタイズ系 王道',
+    sub: '実用 × 有料 × PASONA',
+    desc: '副業・スキル教える有料note の鉄板。読者の悩み → 損失回避 → 解決 → 行動誘導を最短ルートで。迷ったらこれ。',
+    settings: {
+      articleType: 'practical', monetization: 'paid',
+      bodyLength: 'standard', structureTemplate: 'pasona',
+      stylePreset: 'practical', ctaType: 'action'
+    }
+  },
+  story_sell: {
+    icon: '📖',
+    label: '体験談で売る',
+    sub: '読み物 × 有料 × 体験談型',
+    desc: '自分の経験を通して教える有料 note。共感 → 学び → 再現手順で読者を動かす。SHIN さんの「のうみそ」型に近い。',
+    settings: {
+      articleType: 'narrative', monetization: 'paid',
+      bodyLength: 'long', structureTemplate: 'story-journey',
+      stylePreset: 'empathy', ctaType: 'empathy'
+    }
+  },
+  complete_bible: {
+    icon: '🎯',
+    label: '完全保存版マニュアル',
+    sub: '高単価 × 13セクション固定',
+    desc: '5,000円超の高単価 note 向け。診断・テンプレ・FAQ で実用バイブル化。「お金を払ってよかった」と言わせる構造。',
+    settings: {
+      articleType: 'practical', monetization: 'paid',
+      bodyLength: 'xlong', structureTemplate: 'paid-template-v1',
+      stylePreset: 'formal', ctaType: 'salvation'
+    }
+  },
+  free_funnel: {
+    icon: '🌱',
+    label: '無料note で集客',
+    sub: '無料 × 視点系 × 自動最適化',
+    desc: '無料で「視点が変わった」を提供し、Threads / プロフへ自然誘導。その記事だけで満足させる完結性が肝。',
+    settings: {
+      articleType: 'narrative', monetization: 'free',
+      bodyLength: 'standard', structureTemplate: 'auto',
+      stylePreset: 'natural', ctaType: 'learning'
+    }
+  },
+  sharp_diagnosis: {
+    icon: '⚡',
+    label: '辛口診断系',
+    sub: '断定 × PREP+ × 診断系CTA',
+    desc: '甘やかさず、本気の読者だけを濃く動かす。診断・チェックで自己分析を促す。濃いファン作り向け。',
+    settings: {
+      articleType: 'practical', monetization: 'paid',
+      bodyLength: 'standard', structureTemplate: 'prep-plus',
+      stylePreset: 'sharp', ctaType: 'diagnosis'
+    }
+  },
+  light_essay: {
+    icon: '✍️',
+    label: '軽めエッセイ',
+    sub: '無料 × 短め × 共感ストーリー',
+    desc: '読み物として軽く読める無料 note。日常の気づきを伝える。Threads からの流入受け皿に最適。',
+    settings: {
+      articleType: 'narrative', monetization: 'free',
+      bodyLength: 'short', structureTemplate: 'story-journey',
+      stylePreset: 'empathy', ctaType: 'empathy'
+    }
+  },
+  giant_compendium: {
+    icon: '📚',
+    label: '書籍級バイブル',
+    sub: '超長尺 × 外部AI推奨',
+    desc: '20,000字超の超長尺。外部 AI(Claude / ChatGPT Pro)で本文生成する想定。Weft はプロンプト作成専用に。',
+    settings: {
+      articleType: 'practical', monetization: 'paid',
+      bodyLength: 'giant', structureTemplate: 'paid-template-v1',
+      stylePreset: 'formal', ctaType: 'salvation'
+    }
+  }
+};
+
 // v0.11.4:文体プリセット5種(過去記事ベースの文体プロファイルとは併用可能)
 // Note Forge X Pro の dropdown 構造を参考に、Weft 独自の名前と指示文で書き起こし
 const STYLE_PRESET_INSTRUCTION = {
@@ -4735,6 +4938,16 @@ window.addEventListener('DOMContentLoaded', () => {
   // v0.11.4:文体プリセットの復元
   const savedStylePreset = localStorage.getItem('weft_stylePreset');
   if (savedStylePreset && STYLE_PRESET_INSTRUCTION.hasOwnProperty(savedStylePreset)) handleStylePresetSelect(savedStylePreset);
+  // v0.11.10:レシピ束を描画 + 直前選択を復元
+  renderRecipes();
+  const savedRecipe = localStorage.getItem('weft_activeRecipe');
+  if (savedRecipe && ARTICLE_RECIPES.hasOwnProperty(savedRecipe)) {
+    state.activeRecipe = savedRecipe;
+    // 復元時はカードの選択状態のみ更新(各設定は既に savedXxx で復元済み、二重適用を避ける)
+    document.querySelectorAll('.recipe-card').forEach(el => {
+      el.classList.toggle('is-selected', el.dataset.recipe === savedRecipe);
+    });
+  }
   // v0.10.0:シリーズ展開モードの初期化
   setupSeriesFlowOptions();
   populatePastArticleProjects();
@@ -7137,6 +7350,60 @@ function handleCtaTypeSelect(value) {
   localStorage.setItem('weft_ctaType', value);
 }
 
+// ============================================================
+// v0.11.10:レシピ束(「どんな記事か」を最初に決めて全設定を一発反映)
+// ============================================================
+function renderRecipes() {
+  const grid = document.getElementById('recipeGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.entries(ARTICLE_RECIPES).forEach(([key, r]) => {
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.dataset.recipe = key;
+    if (state.activeRecipe === key) card.classList.add('is-selected');
+    card.innerHTML = `
+      <div class="recipe-card-title">${r.icon} ${r.label}</div>
+      <div class="recipe-card-sub">${r.sub}</div>
+      <div class="recipe-card-desc">${r.desc}</div>
+    `;
+    card.addEventListener('click', () => applyRecipe(key));
+    grid.appendChild(card);
+  });
+}
+
+function applyRecipe(recipeKey) {
+  const recipe = ARTICLE_RECIPES[recipeKey];
+  if (!recipe) return;
+  state.activeRecipe = recipeKey;
+  localStorage.setItem('weft_activeRecipe', recipeKey);
+
+  // 各設定項目を一発で反映(対応するハンドラを順に呼ぶ)
+  const s = recipe.settings;
+  if (s.articleType) handleTypeSelect(s.articleType);
+  if (s.monetization) handleMonetizationSelect(s.monetization);
+  if (s.bodyLength) handleLengthSelect(s.bodyLength);
+  if (s.structureTemplate) handleStructureTemplateSelect(s.structureTemplate);
+  if (s.stylePreset) handleStylePresetSelect(s.stylePreset);
+  if (s.ctaType) handleCtaTypeSelect(s.ctaType);
+
+  // カードの選択状態を更新
+  document.querySelectorAll('.recipe-card').forEach(el => {
+    el.classList.toggle('is-selected', el.dataset.recipe === recipeKey);
+  });
+
+  toast(`レシピ「${recipe.icon} ${recipe.label}」を適用しました。設定を全項目反映済み。`);
+}
+
+function clearRecipe() {
+  state.activeRecipe = 'none';
+  localStorage.removeItem('weft_activeRecipe');
+  document.querySelectorAll('.recipe-card').forEach(el => {
+    el.classList.remove('is-selected');
+  });
+  toast('レシピをクリアしました(設定値は維持されたまま、個別調整できます)');
+}
+
 // v0.11.4:文体プリセット選択
 function handleStylePresetSelect(value) {
   if (!STYLE_PRESET_INSTRUCTION.hasOwnProperty(value)) return;
@@ -8583,7 +8850,12 @@ function isTransientError(message) {
          /failed to fetch/i.test(message) ||
          /load failed/i.test(message) ||
          /network/i.test(message) ||
-         /timeout/i.test(message);
+         /timeout/i.test(message) ||
+         // v0.11.9:Gemini API の過負荷エラー(429 ではない一時的なスパイク)を自動再試行対象に追加
+         /high demand/i.test(message) ||           // "This model is currently experiencing high demand"
+         /temporarily unavailable/i.test(message) || // 一時利用不可
+         /overloaded/i.test(message) ||             // モデル過負荷
+         /try again later/i.test(message);          // Gemini が返す一時障害の汎用メッセージ
 }
 
 // シンプルなリトライヘルパー(動画要約用、プログレス UI は呼び出し側のコールバックで処理)
