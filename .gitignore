@@ -36,3 +36,4 @@ tokens.json
 .claude/worktrees/
 .obsidian/workspace.json
 docs/
+backup.log
