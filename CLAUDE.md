@@ -2,7 +2,7 @@
 
 このファイルは Claude Code がセッション開始時に自動で読み込みます。Weft の開発を引き継ぐ際、ここに書かれた内容は **常にコンテキストに乗ります**。
 
-詳しい背景は `docs/07-handover-for-new-thread.md` を必ず参照すること。
+詳しい背景・オーナー情報・戦略は非公開の `docs/07-handover-for-new-thread.md` を必ず参照すること（このリポジトリは Public のため、機微な情報はここに書かない）。
 
 ---
 
@@ -15,47 +15,30 @@
 
 ## 現在の状態
 
-- **バージョン:** v0.11.10(レシピで一発設定 7種:マネタイズ王道/体験談/完全保存版/無料集客/辛口診断/軽めエッセイ/書籍級、配布版・GitHub Pages 公開済み)
+- **バージョン:** v0.11.10(レシピで一発設定 7種、配布版・GitHub Pages 公開済み)
 - **公開 URL:** https://marunage-creator.github.io/Weft/
 - **リポジトリ:** https://github.com/MARUNAGE-creator/Weft(Public)
-- **次のマイルストーン:** 実テスターからのフィードバック収集と対応 → モバイル最適化 or マネタイズ準備
 
 ## ファイル構成
 
 ```
 weft/
-├── CLAUDE.md                  ← このファイル(Claude Code 用)
-├── README.md                  ← 人間用の入口
+├── CLAUDE.md                  ← このファイル(Claude Code 用・公開)
+├── README.md                  ← 人間用の入口(公開)
 ├── app/
 │   └── weft-v0.1-step1.html  ← アプリ本体(編集対象は主にここ)
-└── docs/
-    ├── 01-blueprint.md
-    ├── 02-changelog.md        ← バージョン履歴(変更時は必ず更新)
-    ├── 03-setup-guide.md
-    ├── 04-decisions.md        ← 重要判断の記録(決定時は必ず追記)
-    ├── 05-roadmap.md
-    ├── 06-security-notes.md
-    ├── 07-handover-for-new-thread.md  ← 引き継ぎサマリー
-    ├── 08-workflow-habits.md  ← 運用3原則
-    ├── 09-market-research.md  ← 外部データの記録(note 相場など)
-    └── 10-user-manual.md     ← ユーザー向け取扱説明書(v0.9.0 時点)
+└── docs/                      ← 非公開(.gitignore 済み・weft-docs へ別途バックアップ)
+    ├── 01-blueprint.md 〜 10-user-manual.md
+    └── _private/              ← オーナー情報・戦略のフル版
 ```
-
-## ユーザー情報
-
-- **名前:** SHIN
-- **GitHub:** MARUNAGE-creator
-- **環境:** Windows 11(ARM)
-- **得意:** HTML/CSS/JS、Firebase、GitHub Pages
-- **進め方の好み:** 反復対話型。決断前に複数案を提示してもらいたい。視覚・対話的なアウトプットを好む
 
 ## 既知の罠(必読)
 
 ### 1. API キーは絶対にチャットに貼らない / 貼らせない
-過去に1回事故あり。SHIN さんが誤って貼った場合は即座に警告し、失効・再発行を促すこと。
+過去に1回事故あり。オーナーが誤って貼った場合は即座に警告し、失効・再発行を促すこと。
 
 ### 2. `str_replace` ツールはテンプレートリテラル付近で頻繁に失敗する
-特に `buildResearchPrompt()` `buildGenerationPrompt()` 周辺。失敗したら Python スクリプトを `/tmp/` などに作成して `content.replace()` で直接書き換える方が早い。
+特に `buildResearchPrompt()` `buildGenerationPrompt()` 周辺。失敗したら Python スクリプトを作成して `content.replace()` で直接書き換える方が早い。
 
 ### 3. maxOutputTokens の罠を2回踏んでいる
 プロンプトで出力量を増やす変更を入れる時は、必ず `maxOutputTokens` もセットで確認・調整すること。
@@ -71,18 +54,18 @@ weft/
 ## 重要な技術判断(変えないこと)
 
 - **Gemini Search Grounding を採用**(Google Custom Search は 2025 年に新規受付停止のため使えない)
-- **単一 HTML 構成を維持**(個人ツール段階。SaaS 化はまだ早い)
+- **単一 HTML 構成を維持**(個人ツール段階)
 - **API キーは1個に保つ**(セットアップの簡便さ最優先)
 
-詳細は `docs/04-decisions.md` を参照。
+詳細は `docs/04-decisions.md`(非公開) を参照。
 
-## 開発の3原則(SHIN さんと共有)
+## 開発の3原則
 
 1. **重要な決定は明示する**(【DECISION】タグを会話で使う)
 2. **バグ修正の理由を残す**(同じ罠を二度踏まない)
 3. **諦めた案も記録する**(検討の重複を防ぐ)
 
-これらは `docs/08-workflow-habits.md` で詳述。
+これらは `docs/08-workflow-habits.md`(非公開) で詳述。
 
 ## 作業時の運用ルール
 
@@ -95,7 +78,7 @@ weft/
 → 重要な技術判断が絡んでいたら `04-decisions.md` にも追記
 
 ### Step 2 以降に進む時
-→ `docs/05-roadmap.md` を先に参照すること(計画と方針が書いてある)
+→ `docs/05-roadmap.md`(非公開) を先に参照すること
 → 既存の Step 1 機能を壊さないよう、新機能はトグル方式で実装することを検討
 
 ## デザイン規約
@@ -103,19 +86,8 @@ weft/
 - **カラー:** `--indigo-deep #1a2238` / `--cream #f5f1ea` / `--madder #c9785b`
 - **フォント:** Fraunces(見出し) / DM Sans(本文) / JetBrains Mono(メタ)
 - **デザイン哲学:** artisan minimalist。装飾過多にしない、織物的な余白を活かす
-
-## ブランド・トーン
-
-- タグライン: 「横糸を、あなたの言葉に」
-- ターゲット: note で知識・ノウハウを販売したい個人(D層)
-- 差別化: AI 推測ではなく実データに基づく分析、待機時間の「視点取り込み」
-
-## 直近の TODO(未確定)
-
-- v0.1.6 の実運用テスト結果のフィードバック対応
-- `parseTitles()` の正規表現が壊れた場合の調整
-- Step 2(YouTube)の設計開始
+- **タグライン:** 「横糸を、あなたの言葉に」
 
 ---
 
-**初回起動時のおすすめ:** SHIN さんに「v0.1.6 を試したか、何をやりたいか」を聞いてから動くこと。前のセッションの続きとは限らない。
+**初回起動時のおすすめ:** 非公開の `docs/07-handover-for-new-thread.md` を読み、オーナーに「最新版を試したか、何をやりたいか」を聞いてから動くこと。前のセッションの続きとは限らない。
