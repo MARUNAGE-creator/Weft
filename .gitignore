@@ -26,3 +26,12 @@ _syntax_check.js
 
 # Legacy / stray files (typo'd double extension, not part of v0.9.2)
 app/index.html.html
+.env
+.env.*
+!.env.example
+credentials/
+tokens.json
+*.token
+.claude/settings.local.json
+.claude/worktrees/
+.obsidian/workspace.json
